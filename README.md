@@ -1,12 +1,12 @@
 # llm-eval
 
-Which local models can do real agent work on one 24 GB RTX 4090, and what do the memory settings that make them fit cost in quality?
+Which local models can handle real agent work on a single 24 GB RTX 4090, and what do the memory settings required to fit cost in quality?
 
-AI agents wrote almost all of the code. I set the goal, rules, acceptance checks and stop conditions, read the results, and decided what counted. This repo documents both the benchmark and that process.
+AI agents wrote almost all of the code. The project owner set the goals, rules, acceptance checks and stop conditions, reviewed the results, and made the final calls. This repo documents both the benchmark and the process behind it.
 
 ## Results at a glance
 
-The core comparison uses 35 tasks from my own agent work, five in each of seven categories, run three times each. Every row below uses the same frozen task set and grader (`bench-v2`, grader `04468edc`).
+The core comparison uses 35 tasks drawn from real agent work, five in each of seven categories, run three times each. Every row below uses the same frozen task set and grader (`bench-v2`, grader `04468edc`).
 
 | Model and profile | Engine, context | Core raw | Core adjusted | Wall time |
 |---|---|---:|---:|---:|
@@ -57,23 +57,23 @@ These are broader task suites, reported as passed/total. They were run in separa
 
 `*` Qwen3.8 and Swift each have three document answers that appear correct but fail the one-line decoy grader. Depth includes one task that did not reach its required token depth and another that fails on a missing model path in the test environment. These counts are raw grader results, not adjusted scores.
 
-## How it was built
+## Development and evaluation method
 
-The work ran as a loop: I wrote or approved a plan, agents built it, a model from a different family reviewed it, and I made the calls. [DECISIONS.md](DECISIONS.md) records the rules and why they changed. The [development log](docs/devlog/) follows milestones and records what agents got wrong and where I pushed back.
+The harness was built with Claude, Codex and DeepSeek. pi is the agent framework under test. Plans define scope, acceptance checks and stop conditions; code changes are reviewed before runs, and final acceptance remains human-reviewed. [DECISIONS.md](DECISIONS.md) records the rules and their rationale. The [development log](docs/devlog/) tracks the milestones and resulting changes.
 
-- Live runs fail closed. They require an acceptance step with an approval token, and the runner restores the production model server when a run ends or fails.
-- Runs are checkpointed and resumable. State is written atomically, and every event is appended to an fsynced log.
-- Two independent reviews preceded enabling the live adapter. The unattended runner also went through signal drills.
-- I read full answers before trusting scores. A review found six core tasks that passed even when the model did no work; five had a test or grader problem. A one-line grader bug rejected eight correct document answers.
-- I froze the comparison after fixes changed 22 of 35 core tasks. Older results remain in the record but are not treated as a baseline.
-- An operator agent can restart the model server and fix operational defects in separate commits, but cannot change tasks, graders, verdicts or limits during a run queue.
-- Sampling follows each model publisher's defaults. Samplers the publisher does not specify are disabled rather than inherited from llama.cpp.
-
-Built with Claude, Codex and DeepSeek. pi is the agent harness under test.
+| Area | Method |
+|---|---|
+| Independent review | Two reviews preceded live-adapter use. The unattended runner also passed signal drills. |
+| Live-run safety | Runs require an acceptance step and approval token. The runner restores the production model server on completion or failure. |
+| Recovery | Runs checkpoint state atomically, append events to an fsynced log, and can resume after interruption. |
+| Score integrity | Full answers are reviewed when a result is disputed. An audit found six core tasks that passed without useful model work; five involved a test or grader issue. A one-line grader bug rejected eight correct document answers. |
+| Comparability | Fixes changed 22 of 35 core tasks, so `bench-v2` froze the task set and grader. Earlier scores remain historical records, not a baseline. |
+| Operator scope | An operator agent may restart the model server and commit operational fixes separately. It cannot change tasks, graders, verdicts or limits during a run queue. |
+| Sampling | Each model uses its publisher's defaults. Samplers without a published recommendation are disabled instead of inheriting llama.cpp defaults. |
 
 ## What it measures
 
-- Core: 35 tasks in seven categories based on my agent logs. Each task is verified to fail when the agent does nothing and pass when the known solution is replayed.
+- Core: 35 tasks in seven categories drawn from real agent work logs. Each task is verified to fail when the agent does nothing and pass when the known solution is replayed.
 - Diagnostics: context-sized recall, ten tool calls and repeated synthetic chat sweeps.
 - Accuracy suites: depth tasks near the harness compaction point, long-document questions, 20 fixes mined from other repos, six game tasks and ten vision tasks.
 - Memory settings: KV-cache precision, ubatch size, CPU offload of MoE layers, speculative decoding and context from 131,072 to 262,144 tokens.
