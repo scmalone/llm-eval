@@ -93,7 +93,7 @@ The memory-fit threshold is 1,024 MiB of free GPU memory beside a working deskto
 - This repo is for reading. Running it requires the original machine's model server, presets and run data, which are not included. Mined and game tasks also depend on source repos that are not included.
 - The public repo excludes the private development history. Commit IDs in the documents refer to the private development repo. Run folders, transcripts and operator logs stay private.
 
-The harness lives in `llm_eval/`; `fixtures/` holds test tasks, and `suites/` and `configs/` hold run definitions. The package metadata describes a CLI, but the checkout is the runnable unit: fixtures, configs and suites are loaded relative to the repository, and are not bundled in a wheel.
+The harness lives in `llm_eval/`; `fixtures/` holds test tasks, and `suites/` and `configs/` hold run definitions. The checkout is the runnable unit: fixtures, configs and suites are loaded relative to the repository, and are not bundled in a wheel.
 
 ## Credits and license
 
