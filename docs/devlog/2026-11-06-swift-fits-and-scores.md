@@ -12,7 +12,7 @@
   - Recall passed at 131072. Swift was the second model to pass, after Qwen3.8.
   - Core 23/35 (2026-11-06-screen-swift-vision-2.md (private historical record)).
 - The owner asked for a synopsis of the failures: model or test? The agent's preliminary read named suspects, and
-  became a prompt for an Opus review of everything to date (`docs/prompts/2026-11-06-opus-full-review.md`).
+  became a prompt for an Opus review of everything to date (`docs/prompts/2026-11-06-opus-full-review.md`, private record).
 - In between the owner asked for recall results by model, the strongest models, and a time estimate for Swift.
 
 ## What the owner challenged

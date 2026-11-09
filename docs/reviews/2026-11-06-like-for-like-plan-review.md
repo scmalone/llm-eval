@@ -172,7 +172,7 @@ Verified:
   `depth-impl-reasoning-fields` fail to pass.
 - No wall_cap, stall or tool_hang stops in the Strata depth or 11-04 trials.
 
-Overstated or missing in `docs/operator-log/2026-11-06-strata-regrade.md`:
+Overstated or missing in `docs/operator-log/2026-11-06-strata-regrade.md` (private record):
 - **Not bench-v1 code.** The runs use harness SHAs `66561c4`, `995d522`, `4e4e07c` (depth, 10-31 and 11-01), `62b7cdb`
   (documents) and `d6138f9` (mined, game), all before the 11-06 fixes. DECISIONS says candidates are compared only on
   bench-v1 runs, so these need the explicit exception the plan assumes.

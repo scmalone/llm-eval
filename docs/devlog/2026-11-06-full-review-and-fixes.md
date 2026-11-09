@@ -7,7 +7,7 @@
   tests". The agent ran the review brief itself:
   - It read sections, answers, end states, server logs and telemetry.
   - It re-graded every saved core run.
-  - It wrote `docs/reviews/2026-11-06-opus-full-review.md` (`5d9b281`).
+  - It wrote `docs/reviews/2026-11-06-opus-full-review.md` (`5d9b281`, private record).
 - Main findings:
   - The advisory format check failed 19 of 50 trials whose content was correct.
   - The `impl-llm-eval-output-budget` hidden tests read data shapes its task text never stated.
