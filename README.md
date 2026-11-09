@@ -85,7 +85,7 @@ The pass mark is 1,024 MiB of free GPU memory beside a working desktop. The agen
 - Four profiles have completed the core comparison. The suite audit is next; the haystack task contradicts its own packet, and one matcher is inverted.
 - The core suite is small. Three repeats help reveal variability, but 35 tasks cannot represent every kind of agent work.
 - This repo is for reading. Running it requires the original machine's model server, presets and run data, which are not included. Mined and game tasks also depend on source repos that are not included.
-- This public copy has a single commit. Commit IDs in the documents refer to the private development repo. Run folders, transcripts and operator logs stay private.
+- The public repo excludes the private development history. Commit IDs in the documents refer to the private development repo. Run folders, transcripts and operator logs stay private.
 
 The harness lives in `llm_eval/`; `fixtures/` holds test tasks, and `suites/` and `configs/` hold run definitions. The Python package metadata in `pyproject.toml` defines the installable CLI.
 
