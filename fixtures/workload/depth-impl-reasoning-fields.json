@@ -12,9 +12,9 @@
   "prompt": "Now the task, in this same llm-eval project. The first live run's answers came back empty, and we can't tell an empty answer from a budget spent on reasoning. Make live responses keep the reasoning and finish reason:\n- `LiveAdapter.request` returns a dict with `content` (\"\" when absent), `reasoning` (from the message's `reasoning_content`, \"\" when absent) and `finish_reason` (from the first choice); tool trials also carry `tool_calls`.\n- Graders keep reading only `content`; the runner already saves each response as JSON under `responses/`, and those files must now include `reasoning` and `finish_reason`.\nDone when `python3 -m unittest discover -s tests` passes. Keep existing tests' assertions as they are.",
   "source": {
     "bundle": "sources/llm-eval-fixtures.bundle",
-    "commit": "0f5faf6379e7bfab25ce3841eb278d069d68154e",
+    "commit": "918ebf7f86f126b7a1b6b3cce55a21d2142a2f09",
     "workdir": ".",
-    "answer": "b22dfdac6a290cd1a32b7142c51d52d0cf910476",
+    "answer": "aabf5b7d9e5d75d9ca1797f0821f10d3e3bff4be",
     "withhold": [
       "tests/test_live.py"
     ]

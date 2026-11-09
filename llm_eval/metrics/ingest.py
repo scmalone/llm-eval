@@ -12,7 +12,7 @@ from .schema import TABLES, connect
 # Runs known to be unusable for statistics, keyed by the start of their plan hash. A run folder can
 # also carry its own ``analysis-notes.json`` ({"valid_for_analysis": false, "reason": "..."}).
 KNOWN_INVALID = {
-    "07fd060bc4e3": "first live run: 768-token recall and 64-token smoke caps starved reasoning, so failures are "
+    "[redacted]": "first live run: 768-token recall and 64-token smoke caps starved reasoning, so failures are "
                     "a methodology gap, not a model verdict (STATE 2026-10-03)",
 }
 QUANT = re.compile(r"(?i)[-_.]((?:I?Q\d(?:_[A-Z0-9]+)*)|BF16|F16|FP8|MXFP4)(?=[-_.])")

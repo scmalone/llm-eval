@@ -5,7 +5,7 @@
   "prompt": "Catch me up on llm-eval. What's the next concrete action?",
   "source": {
     "bundle": "sources/llm-eval-fixtures.bundle",
-    "commit": "21e500cf9611edbc41ead4fbfbf2cce45dd44f2c",
+    "commit": "ff460ae0ca95a6bd2a4f9d748d5cfdad5052ecc8",
     "workdir": ".",
     "cwd": ""
   },

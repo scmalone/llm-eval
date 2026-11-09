@@ -5,7 +5,7 @@
   "prompt": "Review the resume path in llm-eval's llm_eval/runner.py: if the owner presses Ctrl-C in the middle of a model, what does a later resume do? Report defects with function names; no edits.",
   "source": {
     "bundle": "sources/llm-eval-fixtures.bundle",
-    "commit": "a5ee2e00e4bb86c6aea4e92656337e860c907873",
+    "commit": "d48625fb6053e028a4a58a5991cdd2810df9cb62",
     "workdir": ".",
     "deny": [
       "STATE.md",

@@ -5,7 +5,7 @@
   "prompt": "Should muse's opencode limit.output be 16,384 or 32,768? Use what llm-eval has measured.",
   "source": {
     "bundle": "sources/llm-eval-fixtures.bundle",
-    "commit": "55b19d828db68e8c0dd028f98f9d022e88f198d1",
+    "commit": "44f57d29fd994c8013848962014b8db3aa58fade",
     "workdir": "."
   },
   "checks": [

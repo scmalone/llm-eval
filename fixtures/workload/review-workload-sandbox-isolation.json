@@ -5,7 +5,7 @@
   "prompt": "Review llm-eval's workload sandbox (llm_eval/workload/sandbox.py and driver.py) for isolation defects: anything an agent inside the box can see or reach that it should not. Findings only, with the line or function.",
   "source": {
     "bundle": "sources/llm-eval-fixtures.bundle",
-    "commit": "b2705310ba0ee4a10fe88d4a5029199c8592a052",
+    "commit": "e9bdb30ff7fbd0cd4eff1a3d5f129fcab0ecdf3d",
     "workdir": ".",
     "deny": [
       "STATE.md",

@@ -5,7 +5,7 @@
   "prompt": "Of my open llm-eval next steps, which should I do first and why?",
   "source": {
     "bundle": "sources/llm-eval-fixtures.bundle",
-    "commit": "a849a399b55d31945b2aec0265f6b95f31f59880",
+    "commit": "fe7fb2b6c2576b20e2ac6e9ac03927f32ab4194f",
     "workdir": "."
   },
   "checks": [

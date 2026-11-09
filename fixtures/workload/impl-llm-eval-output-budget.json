@@ -5,9 +5,9 @@
   "prompt": "Task packet (llm-eval, ~/Workspace/llm-eval). The first live run failed because 768/64-token output caps were spent on reasoning. Make the output budget the agent-turn reservation and report output use.\n- Fixture caps: recall and tools 16,384, smoke 1,024, vision 4,096 (edit the fixture files). Recall prompts are therefore `ctx - 16,384 - 2,048`.\n- A trial whose response ends with `finish_reason == \"length\"` fails (`runner.grade` returns pass False). Every trial section records `output_tokens` (the response's `usage.completion_tokens`), `finish_reason` and its `max_output_tokens`; live responses keep `reasoning` as well.\n- A failed smoke skips the rest of the model: the later sections are `skipped` with reason \"smoke failed\" and no recall trials run.\n- `policy.context_label`: retire `100k_plus_envelope`; only a measured prompt of 100,000 tokens earns `100k_prompt_measured`.\n- `acceptance.report` adds `peak_output_tokens` (a dict keyed by section kind: `{\"smoke\": n, \"recall\": n, \"tools\": n}`), `largest_passing_recall_prompt_tokens`, `hit_output_cap` (the trial names that ended on the cap, as `trial-<fixture id>-at-<context>`, e.g. `trial-smoke-1-at-131072`) and `failing_sections` (section kinds without the model prefix, e.g. `smoke`); any failing section makes the exit code EVAL_FAILURES. The prepare card adds `recall_prompt_tokens_by_context` (keyed by the integer context, e.g. `card[\"recall_prompt_tokens_by_context\"][131072]`). Acceptance caps become 60 min model, 75 min campaign, 10 min request.\nDone when `python3 -m unittest discover -s tests` passes. Keep existing tests' assertions as they are.",
   "source": {
     "bundle": "sources/llm-eval-fixtures.bundle",
-    "commit": "b22dfdac6a290cd1a32b7142c51d52d0cf910476",
+    "commit": "aabf5b7d9e5d75d9ca1797f0821f10d3e3bff4be",
     "workdir": ".",
-    "answer": "21e500cf9611edbc41ead4fbfbf2cce45dd44f2c",
+    "answer": "ff460ae0ca95a6bd2a4f9d748d5cfdad5052ecc8",
     "withhold": [
       "tests/test_acceptance.py",
       "tests/test_live.py",

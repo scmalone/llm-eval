@@ -5,9 +5,9 @@
   "prompt": "Task packet (llm-eval, ~/Workspace/llm-eval). Every run should leave a self-contained HTML report.\n- New module `llm_eval/htmlreport.py` with `write(run_dir, plan, state)` that writes `report.html` into the run folder and returns its path: one file starting `<!doctype html>`, no network, light and dark themes. Per model: summary cards (smoke, tools passed like \"10/10\", recall at the anchor, verified recall context), a \"Recall by context\" table (contexts formatted like \"131,072\", one cell per trial), output tokens per recall trial, and the section statuses.\n- If `analysis.html` sits beside the report, embed its contents under an \"Analysis\" heading; otherwise there is no Analysis heading.\n- `acceptance.run` and `acceptance.status` write the report and return its path as `report_html`. A report that cannot be written never changes the outcome or exit code.\nDone when `python3 -m unittest discover -s tests` passes. Keep existing tests' assertions as they are.",
   "source": {
     "bundle": "sources/llm-eval-fixtures.bundle",
-    "commit": "a849a399b55d31945b2aec0265f6b95f31f59880",
+    "commit": "fe7fb2b6c2576b20e2ac6e9ac03927f32ab4194f",
     "workdir": ".",
-    "answer": "55b19d828db68e8c0dd028f98f9d022e88f198d1",
+    "answer": "44f57d29fd994c8013848962014b8db3aa58fade",
     "withhold": [
       "tests/test_acceptance.py"
     ]
