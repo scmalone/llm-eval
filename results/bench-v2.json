@@ -2,7 +2,6 @@
   "schema_version": 1,
   "description": "Manually transcribed aggregate results from private operator logs; raw trials are not included. These are descriptive counts, not an independent reproduction.",
   "core_task_set": "bench-v2",
-  "grader_sha_prefix": "04468edc",
   "categories": [
     "advisory",
     "implementation",
@@ -49,9 +48,31 @@
       "publisher_url": "https://huggingface.co/unsloth/Qwen3.8-27B-GGUF",
       "measured_settings": {
         "kv_cache": "q8_0",
-        "mtp": false
+        "mtp": false,
+        "ubatch": 256,
+        "batch_size": 2048,
+        "gpu_layers": 999
       },
       "accuracy": {
+        "depth": [
+          5,
+          5
+        ],
+        "documents": [
+          6,
+          6
+        ],
+        "mined": [
+          18,
+          20
+        ],
+        "game": [
+          6,
+          6
+        ],
+        "vision": null
+      },
+      "accuracy_original": {
         "depth": [
           3,
           5
@@ -70,7 +91,10 @@
         ],
         "vision": null
       },
-      "depth_unmeasured": 1
+      "settings_source": {
+        "manifest": "2026-11-07-qwen3.8-27b-unsloth-q4-mtp-163840-core/manifest.json",
+        "availability": "Private run record; settings transcribed here."
+      }
     },
     {
       "profile": "strata-iq3s",
@@ -104,9 +128,35 @@
       "tool_trials": 10,
       "chat_passes": 12,
       "chat_trials": 15,
-      "publisher_url": "https://huggingface.co/unsloth/Qwen3.8-27B-GGUF",
-      "measured_settings": {},
+      "publisher_url": "https://huggingface.co/ISTA-DASLab/Qwen3.8-Flash-Next-GSQ-RCO-GGUF",
+      "measured_settings": {
+        "kv_cache": "int8",
+        "draft": "MTP",
+        "speculative_tokens": 4,
+        "expert_cache": "auto",
+        "vram_reserve_mib": 2048,
+        "pcie_frac": 0.2
+      },
       "accuracy": {
+        "depth": [
+          5,
+          5
+        ],
+        "documents": [
+          6,
+          6
+        ],
+        "mined": [
+          18,
+          20
+        ],
+        "game": [
+          6,
+          6
+        ],
+        "vision": null
+      },
+      "accuracy_original": {
         "depth": [
           4,
           5
@@ -125,7 +175,13 @@
         ],
         "vision": null
       },
-      "depth_unmeasured": 0
+      "settings_source": {
+        "manifest": "2026-11-09-strata-iq3s-262144-core/manifest.json",
+        "availability": "Private run record; settings transcribed here.",
+        "config": "configs/engine-0.1.54/iq3s-262144.json",
+        "private_config_sha256": "fb0145874e4a0635669e23785830c5613fd13ff8d0f8cf616a47db3f94dae07d",
+        "public_config_transform": "Home paths rewritten to ~ at export; all other bytes preserved."
+      }
     },
     {
       "profile": "swift-qwen3.8-27b-vision",
@@ -164,9 +220,34 @@
       "measured_settings": {
         "kv_cache": "q8_0",
         "mtp": false,
-        "vision_projector": "host RAM"
+        "vision_projector": "host RAM",
+        "ubatch": 256,
+        "batch_size": 2048,
+        "gpu_layers": 999
       },
       "accuracy": {
+        "depth": [
+          5,
+          5
+        ],
+        "documents": [
+          6,
+          6
+        ],
+        "mined": [
+          16,
+          20
+        ],
+        "game": [
+          4,
+          6
+        ],
+        "vision": [
+          10,
+          10
+        ]
+      },
+      "accuracy_original": {
         "depth": [
           3,
           5
@@ -188,7 +269,10 @@
           10
         ]
       },
-      "depth_unmeasured": 1
+      "settings_source": {
+        "manifest": "2026-11-08-swift-qwen3.8-27b-vision-131072-core/manifest.json",
+        "availability": "Private run record; settings transcribed here."
+      }
     },
     {
       "profile": "muse-glimmer-30b",
@@ -223,8 +307,38 @@
       "chat_passes": 15,
       "chat_trials": 15,
       "publisher_url": "https://huggingface.co/meta-models/Muse-Glimmer-30B",
-      "measured_settings": {},
+      "measured_settings": {
+        "kv_cache": "f16",
+        "draft": "DFlash",
+        "ubatch": 512,
+        "batch_size": 2048,
+        "gpu_layers": 999,
+        "draft_model": "dflash-kquant.gguf",
+        "speculative_tokens": 15
+      },
       "accuracy": {
+        "depth": [
+          4,
+          5
+        ],
+        "documents": [
+          4,
+          6
+        ],
+        "mined": [
+          16,
+          20
+        ],
+        "game": [
+          5,
+          6
+        ],
+        "vision": [
+          9,
+          10
+        ]
+      },
+      "accuracy_original": {
         "depth": [
           3,
           5
@@ -246,7 +360,10 @@
           10
         ]
       },
-      "depth_unmeasured": 1
+      "settings_source": {
+        "manifest": "2026-11-07-muse-glimmer-30b-131072-core/manifest.json",
+        "availability": "Private run record; settings transcribed here."
+      }
     }
   ],
   "adjustment_policy": "Qwen adjusted 98 counts six style-only failures and one confirmed inverted-matcher failure as passes, preserving denominator 105. Upper bound 101 additionally counts three disputed haystack failures as passes; one includes a model error. Other adjusted scores are uncomputed.",
@@ -269,9 +386,11 @@
   "limitations": [
     "Contexts differ; totals are not a controlled ranking.",
     "Accuracy suites are separate campaigns, not all on the core freeze.",
-    "Qwen and Swift documents each include three answers affected by the one-line decoy grader.",
-    "Depth includes a missing model-path environment fault; one task per llama.cpp candidate was unmeasured.",
     "Historical profile names can mention MTP even when MTP was disabled.",
-    "Only settings confirmed in the operator logs are listed; omitted settings are unspecified here."
-  ]
+    "Only settings confirmed in the run manifests and operator logs are listed; omitted settings are unspecified here.",
+    "Historical accuracy-suite scores were rescored after the grader and environment fixes; see the README for the original and rescored figures.",
+    "Strata mined/game ran 2026-11-04 on an older harness; task identity with other campaigns is not verified here."
+  ],
+  "core_grader_sha_prefix": "04468edc",
+  "accuracy_rescore_source": "2026-11-07-bench-v2-chain-report section 7; saved runs rescored after 7eac04a fixes, not independently rerun here."
 }

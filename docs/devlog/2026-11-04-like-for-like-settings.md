@@ -5,8 +5,8 @@
 ## What happened
 
 The first two llama.cpp screens finished overnight: qwen3.8-27b-unsloth-q4-mtp at 22/35 core
-(log) and qwen3.6-35b-a3b at 13/35, with recall 0/3 at 262,144
-and several ops trials looping until the wall cap (log).
+(2026-11-03-screen-qwen3.8-27b.md (private historical record)) and qwen3.6-35b-a3b at 13/35, with recall 0/3 at 262,144
+and several ops trials looping until the wall cap (2026-11-04-screen-qwen3.6-35b.md (private historical record)).
 Asked why Qwen3.6 did so badly, the agent read the captured requests: Qwen3.6's preset carried the card's
 precise-coding sampling (temperature 0.6, no presence penalty), while Qwen3.8 ran the card's general thinking mode
 (temperature 1.0). The two scores compare two different configurations, not two models.

@@ -8,7 +8,7 @@ AI agents wrote almost all of the code. The project owner set the goals, rules, 
 
 [Download the aggregate results](results/bench-v2.json), including campaign dates, category counts, adjustment rules and measurement limitations. Raw trial records remain private.
 
-The core comparison uses 35 tasks drawn from real agent work, five in each of seven categories, run three times each. Every row below uses the same frozen task set and grader (`bench-v2`, grader `04468edc`).
+The core comparison uses 35 tasks drawn from real agent work, five in each of seven categories, run three times each. Every core row below uses the same frozen task set and grader (`bench-v2`, grader `04468edc`).
 
 | Model and profile | Engine, context | Core raw | Core adjusted | Wall time |
 |---|---|---:|---:|---:|
@@ -17,7 +17,7 @@ The core comparison uses 35 tasks drawn from real agent work, five in each of se
 | Swift 1.5, Qwen3.8 27B fine-tune (`swift-qwen3.8-27b-vision`) | llama.cpp, 131,072 | 84/105 | n/a | 7.1 h |
 | Muse Glimmer 30B (`muse-glimmer-30b`) | llama.cpp, 131,072 | 81/105 | n/a | 3.3 h |
 
-The contexts differ, so these totals are not a head-to-head ranking. Adjusted scores remove confirmed style or grader faults; only Qwen3.8 has a reviewed adjusted score so far. Its 101 upper bound also removes three haystack trials, one of which contains a possible model error, so 98 is the reported adjusted result.
+The contexts differ, so these totals are not a head-to-head ranking. Adjusted scores count confirmed style or grader faults as passes, preserving the 105-trial denominator; only Qwen3.8 has a reviewed adjusted score so far. Its 101 upper bound also counts three disputed haystack trials as passes, one of which contains a possible model error, so 98 is the reported adjusted result.
 
 ### Core score by category
 
@@ -44,20 +44,22 @@ Three repeated recall prompts probe long-context retrieval; ten tool calls check
 | Swift, 131K | 3/3 (36/36 records) | 10/10 | 15/15 |
 | Muse, 131K | 0/3 (17/36 records) | 10/10 | 15/15 |
 
-Muse's recall miss near 112K tokens repeats earlier diagnostics. Qwen3.8's run used MTP off and decoded at about 45 tokens/s; its estimated speed with MTP on is about 80 tokens/s, but those settings are not compared in this table.
+Muse's recall miss near 112K tokens repeats earlier diagnostics. Qwen3.8 decoded at about 45 tokens/s in the core campaign (40.3 tokens/s in the fitting sweep) with MTP off and a q8_0 KV cache. MTP reached 78 tokens/s in a separate sweep with q4_0 KV cache, while a separate MTP/q8_0 sweep at 131,072 context and ubatch 512 missed the 1,024 MiB free-memory floor. The published profile therefore keeps q8_0 and disables MTP: the memory fit costs decode speed.
 
 ### Additional accuracy suites
 
-These are broader task suites, reported as passed/total. They were run in separate campaigns, not as part of the three-run core comparison. A dash means the suite was not run for that profile. `*` marks a result affected by a known measurement or grader issue.
+These are broader task suites, reported as passed/total. They were run in separate campaigns, not as part of the three-run core comparison. A dash means the suite was not run for that profile. Depth and documents below use the post-fix rescoring reported in the private chain report (2026-11-07, section 7).
 
 | Model | Depth | Documents | Mined fixes | Game tasks | Vision |
 |---|---:|---:|---:|---:|---:|
-| Qwen3.8, 163K | 3/5 (1 unmeasured) | 3/6* | 18/20 | 6/6 | — |
-| Strata, 262K | 4/5 | 6/6 | 18/20 | 6/6 | — |
-| Swift, 131K | 3/5 (1 unmeasured) | 3/6* | 16/20 | 4/6 | 10/10 |
-| Muse, 131K | 3/5 (1 unmeasured) | 4/6 | 16/20 | 5/6 | 9/10 |
+| Qwen3.8, 163K | 5/5 | 6/6 | 18/20 | 6/6 | — |
+| Strata, 262K | 5/5 | 6/6 | 18/20 | 6/6 | — |
+| Swift, 131K | 5/5 | 6/6 | 16/20 | 4/6 | 10/10 |
+| Muse, 131K | 4/5 | 4/6 | 16/20 | 5/6 | 9/10 |
 
-`*` Qwen3.8 and Swift each have three document answers that appear correct but fail the one-line decoy grader. Depth includes one task that did not reach its required token depth and another that fails on a missing model path in the test environment. These counts are raw grader results, not adjusted scores.
+The original depth counts were Qwen3.8 3/5, Swift 3/5, Strata 4/5 and Muse 3/5 (three passes out of four measured). Qwen3.8 and Swift documents were originally 3/6. The saved runs were rescored after the one-line decoy grader, missing-model-path environment fault and depth-floor fixes. Muse's two document misses remain genuine. These figures are transcribed from the private 2026-11-07 chain report, section 7; they were not independently rescored for this publication. The core grader hash above applies to core results only. Strata's mined/game campaigns date to 2026-11-04 on an older harness; task identity across those campaigns has not been established here.
+
+At the common 131,072 context, separate 2026-11-07 diagnostics recorded Qwen3.8 recall 3/3, tools 10/10 and chat 5/5; Strata recorded 3/3, 10/10 and 4/5. Post-fix accuracy was Qwen3.8 depth 5/5 and documents 6/6, versus Strata depth 4/4 measured and documents 6/6, with one Strata depth task unmeasured. These single campaigns are historical diagnostics, not three-repeat core comparisons.
 
 ## Development and evaluation method
 
@@ -65,22 +67,24 @@ The harness was built with Claude, Codex and DeepSeek. pi is the agent framework
 
 | Area | Method |
 |---|---|
-| Independent review | Two reviews preceded live-adapter use. The unattended runner also passed signal drills. |
+| Independent review | Review rounds preceded live-adapter use. The unattended runner also passed signal drills. |
 | Live-run safety | Runs require an acceptance step and approval token. The runner restores the production model server on completion or failure. |
 | Recovery | Runs checkpoint state atomically, append events to an fsynced log, and can resume after interruption. |
-| Score integrity | Full answers are reviewed when a result is disputed. An audit found six core tasks that failed on every model; five involved a test or grader issue. A one-line grader bug rejected eight correct document answers. |
+| Score integrity | Full answers are reviewed when a result is disputed. An audit found six core tasks that failed on every model; two were confirmed test flaws and later fixed. The available review records do not identify the other four, so this summary does not classify them. A one-line grader bug rejected eight correct document answers. |
 | Comparability | Fixes changed 22 of 35 core tasks, so `bench-v2` froze the task set and grader. Earlier scores remain historical records, not a baseline. |
 | Operator scope | An operator agent may restart the model server and commit operational fixes separately. It cannot change tasks, graders, verdicts or limits during a run queue. |
 | Sampling | Each model uses its publisher's defaults. Samplers without a published recommendation are disabled instead of inheriting llama.cpp defaults. |
 
 ## What it measures
 
-- Core: 35 tasks in seven categories drawn from real agent work logs. Each task is verified to fail when the agent does nothing and pass when the known solution is replayed.
+- Core: 35 tasks in seven categories drawn from real agent work logs; 24 use this benchmark repository’s own snapshots. Each task is verified to fail when the agent does nothing and pass when the known solution is replayed.
 - Diagnostics: context-sized recall, ten tool calls and repeated synthetic chat sweeps.
 - Accuracy suites: depth tasks near the harness compaction point, long-document questions, 20 fixes mined from other repos, six game tasks and ten vision tasks.
-- Memory settings: KV-cache precision, ubatch size, CPU offload of MoE layers, speculative decoding and context from 131,072 to 262,144 tokens.
+- Recorded fit settings (not a controlled quality comparison): KV-cache precision, ubatch size, CPU offload of MoE layers, speculative decoding and context from 131,072 to 262,144 tokens.
 
-The pass mark is 1,024 MiB of free GPU memory beside a working desktop. The agent runs in a bubblewrap sandbox with a private network. Its only exits are the model server and a canned-page proxy. llama.cpp is pinned at build 12017, and each run records its harness commit, grader hash and mode.
+A core trial passes when its task-specific grader and applicable frozen instruction checks pass. Style-only failures include the no-em-dash rule in [the frozen agent instructions](configs/pi-agents-md-bench.md). Of 35 core tasks, 24 use snapshots of this benchmark repository across implementation, lookup, resume and advisory, limiting coverage of outside projects. Published harness code matches private bench-v2 `c19f776`; comments may cite private plans. The aggregate counts do not use the historical scoring module.
+
+The memory-fit threshold is 1,024 MiB of free GPU memory beside a working desktop. The agent runs in a bubblewrap sandbox with a private network. Its only exits are the model server and a canned-page proxy. llama.cpp is pinned at build 12017, and each run records its harness commit, grader hash and mode.
 
 ## Status and limits
 
@@ -89,7 +93,7 @@ The pass mark is 1,024 MiB of free GPU memory beside a working desktop. The agen
 - This repo is for reading. Running it requires the original machine's model server, presets and run data, which are not included. Mined and game tasks also depend on source repos that are not included.
 - The public repo excludes the private development history. Commit IDs in the documents refer to the private development repo. Run folders, transcripts and operator logs stay private.
 
-The harness lives in `llm_eval/`; `fixtures/` holds test tasks, and `suites/` and `configs/` hold run definitions. The Python package metadata in `pyproject.toml` defines the installable CLI.
+The harness lives in `llm_eval/`; `fixtures/` holds test tasks, and `suites/` and `configs/` hold run definitions. The package metadata describes a CLI, but the checkout is the runnable unit: fixtures, configs and suites are loaded relative to the repository, and are not bundled in a wheel.
 
 ## Credits and license
 

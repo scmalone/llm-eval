@@ -2,7 +2,7 @@
 
 Two arms of one controlled comparison. They differ in `--max-context` and in the numbers that follow from it, and in
 nothing else. Frozen 2026-10-30 after the measurements in
-`plans/2026-10-30-fresh-start-engine-0.1.54.md`; every number below was measured on this machine, none is carried over
+the private 2026-10-30 fresh-start plan; every number below was measured on this machine, none is carried over
 from 0.1.45.
 
 | | `iq3s-131072.json` | `iq3s-262144.json` |
@@ -51,3 +51,5 @@ the three variables above. Sampling and thinking come from `settings.request`, n
 
 Verified 2026-10-30 by loading both files: both reach READY, the log shows zero `PCIe probe` and zero `PCIe share`
 lines (the pin is in force), and the cache and free-VRAM numbers above are from those two loads.
+
+These cache measurements describe the October setup. The 2026-11-09 core run anchor-load record and engine log record 5,795 slots (11.01 GiB); the cause of that difference has not been established.
