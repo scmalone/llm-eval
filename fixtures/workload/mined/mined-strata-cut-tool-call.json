@@ -1,0 +1,78 @@
+{
+  "id": "mined-strata-cut-tool-call",
+  "kind": "workload",
+  "category": "mined",
+  "prompt": "Task packet (Strata, ~/Workspace/Strata). Issue #211: when the model's output ends inside a tool call whose name was already streamed, `finish()` closes its JSON and emits a `tool_call` event, and the answer ends with finish_reason `tool_calls` / stop_reason `tool_use`, so clients run the truncated arguments (an MCP call ran with empty arguments).\n- The cut call stays unfinished: its JSON is not closed and no `tool_call` event follows its `tool_start` (the streamed `tool_args` stay exactly what the model produced, for example `{\"path\":\"notes.txt\",\"content\":\"first half of the fi`).\n- Both APIs report `tool_calls` / `tool_use` only when every streamed call completed; a cut call ends OpenAI answers with `stop` and Anthropic answers with `end_turn`. The non-streamed Anthropic answer leaves out a call whose input never closed; the non-streamed OpenAI answer keeps the cut arguments as text.\n- An MCP call the output ends inside is not run: the web app sees only its `start` event and nothing is called. A whole call still behaves as before.\nDone when `python3 -m unittest -v test_mcp test_server` passes from `serve/`. Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/Strata",
+    "commit": "97362183ef58dbcf93eb41b8c99470c3ec09c1ff",
+    "workdir": ".",
+    "answer": "67d5ed427768a299f6986c7ac13e32122ac54cb0",
+    "withhold": [
+      "serve/test_mcp.py",
+      "serve/test_server.py"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "-v",
+        "test_mcp",
+        "test_server"
+      ],
+      "cwd": "serve",
+      "timeout": 900,
+      "expect": [
+        "(?m)^test_a_call_the_output_ends_inside_is_not_run \\(",
+        "(?m)^test_parser \\(",
+        "(?m)^test_a_cut_call \\(",
+        "(?m)^test_a_whole_call \\("
+      ],
+      "skipped": "(?m)^(?:OK|FAILED) \\(.*\\b(?:skipped|expected failures)="
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "serve/test_mcp.py",
+        "serve/test_server.py"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "-v",
+        "test_mcp",
+        "test_server"
+      ],
+      "cwd": "serve",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "Strata",
+    "fix": "67d5ed427768a299f6986c7ac13e32122ac54cb0",
+    "subject": "fix(serve): report a tool call cut off by the end of the output as unfinished",
+    "kind": "behavior"
+  }
+}

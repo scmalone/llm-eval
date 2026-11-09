@@ -1,0 +1,139 @@
+{
+  "id": "impl-llm-eval-output-budget",
+  "kind": "workload",
+  "category": "implementation",
+  "prompt": "Task packet (llm-eval, ~/Workspace/llm-eval). The first live run failed because 768/64-token output caps were spent on reasoning. Make the output budget the agent-turn reservation and report output use.\n- Fixture caps: recall and tools 16,384, smoke 1,024, vision 4,096 (edit the fixture files). Recall prompts are therefore `ctx - 16,384 - 2,048`.\n- A trial whose response ends with `finish_reason == \"length\"` fails (`runner.grade` returns pass False). Every trial section records `output_tokens` (the response's `usage.completion_tokens`), `finish_reason` and its `max_output_tokens`; live responses keep `reasoning` as well.\n- A failed smoke skips the rest of the model: the later sections are `skipped` with reason \"smoke failed\" and no recall trials run.\n- `policy.context_label`: retire `100k_plus_envelope`; only a measured prompt of 100,000 tokens earns `100k_prompt_measured`.\n- `acceptance.report` adds `peak_output_tokens` (a dict keyed by section kind: `{\"smoke\": n, \"recall\": n, \"tools\": n}`), `largest_passing_recall_prompt_tokens`, `hit_output_cap` (the trial names that ended on the cap, as `trial-<fixture id>-at-<context>`, e.g. `trial-smoke-1-at-131072`) and `failing_sections` (section kinds without the model prefix, e.g. `smoke`); any failing section makes the exit code EVAL_FAILURES. The prepare card adds `recall_prompt_tokens_by_context` (keyed by the integer context, e.g. `card[\"recall_prompt_tokens_by_context\"][131072]`). Acceptance caps become 60 min model, 75 min campaign, 10 min request.\nDone when `python3 -m unittest discover -s tests` passes. Keep existing tests' assertions as they are.",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "b22dfdac6a290cd1a32b7142c51d52d0cf910476",
+    "workdir": ".",
+    "answer": "21e500cf9611edbc41ead4fbfbf2cce45dd44f2c",
+    "withhold": [
+      "tests/test_acceptance.py",
+      "tests/test_live.py",
+      "tests/test_runner.py"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "timeout": 900,
+      "expect": [
+        "^test_a_dead_server_still_owes_its_memory \\(.*\\) \\.\\.\\. ok$",
+        "^test_a_fresh_adapter_stops_a_crashed_runs_scratch_server \\(.*\\) \\.\\.\\. ok$",
+        "^test_a_restore_that_raises_unexpectedly_is_retried_and_recorded \\(.*\\) \\.\\.\\. ok$",
+        "^test_a_resumed_adapter_adopts_the_memory_obligation \\(.*\\) \\.\\.\\. ok$",
+        "^test_actual_memory_floor_falls_back \\(.*\\) \\.\\.\\. ok$",
+        "^test_adopt_skips_the_gate_once_production_is_back \\(.*\\) \\.\\.\\. ok$",
+        "^test_allocation_failure_is_a_capacity_error_and_other_exits_are_not \\(.*\\) \\.\\.\\. ok$",
+        "^test_an_answer_cut_off_at_the_cap_fails \\(.*\\) \\.\\.\\. ok$",
+        "^test_approved_run_completes_restores_and_cannot_be_started_twice \\(.*\\) \\.\\.\\. ok$",
+        "^test_budget_and_forecast \\(.*\\) \\.\\.\\. ok$",
+        "^test_campaign_steps_down_after_a_request_time_oom \\(.*\\) \\.\\.\\. ok$",
+        "^test_cli_refuses_without_the_owner_token \\(.*\\) \\.\\.\\. ok$",
+        "^test_command_timeout_is_infrastructure_not_an_escape \\(.*\\) \\.\\.\\. ok$",
+        "^test_evidence_requires_known_fact_source_pair \\(.*\\) \\.\\.\\. ok$",
+        "^test_exec_identity_ignores_runtime_fields \\(.*\\) \\.\\.\\. ok$",
+        "^test_failed_load_must_still_return_memory \\(.*\\) \\.\\.\\. ok$",
+        "^test_failed_probe_leaves_the_restore_marker_set \\(.*\\) \\.\\.\\. ok$",
+        "^test_failed_restore_is_a_stop \\(.*\\) \\.\\.\\. ok$",
+        "^test_failed_smoke_is_reported_as_an_evaluation_failure \\(.*\\) \\.\\.\\. ok$",
+        "^test_failed_smoke_stops_the_model_before_the_ladder \\(.*\\) \\.\\.\\. ok$",
+        "^test_forecast_rejects_before_load \\(.*\\) \\.\\.\\. ok$",
+        "^test_full_fake_campaign_and_resume_are_idempotent \\(.*\\) \\.\\.\\. ok$",
+        "^test_full_live_campaign_against_a_scripted_machine \\(.*\\) \\.\\.\\. ok$",
+        "^test_inactive_production_remains_inactive \\(.*\\) \\.\\.\\. ok$",
+        "^test_kv_parsing_never_guesses \\(.*\\) \\.\\.\\. ok$",
+        "^test_live_run_refuses_before_output_directory_creation \\(.*\\) \\.\\.\\. ok$",
+        "^test_load_measures_memory_from_the_server_log \\(.*\\) \\.\\.\\. ok$",
+        "^test_machine_lock_excludes_second_runner \\(.*\\) \\.\\.\\. ok$",
+        "^test_memory_boundaries \\(.*\\) \\.\\.\\. ok$",
+        "^test_mixed_case_allocation_marker_is_recognised \\(.*\\) \\.\\.\\. ok$",
+        "^test_oom_at_the_top_rung_falls_back_and_still_restores \\(.*\\) \\.\\.\\. ok$",
+        "^test_oom_falls_back_without_retrying_oom \\(.*\\) \\.\\.\\. ok$",
+        "^test_oom_then_timeout_is_capacity_and_a_plain_timeout_is_not \\(.*\\) \\.\\.\\. ok$",
+        "^test_path_traversal_rejected \\(.*\\) \\.\\.\\. ok$",
+        "^test_plan_never_calls_process_or_adapter \\(.*\\) \\.\\.\\. ok$",
+        "^test_plan_tamper_fails \\(.*\\) \\.\\.\\. ok$",
+        "^test_prepare_is_read_only_and_hands_back_a_token \\(.*\\) \\.\\.\\. ok$",
+        "^test_prepare_stops_on_an_unknown_gpu_client \\(.*\\) \\.\\.\\. ok$",
+        "^test_quadrant_png_is_a_valid_image_with_the_right_colors \\(.*\\) \\.\\.\\. ok$",
+        "^test_quality_failure_steps_down_to_the_highest_passing_context \\(.*\\) \\.\\.\\. ok$",
+        "^test_recall_prompts_are_sized_to_each_context \\(.*\\) \\.\\.\\. ok$",
+        "^test_recall_rejects_extra_text_duplicate_wrong_order \\(.*\\) \\.\\.\\. ok$",
+        "^test_request_time_oom_is_capacity_not_a_retry \\(.*\\) \\.\\.\\. ok$",
+        "^test_restore_does_not_pass_while_memory_is_held \\(.*\\) \\.\\.\\. ok$",
+        "^test_restore_failure_retains_marker \\(.*\\) \\.\\.\\. ok$",
+        "^test_restore_leaves_an_inactive_unit_inactive \\(.*\\) \\.\\.\\. ok$",
+        "^test_restore_verifies_unit_health_and_probe \\(.*\\) \\.\\.\\. ok$",
+        "^test_resume_after_partial_descent_reloads_only_for_unfinished_rungs \\(.*\\) \\.\\.\\. ok$",
+        "^test_resume_before_smoke_loads_the_scratch_server \\(.*\\) \\.\\.\\. ok$",
+        "^test_resume_rejects_a_different_plan \\(.*\\) \\.\\.\\. ok$",
+        "^test_run_id_binds_adapter_and_snapshot \\(.*\\) \\.\\.\\. ok$",
+        "^test_run_refuses_a_wrong_token_before_touching_the_machine \\(.*\\) \\.\\.\\. ok$",
+        "^test_server_args_translate_the_preset \\(.*\\) \\.\\.\\. ok$",
+        "^test_server_errors_are_infrastructure_and_only_the_scratch_unit_is_stopped \\(.*\\) \\.\\.\\. ok$",
+        "^test_smoke_runs_and_text_only_profiles_skip_vision \\(.*\\) \\.\\.\\. ok$",
+        "^test_smoke_wants_the_word_ok_not_a_substring \\(.*\\) \\.\\.\\. ok$",
+        "^test_snapshot_blocks_only_unknown_gpu_clients \\(.*\\) \\.\\.\\. ok$",
+        "^test_stale_restore_marker_is_recovered_before_continuing \\(.*\\) \\.\\.\\. ok$",
+        "^test_status_tells_running_from_crashed \\(.*\\) \\.\\.\\. ok$",
+        "^test_stop_requires_memory_to_return_to_baseline \\(.*\\) \\.\\.\\. ok$",
+        "^test_timeout_restores_and_is_reported \\(.*\\) \\.\\.\\. ok$",
+        "^test_tools_reject_extra_argument_and_calls \\(.*\\) \\.\\.\\. ok$",
+        "^test_torn_event_and_orphan_section_are_reconciled \\(.*\\) \\.\\.\\. ok$",
+        "^test_transient_request_gets_one_retry \\(.*\\) \\.\\.\\. ok$",
+        "^test_unit_names_follow_the_run_id \\(.*\\) \\.\\.\\. ok$",
+        "^test_unknown_gpu_workload_blocks_before_production_is_touched \\(.*\\) \\.\\.\\. ok$",
+        "^test_unknown_workload_blocks_before_quiesce \\(.*\\) \\.\\.\\. ok$",
+        "^test_vision_profile_sends_a_png_and_is_graded \\(.*\\) \\.\\.\\. ok$",
+        "^test_wrong_answer_is_not_retried \\(.*\\) \\.\\.\\. ok$"
+      ],
+      "min_tests": 90
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the suite passes."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  }
+}

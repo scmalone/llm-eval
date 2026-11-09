@@ -1,0 +1,79 @@
+{
+  "id": "mined-job-tracker-batch-promote",
+  "kind": "workload",
+  "category": "mined",
+  "prompt": "Task packet (job-tracker, ~/Workspace/job-tracker). Promoting roles from the market board has no action contract: the only path, `promoteDecisions`, sweeps every kept role and the records it creates carry no next action. Add an explicit batch promotion in `src/market-promote.mjs`; leave `promoteDecisions` and the server route as they are.\n- Export `PromotionRejected`, an error class (it may extend `ValidationError` from `src/markdown.mjs`) whose `rejected` property lists offending roles as `{ id, reason }`.\n- Export `async promoteSelected({ store, dataset, decisions, selected, action, persistPromotion })`; `persistPromotion(id, recordId)` defaults to a no-op.\n- The whole batch is validated before any write; any problem throws `PromotionRejected` and leaves no record. Each selected id (trimmed, deduplicated) must be on the board (`dataset.roles`), else reason `not on the board`; its `decisions[id].decision` must be `keep`: an `ignore` decision gives reason `decision is ignore, not keep`, a missing one `no keep decision recorded`. An empty selection, or a missing or unknown `action.mode`, is rejected.\n- Modes: `shared` takes one `action.text` and an optional `action.due` (YYYY-MM-DD only, else rejected) for every role; a blank or non-string text is rejected with a message containing `non-empty action text`. `individual` takes `action.texts[id]` per role: a role whose entry is missing, blank or not a string goes in `rejected` with reason `no action text for this role` (checked only for roles that passed the selection checks); a shared `action.due` is rejected with a message containing `no shared due date`. `needs_scheduling` takes one non-empty `action.text` and no due date; a due date is rejected with a message containing `no due date`.\n- Each created record's `nextAction` is the trimmed text and `nextStepDue` the due date, or `\"\"` when there is none.\n- After validation each role goes through the same origin-first path as `promoteDecisions` (`marketOrigin` `{ datasetSlug: dataset.meta.slug, roleId }`; an existing record for that origin is skipped and re-linked with `persistPromotion`, never rewritten). Return `{ selected: <count>, created: [{ id, recordId, title }], skipped: [{ id, title, matches: [recordId] }], failed: [{ id, title, reason }] }`; an error from `persistPromotion` after a create puts that role in `failed` with the error's message, and a retry then skips it instead of creating a second record.\nDone when `node --test test/market-promote-actions.test.mjs test/market-promote-origin.test.mjs` passes. Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/job-tracker",
+    "commit": "1be87713bf986a2dfc9cfca7230d9add800747ee",
+    "workdir": ".",
+    "answer": "1fe75eecc5be9a5e3a164807f3f109276a88aa5d",
+    "withhold": [
+      "test/market-promote-actions.test.mjs",
+      "test/market-promote-origin.test.mjs"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "node",
+        "--test",
+        "test/market-promote-actions.test.mjs",
+        "test/market-promote-origin.test.mjs"
+      ],
+      "cwd": ".",
+      "timeout": 600,
+      "expect": [
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )shared\\ mode\\ applies\\ one\\ action\\ text\\ and\\ optional\\ due\\ date\\ to\\ every\\ selected\\ role(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )individual\\ mode\\ carries\\ each\\ role's\\ own\\ action\\ text(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )needs_scheduling\\ keeps\\ the\\ action\\ text\\ and\\ omits\\ the\\ due\\ date(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )a\\ mixed\\ keep/ignore\\ or\\ unknown\\ selection\\ is\\ rejected\\ whole,\\ before\\ any\\ write(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )empty\\ or\\ blank\\ action\\ text\\ is\\ rejected\\ without\\ persisting\\ a\\ placeholder(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )existing\\ records\\ are\\ skipped\\ individually\\ and\\ left\\ untouched(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )a\\ mid\\-batch\\ failure\\ is\\ reported\\ per\\ role\\ and\\ the\\ retry\\ repairs\\ without\\ duplicating(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )the\\ action\\-contract\\ path\\ keeps\\ origin\\-first\\ idempotency\\ across\\ a\\ rebuilt\\ dataset(?: \\(|$)"
+      ],
+      "success": "(?m)^(?:\u2139|#) fail 0$",
+      "count": "(?m)^(?:\u2139|#) tests (\\d+)$",
+      "skipped": "(?m)^(?:\u2139|#) (?:skipped|todo) [1-9]"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "test/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "node",
+        "--test",
+        "test/market-promote-actions.test.mjs",
+        "test/market-promote-origin.test.mjs"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "job-tracker",
+    "fix": "1fe75eecc5be9a5e3a164807f3f109276a88aa5d",
+    "subject": "feat: add explicit batch-promotion action contract",
+    "kind": "behavior"
+  }
+}

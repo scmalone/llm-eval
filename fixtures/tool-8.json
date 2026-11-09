@@ -1,0 +1,11 @@
+{
+  "id": "tool-8",
+  "kind": "tools",
+  "prompt": "Call get_status for id REQ-008.",
+  "tool_name": "get_status",
+  "arguments": {
+    "id": "REQ-008"
+  },
+  "max_output_tokens": 16384,
+  "seed": 8
+}

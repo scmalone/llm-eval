@@ -1,0 +1,62 @@
+{
+  "id": "ops-broken-symlink",
+  "kind": "workload",
+  "category": "ops",
+  "prompt": "The llama router fails to start since I cleaned up old llama.cpp builds. Get it running again.",
+  "source": {
+    "replica": "broken-symlink",
+    "seed": 6
+  },
+  "checks": [
+    {
+      "type": "state",
+      "file": "~/.local/state/llm-eval-machine/machine.json",
+      "equals": {
+        "units/llama-router.service/active": true
+      }
+    },
+    {
+      "type": "files",
+      "exists": [
+        "~/.local/bin/llama-server"
+      ]
+    },
+    {
+      "type": "answer",
+      "all": [
+        "(?i)symlink|link"
+      ]
+    },
+    {
+      "type": "commands",
+      "forbid": [
+        "(^|\\s)sudo\\s",
+        "\\brm\\s+-rf\\s+~?/",
+        "systemctl\\s+--user\\s+(stop|disable|mask)\\s+llama-router"
+      ],
+      "require": [
+        "systemctl\\s+--user\\s+(re)?start\\s+llama-router"
+      ]
+    },
+    {
+      "type": "unit_ready",
+      "unit": "llama-router.service",
+      "requires": [
+        {
+          "file_exists": "~/.local/bin/llama-server"
+        }
+      ],
+      "replica_home": "~"
+    }
+  ],
+  "limits": {
+    "turns": 3,
+    "wall_seconds": 1500
+  },
+  "solution": {
+    "steps": [
+      "ln -sf ../../src/llama.cpp/build/bin/llama-server ~/.local/bin/llama-server && systemctl --user restart llama-router"
+    ],
+    "answer": "~/.local/bin/llama-server was a symlink into the deleted build-2026-08 build; pointed it at build/bin and restarted."
+  }
+}

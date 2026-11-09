@@ -1,0 +1,72 @@
+{
+  "id": "mined-the-ones-who-see-preview-turn",
+  "kind": "workload",
+  "category": "mined",
+  "prompt": "Task packet (the-ones-who-see, ~/Workspace/the-ones-who-see). A later UI needs to forecast a turn without masking a rule decision or touching the RNG.\n- Add `previewTurn(state, plan)` to `src/engine/orchestration.js`. It runs `commitTurn`'s steps 0 to 4 for real on a throwaway clone (`cloneState`) and stops before `mutTickBreaks` (the spec section 8 randomness boundary), so it never touches `state.rng` and never changes its input. It returns `{ kids, flows }`: `kids` holds one entry per kid with `kidId`, `after` (that kid's composure after the previewed steps, equal to what `commitTurn` produces when no break fires) and `breakFires` (true when the kid's pending break fires on this turn, `pendingBreak.firesOnTurn`); no break consequence (the scream and its contagion) appears in the forecast. `flows` lists the flow events the previewed steps emitted, each `{ type, kidId, amount }`. Repeated previews of one state are identical, and `commitTurn` behaves the same whether or not a preview ran first.\n- In `src/engine/rules.js`, emit `anchor-restore`, `reach-out` and `capture-pressure` events beside the existing `mutAdjustComposure` calls in `mutResolveAnchor`, `mutResolveReachOut` and `mutApplyCapturePressure`, following the contagion emit convention (`amount` is the pre-clamp magnitude, which equals the `composure-gain` log entry's amount for that kid). An anchor resolve gives one `anchor-restore` per bonded kid within the anchor radius. `deriveEffects` ignores unknown event types, so nothing else changes.\nDone when `node --test src/engine/__tests__/preview-parity.test.js` passes. Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/the-ones-who-see",
+    "commit": "98d40313af578f473ba39a644d9d397b0168f4da",
+    "workdir": ".",
+    "answer": "2d53700ceb6fe543335816cd4850353b9adff24b",
+    "withhold": [
+      "src/engine/__tests__/preview-parity.test.js"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "node",
+        "--test",
+        "src/engine/__tests__/preview-parity.test.js"
+      ],
+      "cwd": ".",
+      "timeout": 600,
+      "expect": [
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )forecast\\ =\\ commit,\\ below\\ the\\ roll(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )the\\ boundary\\ holds\\ \u2014\\ breakFires\\ is\\ true\\ but\\ the\\ preview\\ carries\\ no\\ break\\ consequences(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )flows\\ are\\ the\\ applied\\ truth(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )purity\\ \u2014\\ repeated\\ preview\\ calls\\ change\\ nothing(?: \\(|$)"
+      ],
+      "success": "(?m)^(?:\u2139|#) fail 0$",
+      "count": "(?m)^(?:\u2139|#) tests (\\d+)$",
+      "skipped": "(?m)^(?:\u2139|#) (?:skipped|todo) [1-9]"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "src/engine/__tests__/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "node",
+        "--test",
+        "src/engine/__tests__/preview-parity.test.js"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "the-ones-who-see",
+    "fix": "2d53700ceb6fe543335816cd4850353b9adff24b",
+    "subject": "engine: add previewTurn + three flow events, with parity tests",
+    "kind": "api"
+  }
+}

@@ -1,0 +1,540 @@
+{
+ "note": "Hand-written packets for the mined fixes (E3) and the flight-test game tasks (E5). tools/build_mined_tasks.py turns each into fixtures/workload/<collection>/<id>.json. A packet states the issue and every value the hidden tests read, never the fix.",
+ "tasks": [
+  {
+   "id": "mined-job-tracker-empty-draft",
+   "collection": "mined",
+   "repo": "~/Workspace/job-tracker",
+   "sha": "f327b1e8",
+   "runner": "node",
+   "command": [
+    "node",
+    "--test",
+    "test/assessment-store.test.mjs"
+   ],
+   "prompt": "Task packet (job-tracker, ~/Workspace/job-tracker). Bug: a generated assessment draft whose content fields are all empty gets saved as a blank revision, which renders an empty Assessment box under a 'Draft assessment' pill.\n- `generateAssessmentDraft(record, { provider, apiKey, fetchImpl })` in `src/assessment-llm.mjs` must refuse such a draft on every provider path (deepinfra, codex, claude) before anything reaches the store.\n- When every one of the 15 assessment fields of the parsed draft is empty or whitespace, it rejects with an error whose message contains `no content, so nothing was saved` (tell the user to add candidate evidence context and generate again).\n- When the parsed draft is not a plain object (for example the model returns `[null]`), it rejects with an error whose message contains `unreadable draft`.\nDone when `node --test test/assessment-store.test.mjs` passes. Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "mined-job-tracker-private-evidence",
+   "collection": "mined",
+   "repo": "~/Workspace/job-tracker",
+   "sha": "b623d279",
+   "runner": "node",
+   "command": [
+    "node",
+    "--test",
+    "test/assessment-data-boundary.test.mjs",
+    "test/assessment-store.test.mjs"
+   ],
+   "prompt": "Task packet (job-tracker, ~/Workspace/job-tracker). Privacy bug: role assessments can send private career evidence (configured candidate evidence, the corpus-directory fallback, or a role's free-text notes) to a remote model provider. Block it before any remote fetch.\n- Export `classifyAssessmentInput(input)` from `src/assessment-llm.mjs`: it returns `\"public-posting-only\"` only when both `candidateEvidence` and `notes` are absent, empty or whitespace; anything else returns `\"contains-private-candidate-evidence\"`.\n- Export `assertAssessmentDataBoundary(input, provider)`: an unknown provider throws an error whose message contains `provider is not valid`; private evidence with a remote provider (claude, codex, openai and deepinfra are all remote; there is no local provider yet) throws an error whose message contains `Real career and personal evidence needs local inference`. It returns the classification otherwise.\n- `generateAssessmentDraft(record, { provider, apiKey, candidateEvidence, fetchImpl })` applies the guard (with the record's `notes`) before calling `fetchImpl`, so a blocked call never fetches; a posting-only call still fetches once and returns the draft.\n- The server's config reader keeps an omitted provider defaulting to deepinfra, but a saved provider it does not know stays unknown, so generation fails closed; the server guards the resolved config (explicit evidence or corpus fallback) before the provider call.\nDone when `node --test test/assessment-data-boundary.test.mjs test/assessment-store.test.mjs` passes. Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "mined-job-tracker-batch-promote",
+   "collection": "mined",
+   "repo": "~/Workspace/job-tracker",
+   "sha": "1fe75eec",
+   "runner": "node",
+   "command": [
+    "node",
+    "--test",
+    "test/market-promote-actions.test.mjs",
+    "test/market-promote-origin.test.mjs"
+   ],
+   "prompt": "Task packet (job-tracker, ~/Workspace/job-tracker). Promoting roles from the market board has no action contract: the only path, `promoteDecisions`, sweeps every kept role and the records it creates carry no next action. Add an explicit batch promotion in `src/market-promote.mjs`; leave `promoteDecisions` and the server route as they are.\n- Export `PromotionRejected`, an error class (it may extend `ValidationError` from `src/markdown.mjs`) whose `rejected` property lists offending roles as `{ id, reason }`.\n- Export `async promoteSelected({ store, dataset, decisions, selected, action, persistPromotion })`; `persistPromotion(id, recordId)` defaults to a no-op.\n- The whole batch is validated before any write; any problem throws `PromotionRejected` and leaves no record. Each selected id (trimmed, deduplicated) must be on the board (`dataset.roles`), else reason `not on the board`; its `decisions[id].decision` must be `keep`: an `ignore` decision gives reason `decision is ignore, not keep`, a missing one `no keep decision recorded`. An empty selection, or a missing or unknown `action.mode`, is rejected.\n- Modes: `shared` takes one `action.text` and an optional `action.due` (YYYY-MM-DD only, else rejected) for every role; a blank or non-string text is rejected with a message containing `non-empty action text`. `individual` takes `action.texts[id]` per role: a role whose entry is missing, blank or not a string goes in `rejected` with reason `no action text for this role` (checked only for roles that passed the selection checks); a shared `action.due` is rejected with a message containing `no shared due date`. `needs_scheduling` takes one non-empty `action.text` and no due date; a due date is rejected with a message containing `no due date`.\n- Each created record's `nextAction` is the trimmed text and `nextStepDue` the due date, or `\"\"` when there is none.\n- After validation each role goes through the same origin-first path as `promoteDecisions` (`marketOrigin` `{ datasetSlug: dataset.meta.slug, roleId }`; an existing record for that origin is skipped and re-linked with `persistPromotion`, never rewritten). Return `{ selected: <count>, created: [{ id, recordId, title }], skipped: [{ id, title, matches: [recordId] }], failed: [{ id, title, reason }] }`; an error from `persistPromotion` after a create puts that role in `failed` with the error's message, and a retry then skips it instead of creating a second record.\nDone when `node --test test/market-promote-actions.test.mjs test/market-promote-origin.test.mjs` passes. Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "mined-usage-dashboard-keychain-token",
+   "collection": "mined",
+   "repo": "~/Workspace/usage-dashboard",
+   "sha": "855af348",
+   "runner": "node",
+   "kind": "api",
+   "command": [
+    "node",
+    "--test",
+    "tests/usage.test.mjs"
+   ],
+   "prompt": "Task packet (usage-dashboard, ~/Workspace/usage-dashboard). Move the DeepInfra token out of the GUI environment into the login Keychain (option A), read it fail-closed, and never leak it.\n- Export `buildKeychainReadArgs()` from `lib/usage.mjs`: `[\"find-generic-password\", \"-w\", \"-s\", \"usage-dashboard-deepinfra\"]`.\n- Export `readTokenFromKeychain({ spawnImpl, timeoutSeconds = 30 })`: it spawns `/usr/bin/security` with those arguments (through `spawnImpl`, which defaults to the real spawn), captures stdout in-process only, and resolves the trimmed token on a clean exit (code 0). A non-zero exit (for example a denied prompt), a spawn error or a timeout resolves `null`; on a timeout the child is killed. The service's output is never logged or returned on failure.\n- `readDeepInfraUsage(options)` and `reauthorizeProvider(\"deepinfra\", options)` accept `readKeychainTokenImpl`: an explicit `DEEPINFRA_API_TOKEN` in the environment still wins (the keychain is then not read at all); otherwise they fall back to the keychain token. The token goes out only as `Authorization: Bearer <token>` and never appears anywhere in the returned result.\n- `bin/save-deepinfra-token.sh` stores the token with `security add-generic-password -U` (hidden input, presence-only verification) and unsets any older `launchctl` copy.\nDone when `node --test tests/usage.test.mjs` passes. Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "mined-usage-dashboard-claude-windows",
+   "collection": "mined",
+   "repo": "~/Workspace/usage-dashboard",
+   "sha": "24b9bd85",
+   "runner": "node",
+   "command": [
+    "node",
+    "--test",
+    "tests/usage.test.mjs"
+   ],
+   "prompt": "Task packet (usage-dashboard, ~/Workspace/usage-dashboard). Bug: the Claude pane is stuck on 'did not expose both subscription windows' even with a fresh report. quota-axi now prefers the vendor's authoritative limits list for Claude, which can omit the weekly window or its reset time.\n- `normalizeClaudeReport(report)` in `lib/usage.mjs` renders per window: the five-hour window (`five_hour`) is required and must carry a verified percentage between 0 and 100; the weekly window (`seven_day`) is optional and is `null` when absent.\n- A five-hour-only report is `status: \"ready\"` with `windows.fiveHour.remainingPercent` set (82 in the fixture) and `windows.weekly` null.\n- A window without a reset time stays live with `resetsAt: null` instead of being discarded.\n- A report with no usable five-hour window (missing, or a percentage like 140) is `unavailable`, and its `reason` mentions `five-hour`.\n- Codex keeps its strict both-windows contract.\nDone when `node --test tests/usage.test.mjs` passes. Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "mined-usage-dashboard-child-env",
+   "collection": "mined",
+   "repo": "~/Workspace/usage-dashboard",
+   "sha": "71527646",
+   "runner": "node",
+   "command": [
+    "node",
+    "--test",
+    "tests/usage.test.mjs"
+   ],
+   "prompt": "Task packet (usage-dashboard, ~/Workspace/usage-dashboard). Security: `runQuotaAxi(provider)` spawns quota-axi with the app's whole environment, which can carry provider tokens, proxy credentials, `NODE_OPTIONS` and other secrets.\n- Export `buildQuotaAxiEnv(binPath, sourceEnv = process.env)` from `lib/usage.mjs`: it returns only `PATH` (built with the existing `buildChildPath`, so the binary's own directory comes first) and `HOME` when the source has one. Nothing else reaches the child (on macOS the OS itself may add `__CF_USER_TEXT_ENCODING`).\n- `runQuotaAxi` spawns with that environment and `shell: false`, still passing `quotaAxiArgs(provider)` as its arguments, and honours `QUOTA_AXI_BIN` for the binary path as before.\n- Ready and unavailable states from the child's report stay truthful, and a disabled provider never spawns the command.\nDone when `node --test tests/usage.test.mjs` passes. Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "mined-usage-dashboard-gui-launch",
+   "collection": "mined",
+   "repo": "~/Workspace/usage-dashboard",
+   "sha": "61906702",
+   "runner": "node",
+   "kind": "api",
+   "command": [
+    "node",
+    "--test",
+    "tests/usage.test.mjs"
+   ],
+   "prompt": "Task packet (usage-dashboard, ~/Workspace/usage-dashboard). Two bugs behind 'The local quota source exited with an error'.\n1. Launched from Finder the app has no Homebrew on PATH, so quota-axi's `#!/usr/bin/env node` shebang exits 127. Export `buildChildPath(binPath, currentPath)` from `lib/usage.mjs`: the PATH for the child, with the resolved binary's directory first, then the system bins (`/usr/bin`, `/bin`, `/usr/sbin`, `/sbin`) and the current PATH, without duplicate entries. Spawn quota-axi with it.\n2. quota-axi prints a valid report and exits 1 when Claude needs keychain authorization, and the exit-code check discards it. Export `interpretQuotaAxiRun(provider, exitCode, stdout)`: valid JSON wins over the exit code (a Claude `auth_required` state with error `keychain_prompt_required` becomes `status: \"unavailable\"`, `enabled: true`, a `reason` mentioning `sign-in`, and `detail: \"keychain_prompt_required\"`); a non-zero exit without valid JSON is unavailable with a reason containing `exited with an error`; a zero exit without valid JSON is unavailable with a reason containing `invalid JSON`.\n- Export `quotaAxiArgs(provider)`: `[\"--provider\", provider, \"--json\", \"--no-credential-refresh\"]`, plus `--allow-keychain-prompt` for claude only.\nDone when `node --test tests/usage.test.mjs` passes. Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "mined-the-ones-who-see-dials",
+   "collection": "mined",
+   "repo": "~/Workspace/the-ones-who-see",
+   "sha": "8fd0f7bf",
+   "runner": "node",
+   "kind": "api",
+   "command": [
+    "node",
+    "--test",
+    "src/engine/__tests__/tunables.test.js"
+   ],
+   "prompt": "Task packet (the-ones-who-see, ~/Workspace/the-ones-who-see). The live-tuning panel's dials need one declaration that a guard test can check. Rename the engine config's `TUNABLES` export to `DIALS` in `src/engine/config.js` (the single list the tuning panel maps, one entry per dial with its config path), and update every user, including `src/ui/Panels.jsx`. `DEFAULT_CONFIG`, `DIALS` and `getPath` must be exported from `src/engine/config.js`; every dial path must resolve to a number in `DEFAULT_CONFIG`. Document on `DIALS` that adding a numeric feel-number to the config now means adding a dial or an explicit exclusion in the guard test.\nDone when `node --test src/engine/__tests__/tunables.test.js` passes. Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "mined-meal-planner-beef-stew",
+   "collection": "mined",
+   "repo": "~/Workspace/meal-planner",
+   "sha": "72dfb7cc",
+   "runner": "checks",
+   "command": [
+    "node",
+    "scripts/test-parser.mjs"
+   ],
+   "env": [
+    {
+     "from": "meal-planner-node_modules",
+     "to": "node_modules"
+    }
+   ],
+   "prompt": "Task packet (meal-planner, ~/Workspace/meal-planner). Bug: a two-page NYT recipe PDF (Old-Fashioned Beef Stew) parses wrong. In pdf-parse's reading order, page 1 ends mid-ingredient ('1 medium onion, peeled and' then the PREPARATION steps and the recipe's description paragraph), and page 2 starts with the ingredient overflow ('chopped', then three more ingredients) before the rest of the last step.\n- `parsePdfText(text)` in `lib/parser.ts` must keep all 12 ingredients, with no duplicates: the continuation joins its ingredient across the page break (`medium onion, peeled and chopped`), the overflow ingredients after the break are ingredients (carrots, potatoes, `salt` exactly once), and the parser must not repeat the last ingredient.\n- The instructions resume after the overflow ingredients and end with `Ladle among 4 bowls and serve.`; the description paragraph ('This classic stick-to-your-ribs stew ...') is not part of the steps.\nDone when `node scripts/test-parser.mjs` reports `0/N parser checks failed`. Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "mined-the-ones-who-see-preview-turn",
+   "collection": "mined",
+   "repo": "~/Workspace/the-ones-who-see",
+   "sha": "2d53700c",
+   "runner": "node",
+   "kind": "api",
+   "command": [
+    "node",
+    "--test",
+    "src/engine/__tests__/preview-parity.test.js"
+   ],
+   "prompt": "Task packet (the-ones-who-see, ~/Workspace/the-ones-who-see). A later UI needs to forecast a turn without masking a rule decision or touching the RNG.\n- Add `previewTurn(state, plan)` to `src/engine/orchestration.js`. It runs `commitTurn`'s steps 0 to 4 for real on a throwaway clone (`cloneState`) and stops before `mutTickBreaks` (the spec section 8 randomness boundary), so it never touches `state.rng` and never changes its input. It returns `{ kids, flows }`: `kids` holds one entry per kid with `kidId`, `after` (that kid's composure after the previewed steps, equal to what `commitTurn` produces when no break fires) and `breakFires` (true when the kid's pending break fires on this turn, `pendingBreak.firesOnTurn`); no break consequence (the scream and its contagion) appears in the forecast. `flows` lists the flow events the previewed steps emitted, each `{ type, kidId, amount }`. Repeated previews of one state are identical, and `commitTurn` behaves the same whether or not a preview ran first.\n- In `src/engine/rules.js`, emit `anchor-restore`, `reach-out` and `capture-pressure` events beside the existing `mutAdjustComposure` calls in `mutResolveAnchor`, `mutResolveReachOut` and `mutApplyCapturePressure`, following the contagion emit convention (`amount` is the pre-clamp magnitude, which equals the `composure-gain` log entry's amount for that kid). An anchor resolve gives one `anchor-restore` per bonded kid within the anchor radius. `deriveEffects` ignores unknown event types, so nothing else changes.\nDone when `node --test src/engine/__tests__/preview-parity.test.js` passes. Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "mined-dotfiles-triage-cycle3",
+   "collection": "mined",
+   "repo": "~/Workspace/dotfiles",
+   "sha": "7ac589a2",
+   "runner": "bash",
+   "command": [
+    "bash",
+    "-c",
+    "bash tests/review-triage/run.sh && bash tests/review-triage/waiver-test.sh"
+   ],
+   "success": "(?m)^waiver-test: OK$",
+   "prompt": "Task packet (dotfiles, ~/Workspace/dotfiles). Third review cycle on `bin/review-triage` and the waiver check in `bin/validate-spec.py`.\n- The fingerprint `bin/review-triage --dir DIR --base SHA` prints (the third field of its `fingerprint:` line) must cover file metadata, not only bytes: changing an uncommitted file's mode from 644 to 755 changes it, and a symlink and a regular file with identical bytes get different fingerprints.\n- Waiver dates must sit on an ASCII boundary: `waived (2026-10-08年度)` (a Unicode annotation glued to the date) and `waived (owner agreed, ١2026-10-08)` (a non-ASCII digit before it) are both rejected by `python3 bin/validate-spec.py --accepted DIR`, while `waived (owner accepted, 2026-10-08)` still passes.\nDone when `bash tests/review-triage/run.sh` prints `review-triage: OK` and `bash tests/review-triage/waiver-test.sh` prints `waiver-test: OK`. Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "mined-dotfiles-triage-cycle2",
+   "collection": "mined",
+   "repo": "~/Workspace/dotfiles",
+   "sha": "e769380d",
+   "runner": "bash",
+   "command": [
+    "bash",
+    "-c",
+    "bash tests/review-triage/run.sh && bash tests/review-triage/consult-pi-stub.sh && bash tests/review-triage/waiver-test.sh"
+   ],
+   "success": "(?m)^waiver-test: OK$",
+   "prompt": "Task packet (dotfiles, ~/Workspace/dotfiles). Second review cycle on `bin/review-triage`, `bin/consult` and the waiver check in `bin/validate-spec.py`.\n- `bin/consult --provider pi`: when its scratch directory cannot be created (for example `TMPDIR` points somewhere unwritable), its output must start with `INCOMPLETE` and it must exit non-zero.\n- `bin/review-triage --dir REPO --base HEAD` with a dirty tracked file must not crash (it runs under bash 3.2 with `set -u`; guard the empty array).\n- Both ends of a rename are classified: after `git mv config.env app.txt` the output still contains `flags: credentials config.env`.\n- A file name cannot impersonate a count record: a committed file whose name contains a newline and tabs (`count`, newline, `100<TAB>0<TAB>fake`) still totals `totals: +1 -0`.\n- Waiver dates must stand alone: `waived (2026-10-08UTC)` and `waived (ab2026-10-08cd)` are rejected by `python3 bin/validate-spec.py --accepted DIR`.\nDone when `bash tests/review-triage/run.sh` prints `review-triage: OK`, `bash tests/review-triage/consult-pi-stub.sh` passes, and `bash tests/review-triage/waiver-test.sh` prints `waiver-test: OK`. Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "mined-dotfiles-triage-cycle1",
+   "collection": "mined",
+   "repo": "~/Workspace/dotfiles",
+   "sha": "041219ba",
+   "runner": "bash",
+   "command": [
+    "bash",
+    "-c",
+    "bash tests/review-triage/run.sh && bash tests/review-triage/consult-pi-stub.sh && bash tests/review-triage/waiver-test.sh"
+   ],
+   "success": "(?m)^waiver-test: OK$",
+   "prompt": "Task packet (dotfiles, ~/Workspace/dotfiles). First review cycle on `bin/review-triage`, `bin/consult` and the waiver check in `bin/validate-spec.py`.\n- `bin/consult --provider pi` usage errors exit 2 with output that starts with `INCOMPLETE`: an invalid timeout (`--timeout 0`) and an option missing its value (`--model` given last with nothing after it).\n- `bin/review-triage --dir REPO --base SHA --json` must preserve file names containing a tab or a newline exactly in its `files[].path` values (for example `tab<TAB>name.env` and `line<NEWLINE>break.env`).\n- A dangling untracked symlink is a read error, not a silent success: `bin/review-triage` exits 2.\n- Waiver dates must stand alone: `waived (2026-10-08.)` (trailing punctuation) and `waived (owner accepted, 12026-10-080)` (a date embedded in longer digits) are rejected by `python3 bin/validate-spec.py --accepted DIR`.\nDone when `bash tests/review-triage/run.sh` prints `review-triage: OK`, `bash tests/review-triage/consult-pi-stub.sh` passes, and `bash tests/review-triage/waiver-test.sh` prints `waiver-test: OK`. Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "mined-thermalright-send-gate",
+   "collection": "mined",
+   "repo": "~/Workspace/thermalright-display",
+   "sha": "0ae2cbc5",
+   "runner": "pytest",
+   "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "-o",
+    "addopts=",
+    "-v",
+    "-p",
+    "no:cacheprovider",
+    "tests/test_scene_tick.py"
+   ],
+   "cwd": "studio",
+   "env": [
+    {
+     "from": "thermalright-display-venv",
+     "to": "studio/.venv"
+    }
+   ],
+   "prompt": "Task packet (thermalright-display, ~/Workspace/thermalright-display). Bug from a physical re-sit: the studio server's `sending` gate releases after only `panel_send_timeout_seconds + panel_send_abort_grace_seconds` (2.5 s), far shorter than a real cold connect (about 8.6 s) that `close()` can no longer abort. Every tick after that window starts another concurrent `send()`, each racing for the same device lock ('panel already owned by another sender'), and the panel never recovers.\n- In `studio/server.py`, the gate must stay held until the underlying send task itself completes, however long an unabortable connect takes: one `send()` call at a time, never two in flight.\nDone when `.venv/bin/python -m pytest tests/test_scene_tick.py` passes from `studio/` (the environment is already installed there). Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "mined-thermalright-usage-unavailable",
+   "collection": "mined",
+   "repo": "~/Workspace/thermalright-display",
+   "sha": "24303381",
+   "runner": "pytest",
+   "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "-o",
+    "addopts=",
+    "-v",
+    "-p",
+    "no:cacheprovider",
+    "tests/test_widgets.py"
+   ],
+   "cwd": "studio",
+   "env": [
+    {
+     "from": "thermalright-display-venv",
+     "to": "studio/.venv"
+    }
+   ],
+   "prompt": "Task packet (thermalright-display, ~/Workspace/thermalright-display). The ai_usage widget's fail-closed error snapshots carry no rings, so the card shows only the dimmed Usage kicker and nothing says why.\n- `render_ai_usage` in `studio/widgets/ai_usage.py`: when the ai_usage snapshot is in the error state and no usable ring rendered, add `<div class=\"usage-unavailable\">Usage unavailable</div>` under the kicker, keeping `class=\"usage-kicker\">Usage<`.\n- Rings in any state still own the card (no unavailable line when a ring renders, even in error); stale and idle snapshots never show the line; with no context the output is byte-for-byte what it is today.\n- `studio/static/widgets.css` gets a `.usage-unavailable{...}` rule with a `font-size:` on the scale of `.state-unavailable-title` (44px).\nDone when `.venv/bin/python -m pytest tests/test_widgets.py` passes from `studio/` (the environment is already installed there). Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "mined-thermalright-frame-sender",
+   "collection": "mined",
+   "repo": "~/Workspace/thermalright-display",
+   "sha": "d9059b6a",
+   "runner": "pytest",
+   "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "-o",
+    "addopts=",
+    "-v",
+    "-p",
+    "no:cacheprovider",
+    "tests/test_frame_sender.py"
+   ],
+   "cwd": "studio",
+   "env": [
+    {
+     "from": "thermalright-display-venv",
+     "to": "studio/.venv"
+    }
+   ],
+   "prompt": "Task packet (thermalright-display, ~/Workspace/thermalright-display). Two `FrameSender` defects in `studio/frame_sender.py` (the helper protocol: a freshly started helper first prints a `RESOLUTION` line, then answers each frame with `OK`).\n1. A helper that is respawned internally (by `_replace_process`, or by the reopen path in `_current_process` after a close) is read as if its first stdout line were the frame acknowledgment, so the startup `RESOLUTION` line is misread. Drain that line from every respawned helper before `send()` treats stdout as an acknowledgment; each new helper receives the frame exactly once.\n2. A discarded helper is only signalled or dropped, so an abandoned one can sit forever holding the device lock. Every discarded process (on replacement and on `close()`) must be terminated with its death confirmed by waiting, escalating to `kill()` within a short bound when it does not exit.\nDone when `.venv/bin/python -m pytest tests/test_frame_sender.py` passes from `studio/` (the environment is already installed there). Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "mined-thermalright-source-isolation",
+   "collection": "mined",
+   "repo": "~/Workspace/thermalright-display",
+   "sha": "2624ccaa",
+   "runner": "pytest",
+   "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "-o",
+    "addopts=",
+    "-v",
+    "-p",
+    "no:cacheprovider",
+    "tests/test_events.py",
+    "tests/test_source_runner.py"
+   ],
+   "cwd": "studio",
+   "env": [
+    {
+     "from": "thermalright-display-venv",
+     "to": "studio/.venv"
+    }
+   ],
+   "prompt": "Task packet (thermalright-display, ~/Workspace/thermalright-display). Two confirmed defects from a blind review of the sources and events work.\n1. `run_sources(registry, sources, sleep=...)` in `studio/sources/runner.py`: a failure outside `poll` (a source whose `interval_seconds` is `None` or otherwise invalid, or a `RecursionError` from a deeply nested payload) ends that source's task, and the gather then cancels every other source. One bad source must never stop the others: a `RecursionError` counts as an invalid payload, and a bad interval becomes an error event plus a 60 s fallback interval; the failing sources' snapshots read `error` while the healthy ones stay `active` and the runner keeps running.\n2. `studio/events.py` accepts NaN or Infinity in a payload and stores it as null. Reject payloads containing NaN, Infinity or nesting deep enough to fail encoding, as invalid (a 400 at the HTTP route).\nDone when `.venv/bin/python -m pytest tests/test_events.py tests/test_source_runner.py` passes from `studio/` (the environment is already installed there). Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "mined-thread-capture-failed-entries",
+   "collection": "mined",
+   "repo": "~/Workspace/thread-capture",
+   "sha": "73849780",
+   "runner": "pytest",
+   "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "-o",
+    "addopts=",
+    "-v",
+    "-p",
+    "no:cacheprovider",
+    "tests/test_html.py"
+   ],
+   "env": [
+    {
+     "from": "thread-capture-venv",
+     "to": ".venv"
+    }
+   ],
+   "prompt": "Task packet (thread-capture, ~/Workspace/thread-capture). Failed captures (`status: failed`, for example '[ Removed by moderator ]' or a raw URL as the title) render with the same bold title as real content, so they are hard to tell apart.\n- In `thread_capture/html.py`, a failed entry's element carries `class=\"entry entry-failed\"`; ok entries keep the plain `entry` class.\n- Style `.entry-failed` in the page: dimmed opacity, an italic title and an accent-coloured error line.\nDone when `.venv/bin/python -m pytest tests/test_html.py` passes (the environment is already installed at `.venv`). Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "mined-strata-live-rate",
+   "collection": "mined",
+   "repo": "~/Workspace/Strata",
+   "sha": "ef14b6ca",
+   "runner": "unittest",
+   "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "-v",
+    "test_server"
+   ],
+   "cwd": "serve",
+   "timeout": 900,
+   "prompt": "Task packet (Strata, ~/Workspace/Strata). Two Monitor metrics bugs in `serve/server.py`.\n1. `live.tok_s` is `generated / (now - first_token)`, a cumulative mean whose first sample is 1/elapsed: against an engine paced at 25 tokens/s the Speed card read 27,235.7 tok/s at the first sample, then undershot for a second, and the sparkline (scaled to its 60-sample maximum) went flat for a minute. Make `tok_s` the rate over the last `RATE_WINDOW_S` (2 s); while a request is younger than `RATE_MIN_SPAN_S` (0.25 s) report the mean so far with its span floored there, so no sample can diverge (live readings stay under four times the true rate). Keep the old formula as `_tok_s_mean()`, still reported as `live.tok_s_mean` and `status.tokens_per_s_mean`. When idle, `live.state` is `idle` and `live.tok_s` is null.\n2. A request that ends without the engine's DONE line (engine death, error, client disconnect) records the previous request's generated count and decode time as its own `decode_tok_s`. Trust the engine's counters only when its DONE replaced the object captured at request start; such a request's row has `finish: \"error\"`, its own `output_tokens`, `decode_tok_s: null` and `engine_generated: null` (the row carries the engine's own token count as `engine_generated` when there is one).\nDone when `python3 -m unittest -v test_server` passes from `serve/`. Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "mined-strata-cut-tool-call",
+   "collection": "mined",
+   "repo": "~/Workspace/Strata",
+   "sha": "67d5ed42",
+   "runner": "unittest",
+   "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "-v",
+    "test_mcp",
+    "test_server"
+   ],
+   "cwd": "serve",
+   "timeout": 900,
+   "prompt": "Task packet (Strata, ~/Workspace/Strata). Issue #211: when the model's output ends inside a tool call whose name was already streamed, `finish()` closes its JSON and emits a `tool_call` event, and the answer ends with finish_reason `tool_calls` / stop_reason `tool_use`, so clients run the truncated arguments (an MCP call ran with empty arguments).\n- The cut call stays unfinished: its JSON is not closed and no `tool_call` event follows its `tool_start` (the streamed `tool_args` stay exactly what the model produced, for example `{\"path\":\"notes.txt\",\"content\":\"first half of the fi`).\n- Both APIs report `tool_calls` / `tool_use` only when every streamed call completed; a cut call ends OpenAI answers with `stop` and Anthropic answers with `end_turn`. The non-streamed Anthropic answer leaves out a call whose input never closed; the non-streamed OpenAI answer keeps the cut arguments as text.\n- An MCP call the output ends inside is not run: the web app sees only its `start` event and nothing is called. A whole call still behaves as before.\nDone when `python3 -m unittest -v test_mcp test_server` passes from `serve/`. Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "game-flight-test-ground-field",
+   "collection": "game",
+   "repo": "~/Workspace/flight-test",
+   "sha": "faef9433",
+   "runner": "vitest",
+   "command": [
+    "node_modules/.bin/vitest",
+    "run",
+    "--reporter=verbose",
+    "tests/gameLook.test.ts"
+   ],
+   "env": [
+    {
+     "from": "flight-test-node_modules",
+     "to": "node_modules",
+     "writable": [
+      ".vite-temp",
+      ".vite"
+     ]
+    },
+    {
+     "from": "flight-test-heightfield",
+     "to": "public/assets/journey",
+     "files": [
+      "journey-canyon-heights.bin"
+     ]
+    }
+   ],
+   "prompt": "Task packet (flight-test, ~/Workspace/flight-test). The baked ground field (`src/flight/groundField.ts`) is not conservative enough: the lowest allowed flight height can sit under a rock top.\n- Stored heights are rounded to decimetres; add the possible 5 cm rounding back when decoding, so the bound never sits below the real top.\n- A cell holds the highest vertex anywhere inside it, but lookups treat it as sitting at the cell centre and interpolate between centres; widen the reach by one more cell to cover both offsets. The ramp still falls at `rampSlope` metres per metre in every horizontal direction.\n- Edge lookups clamp to the outer cells instead of returning no ground: a point up to half a cell outside the outer cell centres still interpolates; only beyond that is it no ground.\n- With the test's field, `heightAt(0.5, 0.5)` is 8.05, `heightAt(4.5, 0.5)` is 8.05, `heightAt(6.5, 0.5)` is 7.05 and `heightAt(40.5, 0.5)` is 0.05.\n- The simulation caps the ground floor at the ceiling so the safe volume never inverts (`src/flight/simulation.ts`); document that the baked route must never need that cap, which the test checks along the whole journey over the real heightfield (`public/assets/journey/journey-canyon-heights.bin`, installed read-only).\nDone when `node_modules/.bin/vitest run tests/gameLook.test.ts` passes (dependencies are installed). Keep existing tests' assertions as they are.",
+   "expect_tests": [
+    "holds every point within reach at the rock top and ramps down beyond it",
+    "keeps the dragon envelope above every floor point and rock on a held dive"
+   ]
+  },
+  {
+   "id": "game-flight-test-humerus-hinge",
+   "collection": "game",
+   "repo": "~/Workspace/flight-test",
+   "sha": "1b0fce29",
+   "runner": "vitest",
+   "command": [
+    "node_modules/.bin/vitest",
+    "run",
+    "--reporter=verbose",
+    "tests/dragonMotion.test.ts"
+   ],
+   "env": [
+    {
+     "from": "flight-test-node_modules",
+     "to": "node_modules",
+     "writable": [
+      ".vite-temp",
+      ".vite"
+     ]
+    }
+   ],
+   "prompt": "Task packet (flight-test, ~/Workspace/flight-test). Dragon rig review fix in `src/scene/dragonMotion.ts`. As the GLB builds it, each humerus bone's own +Y axis runs along the wing's flap hinge, back and down toward the tail (+Z in the model frame).\n- `new DragonPoser(model, bones)` must check that: a humerus whose hinge axis does not point toward the tail throws an error whose message contains `<bone name> hinge` (for example `wing-right-humerus hinge`).\n- Posing a humerus with rotation `[0, 0, side * raise]` (side -1 for left, +1 for right) flaps it about that hinge: points on the hinge line stay put, and a point straight out from the shoulder rises (by more than 0.6 m for a raise of 0.5 at 2 m out).\nDone when `node_modules/.bin/vitest run tests/dragonMotion.test.ts` passes (dependencies are installed). Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "game-flight-test-wall-bands",
+   "collection": "game",
+   "repo": "~/Workspace/flight-test",
+   "sha": "61d60a16",
+   "runner": "vitest",
+   "command": [
+    "node_modules/.bin/vitest",
+    "run",
+    "--reporter=verbose",
+    "tests/journeyScene.test.ts"
+   ],
+   "env": [
+    {
+     "from": "flight-test-node_modules",
+     "to": "node_modules",
+     "writable": [
+      ".vite-temp",
+      ".vite"
+     ]
+    }
+   ],
+   "prompt": "Task packet (flight-test, ~/Workspace/flight-test). Add fixed-height wall bands as a lift reference (milestone A, D16) in `src/scene/journeyTerrain.ts`.\n- For every wall mesh `createJourneyTerrain(journey)` makes (`userData.kind` `wall`, named `journey-wall-<suffix>`), add one band mesh named `journey-height-band-<suffix>` with `userData.kind` `height-band` and `userData.heightsM` listing its band heights: every 5 m from 5 m (`[5, 10, 15, ...]`), all below that wall's top (`journey.obstaclesAt(...)` gives the wall's `topHeightM`).\n- Bands sit 0.03 m off the wall face on the corridor side (seen from the safe volume, a band is hit no more than 0.05 m before its wall) and outside the wall cushion (no nearer than `effectiveSweptHalfEnvelopeM + wallCushionM`).\n- Bands are visual only: they are not solid. All bands share one material, and `terrain.dispose()` frees them too (the test scene then disposes 13 geometries and 5 materials, up from 7 and 4).\nDone when `node_modules/.bin/vitest run tests/journeyScene.test.ts` passes (dependencies are installed). Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "game-blender-rock-cluster",
+   "collection": "game",
+   "repo": "~/Workspace/llm-eval-data/sources/blender-kit",
+   "sha": "678f473",
+   "runner": "checks",
+   "env": [
+    {
+     "from": "blender-5.2.2",
+     "to": "tools/blender-bin"
+    }
+   ],
+   "kind": "authored",
+   "withhold": [
+    "tests/inspect_blend.py",
+    "tests/check_rocks.sh"
+   ],
+   "command": [
+    "bash",
+    "tests/check_rocks.sh"
+   ],
+   "timeout": 900,
+   "expect_tests": [
+    "the script builds a cluster",
+    "5 rocks named Rock.000 to Rock.004",
+    "every rock is a closed manifold",
+    "every rock rests on the ground",
+    "the cluster fits its 5 x 5 x 3 m footprint",
+    "each rock has 200 to 1200 faces",
+    "the cluster stays under 4000 faces",
+    "the same seed rebuilds the same cluster",
+    "another seed builds another cluster"
+   ],
+   "prompt": "Task packet (blender-kit, ~/Workspace/blender-kit). Write `tools/blender/rock_cluster.py`, a headless Blender script for the canyon's rock clusters. It runs as `tools/blender-bin/blender -b --factory-startup -P tools/blender/<script>.py -- <args>` (Blender 5.2.2 is installed at `tools/blender-bin`; no display or GPU) with `--out build/rocks.blend --count 5 --seed 3`, and saves the scene to `--out`.\n- It builds exactly `--count` mesh objects named `Rock.000`, `Rock.001`, ... and nothing else in the scene.\n- Every rock is a closed 2-manifold mesh (each edge shared by exactly two faces, no loose vertices) with 200 to 1200 faces, and the cluster has 4000 faces or fewer in all.\n- Every rock rests on the ground: its lowest world-space vertex is between z = 0 and z = 0.05.\n- The whole cluster fits a 5 x 5 x 3 m footprint: every world-space vertex has |x| <= 2.5, |y| <= 2.5 and z <= 3.\n- It is deterministic: the same `--seed` builds exactly the same vertex positions, and a different seed builds a different cluster.\n- Reuse `tools/blender/meshkit.py` (scene clearing, closed rock meshes, linking, argument parsing).\nDone when `bash tests/check_rocks.sh` passes; a headless inspector checks the saved scene. Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "game-blender-wing-rig",
+   "collection": "game",
+   "repo": "~/Workspace/llm-eval-data/sources/blender-kit",
+   "sha": "678f473",
+   "runner": "checks",
+   "env": [
+    {
+     "from": "blender-5.2.2",
+     "to": "tools/blender-bin"
+    }
+   ],
+   "kind": "authored",
+   "withhold": [
+    "tests/inspect_blend.py",
+    "tests/check_rig.sh"
+   ],
+   "command": [
+    "bash",
+    "tests/check_rig.sh"
+   ],
+   "timeout": 900,
+   "expect_tests": [
+    "the script builds the rig and its GLB",
+    "the armature object is DragonRig",
+    "the rig has its six bones",
+    "each bone has its parent",
+    "the wings mirror across x",
+    "each humerus hinge points back toward the tail",
+    "each humerus limits its Z rotation to plus or minus 60 degrees",
+    "the GLB re-imports with the same bone names"
+   ],
+   "prompt": "Task packet (blender-kit, ~/Workspace/blender-kit). Write `tools/blender/wing_rig.py`, a headless Blender script for the dragon's wing rig. It runs as `tools/blender-bin/blender -b --factory-startup -P tools/blender/<script>.py -- <args>` (Blender 5.2.2 is installed at `tools/blender-bin`; no display or GPU) with `--out build/rig.blend --glb build/rig.glb`, saves the scene to `--out` and exports it as GLB to `--glb`.\n- One armature object named `DragonRig` with these bones and parents: `spine` (the root), `neck` (child of spine), `wing-left-humerus` and `wing-right-humerus` (children of spine), `wing-left-forearm` and `wing-right-forearm` (children of their humerus).\n- The dragon faces -Y, so its tail is +Y. Each humerus's own Y axis (head to tail) is its flap hinge and must point back toward the tail: its normalized direction has y > 0.5. Left and right wing bones mirror each other exactly across x (heads and tails).\n- Each humerus has a Limit Rotation constraint limiting its Z rotation to -60 to +60 degrees.\n- The GLB must re-import with the same bone names.\n- Reuse `tools/blender/meshkit.py` (scene clearing, linking, argument parsing).\nDone when `bash tests/check_rig.sh` passes; a headless inspector checks the saved scene and re-imports the GLB. Keep existing tests' assertions as they are."
+  },
+  {
+   "id": "game-blender-facade-api-drift",
+   "collection": "game",
+   "repo": "~/Workspace/llm-eval-data/sources/blender-kit",
+   "sha": "678f473",
+   "runner": "checks",
+   "env": [
+    {
+     "from": "blender-5.2.2",
+     "to": "tools/blender-bin"
+    }
+   ],
+   "kind": "authored",
+   "withhold": [
+    "tests/inspect_blend.py",
+    "tests/check_facade.sh"
+   ],
+   "command": [
+    "bash",
+    "tests/check_facade.sh"
+   ],
+   "timeout": 900,
+   "expect_tests": [
+    "the script runs on Blender 5.2",
+    "the facade wall exists",
+    "the wall is 12 x 1 x 6 m",
+    "twelve windows Window.000 to Window.011",
+    "each window is parented to the wall",
+    "each window sits on the front face at its grid place, 1.2 m square",
+    "Stone and Glass keep their colours",
+    "the wall is Stone and every window is Glass",
+    "the wall has a UV map named UVMap"
+   ],
+   "prompt": "Task packet (blender-kit, ~/Workspace/blender-kit). `tools/blender/facade.py` was written for Blender 2.79 and fails on Blender 5.2. Port it so it runs as `tools/blender-bin/blender -b --factory-startup -P tools/blender/<script>.py -- <args>` (Blender 5.2.2 is installed at `tools/blender-bin`; no display or GPU) with `--out build/facade.blend` and builds the same scene it was written to build:\n- A mesh `Facade`: a cube scaled to 12 x 1 x 6 m centred at (0, 0, 3), using material `Stone` (RGBA 0.42, 0.36, 0.30, 1), with a UV map named `UVMap`.\n- Twelve 1.2 m square window planes `Window.000` to `Window.011` (index = column x 3 + row, 4 columns and 3 rows), each using material `Glass` (RGBA 0.05, 0.07, 0.09, 1), turned to face the front (-Y), and parented to `Facade` while staying where the grid puts them in world space: x = -4.5 + 3 x column, y = -0.51, z = 1.5 + 1.8 x row.\n- `Facade` is the active object when the file is saved.\nDone when `bash tests/check_facade.sh` passes; a headless inspector checks the saved scene. Keep existing tests' assertions as they are."
+  }
+ ]
+}

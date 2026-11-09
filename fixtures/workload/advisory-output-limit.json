@@ -1,0 +1,57 @@
+{
+  "id": "advisory-output-limit",
+  "kind": "workload",
+  "category": "advisory",
+  "prompt": "Should muse's opencode limit.output be 16,384 or 32,768? Use what llm-eval has measured.",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "55b19d828db68e8c0dd028f98f9d022e88f198d1",
+    "workdir": "."
+  },
+  "checks": [
+    {
+      "type": "style",
+      "options": true,
+      "no_em_dash": true,
+      "recommended_all": [
+        "16,?384|32,?768"
+      ],
+      "recommended_none": [
+        "(?i)never compact|output\\s*1\\b"
+      ]
+    },
+    {
+      "type": "answer",
+      "all": [
+        "(?i)compact",
+        "(?i)peak|measured|1,?189"
+      ]
+    },
+    {
+      "type": "diff_scope",
+      "deny": [
+        "**"
+      ],
+      "allow": [],
+      "frozen": []
+    },
+    {
+      "type": "commands",
+      "forbid": [
+        "acceptance\\s+(run|resume)",
+        "\\bgit\\s+(commit|push|reset)",
+        "(^|\\s)sudo\\s"
+      ]
+    }
+  ],
+  "limits": {
+    "turns": 2,
+    "wall_seconds": 900
+  },
+  "solution": {
+    "answer": "A. **(Recommended)** 16,384: measured peak output was 1,189 tokens, and compaction then fires later.\nB. 32,768: compacts at 99,072, inside the range where recall failed."
+  },
+  "followups": {
+    "default": "I won't be answering questions on this one; finish with your answer and change nothing."
+  }
+}

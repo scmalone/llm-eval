@@ -1,0 +1,59 @@
+{
+ "note": "The order the benchmark is climbed (plan 2026-10-04). Stage 'screen' is run once for every profile: the pilot task, then the other six screen tasks, one run each. Stage 'full' is run only for the top 3 chosen from `acceptance screen`: the remaining core tasks, then the scaled depth task. A rung is done for a profile when every task has its runs recorded without an infrastructure or capacity failure. `tiebreak` names the extra tasks to run for boundary candidates when the third place is a near-tie.",
+ "tiebreak": [
+  "impl-llm-eval-output-budget",
+  "review-llm-eval-memory-obligation"
+ ],
+ "rungs": [
+  {
+   "id": "r01-pilot",
+   "stage": "screen",
+   "suite": "core",
+   "tasks": [
+    "lookup-smoke-test"
+   ],
+   "runs": 1,
+   "adds": "opencode in the sandbox, relay, export, grader, metrics, restore: the attended live pilot, credited to the screen",
+   "after": [
+    "Open report_html and check the workload scorecard renders with real numbers; only then ask the owner for the cross-run report layout and design it from the real rows.",
+    "Audit wide capture in the run folder: telemetry/host.jsonl for partial_errors, raw/server/*.json for error or non-200, workload/<trial>/raw/capture-errors.json; tell the owner which sources are empty or noise."
+   ]
+  },
+  {
+   "id": "r02-screen",
+   "stage": "screen",
+   "suite": "core",
+   "tasks": [
+    "resume-llm-eval-owner-decision",
+    "advisory-models-to-keep",
+    "ops-fans-gpu-hog",
+    "surgery-split-commit",
+    "review-llm-eval-live-recovery",
+    "impl-llm-eval-html-report"
+   ],
+   "runs": 1,
+   "adds": "the rest of the screen: resume, advisory, ops, surgery, review, implementation"
+  },
+  {
+   "id": "r03-core",
+   "stage": "full",
+   "suite": "core",
+   "except_rungs": [
+    "r01-pilot",
+    "r02-screen"
+   ],
+   "runs": 1,
+   "adds": "the remaining core tasks (top 3 only)"
+  },
+  {
+   "id": "r04-depth",
+   "stage": "full",
+   "suite": "depth",
+   "tasks": [
+    "depth-scaled-early-instruction"
+   ],
+   "runs": 1,
+   "adds": "the scaled depth task: the session is grown to 90% of this mode's compaction point, then asked about an early instruction (top 3 only)"
+  }
+ ]
+}

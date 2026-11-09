@@ -1,0 +1,73 @@
+{
+  "id": "mined-usage-dashboard-keychain-token",
+  "kind": "workload",
+  "category": "mined",
+  "prompt": "Task packet (usage-dashboard, ~/Workspace/usage-dashboard). Move the DeepInfra token out of the GUI environment into the login Keychain (option A), read it fail-closed, and never leak it.\n- Export `buildKeychainReadArgs()` from `lib/usage.mjs`: `[\"find-generic-password\", \"-w\", \"-s\", \"usage-dashboard-deepinfra\"]`.\n- Export `readTokenFromKeychain({ spawnImpl, timeoutSeconds = 30 })`: it spawns `/usr/bin/security` with those arguments (through `spawnImpl`, which defaults to the real spawn), captures stdout in-process only, and resolves the trimmed token on a clean exit (code 0). A non-zero exit (for example a denied prompt), a spawn error or a timeout resolves `null`; on a timeout the child is killed. The service's output is never logged or returned on failure.\n- `readDeepInfraUsage(options)` and `reauthorizeProvider(\"deepinfra\", options)` accept `readKeychainTokenImpl`: an explicit `DEEPINFRA_API_TOKEN` in the environment still wins (the keychain is then not read at all); otherwise they fall back to the keychain token. The token goes out only as `Authorization: Bearer <token>` and never appears anywhere in the returned result.\n- `bin/save-deepinfra-token.sh` stores the token with `security add-generic-password -U` (hidden input, presence-only verification) and unsets any older `launchctl` copy.\nDone when `node --test tests/usage.test.mjs` passes. Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/usage-dashboard",
+    "commit": "2c5fbbb0e58fa57468e8df58218ef2984de6ae22",
+    "workdir": ".",
+    "answer": "855af348701696d79af7d3a8250b25c02d7f1b54",
+    "withhold": [
+      "tests/usage.test.mjs"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "node",
+        "--test",
+        "tests/usage.test.mjs"
+      ],
+      "cwd": ".",
+      "timeout": 600,
+      "expect": [
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )keychain\\ read\\ args\\ target\\ the\\ dashboard's\\ service\\ with\\ \\-w\\ only(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )keychain\\ token\\ read\\ returns\\ the\\ trimmed\\ value\\ only\\ on\\ a\\ clean\\ exit(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )keychain\\ token\\ read\\ times\\ out\\ closed(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )deepinfra\\ falls\\ back\\ to\\ the\\ keychain\\ token\\ and\\ never\\ leaks\\ it(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )deepinfra\\ prefers\\ an\\ explicit\\ env\\ token\\ over\\ the\\ keychain(?: \\(|$)"
+      ],
+      "success": "(?m)^(?:\u2139|#) fail 0$",
+      "count": "(?m)^(?:\u2139|#) tests (\\d+)$",
+      "skipped": "(?m)^(?:\u2139|#) (?:skipped|todo) [1-9]"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "node",
+        "--test",
+        "tests/usage.test.mjs"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "usage-dashboard",
+    "fix": "855af348701696d79af7d3a8250b25c02d7f1b54",
+    "subject": "feat: deepinfra token moves to the login Keychain (option A)",
+    "kind": "api"
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "id": "mined-thermalright-usage-unavailable",
+  "kind": "workload",
+  "category": "mined",
+  "prompt": "Task packet (thermalright-display, ~/Workspace/thermalright-display). The ai_usage widget's fail-closed error snapshots carry no rings, so the card shows only the dimmed Usage kicker and nothing says why.\n- `render_ai_usage` in `studio/widgets/ai_usage.py`: when the ai_usage snapshot is in the error state and no usable ring rendered, add `<div class=\"usage-unavailable\">Usage unavailable</div>` under the kicker, keeping `class=\"usage-kicker\">Usage<`.\n- Rings in any state still own the card (no unavailable line when a ring renders, even in error); stale and idle snapshots never show the line; with no context the output is byte-for-byte what it is today.\n- `studio/static/widgets.css` gets a `.usage-unavailable{...}` rule with a `font-size:` on the scale of `.state-unavailable-title` (44px).\nDone when `.venv/bin/python -m pytest tests/test_widgets.py` passes from `studio/` (the environment is already installed there). Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/thermalright-display",
+    "commit": "4d9af75c13b81f71bbfe1456c76f962f7cf6c8f3",
+    "workdir": ".",
+    "answer": "24303381249232005209390b3fe5a1bebd7022a7",
+    "withhold": [
+      "studio/tests/test_widgets.py"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-v",
+        "-p",
+        "no:cacheprovider",
+        "tests/test_widgets.py"
+      ],
+      "cwd": "studio",
+      "timeout": 600,
+      "expect": [
+        "(?m)::test_ai_usage_error_state_renders_the_unavailable_line_and_keeps_the_kicker PASSED",
+        "(?m)::test_ai_usage_rings_present_render_as_before_without_the_unavailable_line PASSED",
+        "(?m)::test_ai_usage_stale_and_idle_snapshots_do_not_show_the_unavailable_line PASSED",
+        "(?m)::test_ai_usage_absent_context_output_is_unchanged_byte_for_byte PASSED",
+        "(?m)::test_widgets_css_defines_the_unavailable_line_on_the_unavailable_title_scale PASSED"
+      ],
+      "success": "(?m)\\b\\d+ passed\\b",
+      "count": "(?m)\\b(\\d+) passed\\b"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "studio/tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-v",
+        "-p",
+        "no:cacheprovider",
+        "tests/test_widgets.py"
+      ],
+      "cwd": "studio",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "thermalright-display",
+    "fix": "24303381249232005209390b3fe5a1bebd7022a7",
+    "subject": "thermalright-display: ai_usage error state renders explicit Usage unavailable line (U14 repair)",
+    "kind": "behavior"
+  },
+  "env": [
+    {
+      "from": "thermalright-display-venv",
+      "to": "studio/.venv",
+      "digest": "d2aa1236394b9aaaf87b9d6f2ab63dd5e7cf164af0406b02a38d3525c7e36576"
+    }
+  ]
+}

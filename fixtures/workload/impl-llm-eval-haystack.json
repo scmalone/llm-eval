@@ -1,0 +1,99 @@
+{
+  "id": "impl-llm-eval-haystack",
+  "kind": "workload",
+  "category": "implementation",
+  "prompt": "Task packet (llm-eval, ~/Workspace/llm-eval). The recall fixtures are 2-record toys. Replace them with seeded haystacks sized to each context, and make recall report the highest passing context.\n- New module `llm_eval/haystack.py`: `records_for(spec)` returns a deterministic list of (site, code) pairs for `spec = {\"records\": n, \"seed\": s}` (each site at most once, from a fixed list of 24 site names; ValueError when n is below 1 or above 24); `render(spec, blocks)` returns `(prompt, expected)`: filler paragraphs with the records spread through them as `RECORD: site=<site> code=<code>` lines, and `expected = [\"site:code\", ...]` in order; `build(spec, target_tokens, count_tokens)` returns a dict with `prompt`, `expected` and `prompt_tokens` (as measured by `count_tokens`), landing at or under the target and within 1% of it, for any monotonic counter; ValueError when the target is impossible.\n- The three recall fixtures declare `\"haystack\": {\"records\": 12, \"seed\": N}` instead of a prompt, and their `max_output_tokens` becomes 768; planning must accept a prompt or a haystack. At execution the runner materializes each one to `context - max_output_tokens - 2048` tokens using `adapter.tokenize({\"prompt\": text})`.\n- Recall starts at the selected context. On a quality failure it steps down to the next lower rung (a wrong answer is never retried in place). The first rung where every recall trial passes is `verified_context` in the `long_context_recall` section, with a `descent` list of `{context, passed, total}`. Every recall attempt is its own section, named `<model>__trial-<fixture id>-at-<context>` (for example `fake-muse__trial-recall-1-at-131072`), and records the measured `prompt_tokens`. Tools then run at the verified context, and the `structured_tools` section records it as `context`.\n- `policy.context_label(context, measured_prompt_tokens=0)`: `specialist_only` at or below 65,536; `100k_prompt_measured` when a measured prompt reaches 100,000; `100k_plus_envelope` at 102,400 or above when the prompt fills 95% of the rung; otherwise `above_64k_fallback`. The recall section records it as `context_class`.\n- FakeAdapter: a scenario key `recall_fails_above` makes recall answers drop the last record when the loaded context is above that value.\nDone when `python3 -m unittest discover -s tests` passes. Keep existing tests' assertions as they are.",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "011c31470fbf1516896570204ee3cd55897a6da1",
+    "workdir": ".",
+    "answer": "6e4e961eb2eb5cddf847895e70c40521bceaea10",
+    "withhold": [
+      "tests/test_haystack.py",
+      "tests/test_runner.py"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "timeout": 900,
+      "expect": [
+        "^test_actual_memory_floor_falls_back \\(.*\\) \\.\\.\\. ok$",
+        "^test_budget_and_forecast \\(.*\\) \\.\\.\\. ok$",
+        "^test_build_lands_just_under_the_target \\(.*\\) \\.\\.\\. ok$",
+        "^test_build_works_with_a_nonlinear_counter \\(.*\\) \\.\\.\\. ok$",
+        "^test_different_seeds_change_records_and_filler \\(.*\\) \\.\\.\\. ok$",
+        "^test_evidence_requires_known_fact_source_pair \\(.*\\) \\.\\.\\. ok$",
+        "^test_forecast_rejects_before_load \\(.*\\) \\.\\.\\. ok$",
+        "^test_full_fake_campaign_and_resume_are_idempotent \\(.*\\) \\.\\.\\. ok$",
+        "^test_inactive_production_remains_inactive \\(.*\\) \\.\\.\\. ok$",
+        "^test_live_run_refuses_before_output_directory_creation \\(.*\\) \\.\\.\\. ok$",
+        "^test_machine_lock_excludes_second_runner \\(.*\\) \\.\\.\\. ok$",
+        "^test_memory_boundaries \\(.*\\) \\.\\.\\. ok$",
+        "^test_oom_falls_back_without_retrying_oom \\(.*\\) \\.\\.\\. ok$",
+        "^test_path_traversal_rejected \\(.*\\) \\.\\.\\. ok$",
+        "^test_plan_never_calls_process_or_adapter \\(.*\\) \\.\\.\\. ok$",
+        "^test_plan_tamper_fails \\(.*\\) \\.\\.\\. ok$",
+        "^test_prompt_is_deterministic_and_lists_every_record_in_order \\(.*\\) \\.\\.\\. ok$",
+        "^test_quality_failure_steps_down_to_the_highest_passing_context \\(.*\\) \\.\\.\\. ok$",
+        "^test_recall_prompts_are_sized_to_each_context \\(.*\\) \\.\\.\\. ok$",
+        "^test_recall_rejects_extra_text_duplicate_wrong_order \\(.*\\) \\.\\.\\. ok$",
+        "^test_rejects_impossible_requests \\(.*\\) \\.\\.\\. ok$",
+        "^test_restore_failure_retains_marker \\(.*\\) \\.\\.\\. ok$",
+        "^test_resume_after_partial_descent_reloads_only_for_unfinished_rungs \\(.*\\) \\.\\.\\. ok$",
+        "^test_stale_restore_marker_is_recovered_before_continuing \\(.*\\) \\.\\.\\. ok$",
+        "^test_timeout_restores_and_is_reported \\(.*\\) \\.\\.\\. ok$",
+        "^test_tools_reject_extra_argument_and_calls \\(.*\\) \\.\\.\\. ok$",
+        "^test_torn_event_and_orphan_section_are_reconciled \\(.*\\) \\.\\.\\. ok$",
+        "^test_transient_request_gets_one_retry \\(.*\\) \\.\\.\\. ok$",
+        "^test_unknown_workload_blocks_before_quiesce \\(.*\\) \\.\\.\\. ok$",
+        "^test_wrong_answer_is_not_retried \\(.*\\) \\.\\.\\. ok$"
+      ],
+      "min_tests": 42
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the suite passes."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  }
+}

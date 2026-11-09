@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
+.claude/RESUME.md
+.claude/worktrees/
+# Agent chat transcripts: kept locally for the devlog, never pushed
+transcripts/

@@ -1,0 +1,45 @@
+{
+  "id": "lookup-loopback-guard",
+  "kind": "workload",
+  "category": "lookup",
+  "prompt": "In llm-eval, where is a health URL refused if it isn't local, and exactly what does it check?",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "150c8318d51ffa022837f40d4038d6b2fba92850",
+    "workdir": "."
+  },
+  "checks": [
+    {
+      "type": "answer",
+      "all": [
+        "preflight\\.py",
+        "router_health",
+        "(?i)loopback",
+        "/health",
+        "(?i)refus|reject|ValueError|raises?"
+      ],
+      "none": [
+        "(?i)loopback (is )?(optional|not (required|checked|enforced))",
+        "(?i)(accepts?|allows?|permits?) (any|remote|non-?local) (host|address|url)s?"
+      ]
+    },
+    {
+      "type": "diff_scope",
+      "deny": [
+        "**"
+      ],
+      "allow": [],
+      "frozen": []
+    }
+  ],
+  "limits": {
+    "turns": 2,
+    "wall_seconds": 900
+  },
+  "solution": {
+    "answer": "llm_eval/preflight.py router_health() refuses (raises ValueError) unless the URL is http on a literal loopback IP with path /health and no query, fragment or credentials; it never follows redirects."
+  },
+  "followups": {
+    "default": "I won't be answering questions on this one; finish with your answer and change nothing."
+  }
+}

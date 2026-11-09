@@ -1,0 +1,76 @@
+{
+  "id": "mined-meal-planner-beef-stew",
+  "kind": "workload",
+  "category": "mined",
+  "prompt": "Task packet (meal-planner, ~/Workspace/meal-planner). Bug: a two-page NYT recipe PDF (Old-Fashioned Beef Stew) parses wrong. In pdf-parse's reading order, page 1 ends mid-ingredient ('1 medium onion, peeled and' then the PREPARATION steps and the recipe's description paragraph), and page 2 starts with the ingredient overflow ('chopped', then three more ingredients) before the rest of the last step.\n- `parsePdfText(text)` in `lib/parser.ts` must keep all 12 ingredients, with no duplicates: the continuation joins its ingredient across the page break (`medium onion, peeled and chopped`), the overflow ingredients after the break are ingredients (carrots, potatoes, `salt` exactly once), and the parser must not repeat the last ingredient.\n- The instructions resume after the overflow ingredients and end with `Ladle among 4 bowls and serve.`; the description paragraph ('This classic stick-to-your-ribs stew ...') is not part of the steps.\nDone when `node scripts/test-parser.mjs` reports `0/N parser checks failed`. Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/meal-planner",
+    "commit": "029066045d9347990f59d20babbd596894366efe",
+    "workdir": ".",
+    "answer": "72dfb7cc2d34c150a8f95f361ef24e546e570c4e",
+    "withhold": [
+      "scripts/test-parser.mjs"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "node",
+        "scripts/test-parser.mjs"
+      ],
+      "cwd": ".",
+      "timeout": 600,
+      "expect": [
+        "(?m)^PASS beef\\ stew\\ retains\\ all\\ 12\\ ingredients\\ without\\ duplication$",
+        "(?m)^PASS beef\\ stew\\ retains\\ every\\ ingredient\\ name$",
+        "(?m)^PASS beef\\ stew\\ onion\\ continuation\\ survives\\ the\\ page\\ break$",
+        "(?m)^PASS beef\\ stew\\ overflow\\ does\\ not\\ duplicate\\ its\\ last\\ ingredient$",
+        "(?m)^PASS beef\\ stew\\ final\\ step\\ resumes\\ after\\ overflow\\ ingredients$"
+      ],
+      "success": "(?m)^0/\\d+ \\w+ checks failed$"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "scripts/test-parser.mjs"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "node",
+        "scripts/test-parser.mjs"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "meal-planner",
+    "fix": "72dfb7cc2d34c150a8f95f361ef24e546e570c4e",
+    "subject": "Handle Beef Stew PDF overflow layout",
+    "kind": "behavior"
+  },
+  "env": [
+    {
+      "from": "meal-planner-node_modules",
+      "to": "node_modules",
+      "digest": "49f5abebd653b00baaa202088105fe4e47bfbf83f4a5004fa22c6260dc63bbda"
+    }
+  ]
+}

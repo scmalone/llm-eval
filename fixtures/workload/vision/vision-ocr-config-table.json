@@ -1,0 +1,32 @@
+{
+  "id": "vision-ocr-config-table",
+  "kind": "workload",
+  "category": "vision",
+  "requires": [
+    "image"
+  ],
+  "source": {
+    "repo": "~/Workspace/llm-eval-data/sources/vision-set",
+    "commit": "ab5bea83dec10616ee90a59846c7e877837ad0d7",
+    "workdir": "."
+  },
+  "limits": {
+    "turns": 1,
+    "wall_seconds": 600
+  },
+  "prompt": "Task packet (vision-set, ~/Workspace/vision-set). Look at `screens/presets.png`. Open it with your read tool (it is an image, 1024 x 768 pixels). Which context and KV cache does `lumen-35b-a3b` use, and how many CPU MoE layers? End with a line `ROW: <context>, <kv>, <cpu moe>`.",
+  "checks": [
+    {
+      "type": "answer",
+      "all": [
+        "(?m)^ROW:\\s*262,?144,\\s*q8_0,\\s*9\\s*$"
+      ],
+      "one_value": [
+        "(?m)^[\\s*_>#-]*ROW\\s*:[*_\\s]*(.*?)[*_\\s]*$"
+      ]
+    }
+  ],
+  "solution": {
+    "answer": "ROW: 262,144, q8_0, 9"
+  }
+}

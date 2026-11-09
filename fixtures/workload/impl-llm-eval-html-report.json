@@ -1,0 +1,77 @@
+{
+  "id": "impl-llm-eval-html-report",
+  "kind": "workload",
+  "category": "implementation",
+  "prompt": "Task packet (llm-eval, ~/Workspace/llm-eval). Every run should leave a self-contained HTML report.\n- New module `llm_eval/htmlreport.py` with `write(run_dir, plan, state)` that writes `report.html` into the run folder and returns its path: one file starting `<!doctype html>`, no network, light and dark themes. Per model: summary cards (smoke, tools passed like \"10/10\", recall at the anchor, verified recall context), a \"Recall by context\" table (contexts formatted like \"131,072\", one cell per trial), output tokens per recall trial, and the section statuses.\n- If `analysis.html` sits beside the report, embed its contents under an \"Analysis\" heading; otherwise there is no Analysis heading.\n- `acceptance.run` and `acceptance.status` write the report and return its path as `report_html`. A report that cannot be written never changes the outcome or exit code.\nDone when `python3 -m unittest discover -s tests` passes. Keep existing tests' assertions as they are.",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "a849a399b55d31945b2aec0265f6b95f31f59880",
+    "workdir": ".",
+    "answer": "55b19d828db68e8c0dd028f98f9d022e88f198d1",
+    "withhold": [
+      "tests/test_acceptance.py"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "timeout": 900,
+      "expect": [
+        "^test_approved_run_completes_restores_and_cannot_be_started_twice \\(.*\\) \\.\\.\\. ok$",
+        "^test_cli_refuses_without_the_owner_token \\(.*\\) \\.\\.\\. ok$",
+        "^test_failed_restore_is_a_stop \\(.*\\) \\.\\.\\. ok$",
+        "^test_failed_smoke_is_reported_as_an_evaluation_failure \\(.*\\) \\.\\.\\. ok$",
+        "^test_prepare_is_read_only_and_hands_back_a_token \\(.*\\) \\.\\.\\. ok$",
+        "^test_prepare_stops_on_an_unknown_gpu_client \\(.*\\) \\.\\.\\. ok$",
+        "^test_run_refuses_a_wrong_token_before_touching_the_machine \\(.*\\) \\.\\.\\. ok$",
+        "^test_run_writes_an_html_report_and_embeds_analysis_on_status \\(.*\\) \\.\\.\\. ok$",
+        "^test_status_tells_running_from_crashed \\(.*\\) \\.\\.\\. ok$"
+      ],
+      "min_tests": 91
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the suite passes."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  }
+}

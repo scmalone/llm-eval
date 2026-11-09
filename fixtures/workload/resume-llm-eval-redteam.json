@@ -1,0 +1,47 @@
+{
+  "id": "resume-llm-eval-redteam",
+  "kind": "workload",
+  "category": "resume",
+  "prompt": "Pick up my llm eval work - what's next via the checkpoint?",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "88aa974d7ef2d4c2d71c2da6a0fd2783958a18f4",
+    "workdir": ".",
+    "cwd": ""
+  },
+  "checks": [
+    {
+      "type": "answer",
+      "all": [
+        "(?i)review|red-?team",
+        "live\\.py"
+      ]
+    },
+    {
+      "type": "diff_scope",
+      "deny": [
+        "**"
+      ],
+      "allow": [],
+      "frozen": []
+    },
+    {
+      "type": "commands",
+      "forbid": [
+        "acceptance\\s+(run|resume)",
+        "\\bgit\\s+(commit|push|reset)",
+        "(^|\\s)sudo\\s"
+      ]
+    }
+  ],
+  "limits": {
+    "turns": 2,
+    "wall_seconds": 900
+  },
+  "solution": {
+    "answer": "Next: get live.py independently reviewed with /redteam, then fix the findings."
+  },
+  "followups": {
+    "default": "I won't be answering questions on this one; finish with your answer and change nothing."
+  }
+}

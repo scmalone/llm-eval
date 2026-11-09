@@ -1,0 +1,49 @@
+{
+  "id": "lookup-uncommitted-work",
+  "kind": "workload",
+  "category": "lookup",
+  "prompt": "What work hasn't been committed in llm-eval?",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "150c8318d51ffa022837f40d4038d6b2fba92850",
+    "workdir": "."
+  },
+  "checks": [
+    {
+      "type": "answer",
+      "all": [
+        "llm_eval/policy\\.py",
+        "README\\.md",
+        "notes/scratch\\.md"
+      ],
+      "none": [
+        "(?i)(nothing|no (changes|files)) (is |are )?(uncommitted|to commit)",
+        "(?i)working (tree|directory) is clean",
+        "(?i)everything (is |has been )?committed"
+      ]
+    },
+    {
+      "type": "diff_scope",
+      "deny": [
+        "**"
+      ],
+      "allow": [],
+      "frozen": []
+    }
+  ],
+  "limits": {
+    "turns": 2,
+    "wall_seconds": 900
+  },
+  "solution": {
+    "answer": "Uncommitted: modified llm_eval/policy.py and README.md, and an untracked notes/scratch.md."
+  },
+  "plant": {
+    "llm_eval/policy.py": "\"\"\"Pure context admission and comparison policy; memory units are MiB.\"\"\"\nLADDER = (65536, 86016, 98304, 102400, 114688, 131072)\nMIN_FREE = 1536\nRESERVE = 2048\n",
+    "README.md": "# llm-eval\n\nWork in progress: trying a 1.5 GiB floor.\n",
+    "notes/scratch.md": "try MIN_FREE 1536\n"
+  },
+  "followups": {
+    "default": "I won't be answering questions on this one; finish with your answer and change nothing."
+  }
+}

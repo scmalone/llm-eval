@@ -1,0 +1,82 @@
+{
+  "id": "game-flight-test-humerus-hinge",
+  "kind": "workload",
+  "category": "game",
+  "prompt": "Task packet (flight-test, ~/Workspace/flight-test). Dragon rig review fix in `src/scene/dragonMotion.ts`. As the GLB builds it, each humerus bone's own +Y axis runs along the wing's flap hinge, back and down toward the tail (+Z in the model frame).\n- `new DragonPoser(model, bones)` must check that: a humerus whose hinge axis does not point toward the tail throws an error whose message contains `<bone name> hinge` (for example `wing-right-humerus hinge`).\n- Posing a humerus with rotation `[0, 0, side * raise]` (side -1 for left, +1 for right) flaps it about that hinge: points on the hinge line stay put, and a point straight out from the shoulder rises (by more than 0.6 m for a raise of 0.5 at 2 m out).\nDone when `node_modules/.bin/vitest run tests/dragonMotion.test.ts` passes (dependencies are installed). Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/flight-test",
+    "commit": "37578bb661b00bb0c556b2fa6c51937d3c307531",
+    "workdir": ".",
+    "answer": "1b0fce294cddcedbf48c17c1ef29c20fb3c2c58a",
+    "withhold": [
+      "tests/dragonMotion.test.ts"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "node_modules/.bin/vitest",
+        "run",
+        "--reporter=verbose",
+        "tests/dragonMotion.test.ts"
+      ],
+      "cwd": ".",
+      "timeout": 600,
+      "expect": [
+        "(?m)\u2713 .*flaps\\ a\\ humerus\\ about\\ its\\ hinge:\\ the\\ hinge\\ line\\ stays\\ put\\ and\\ Z\\ =\\ side\\ \\*\\ raise\\ lifts\\ the\\ wing",
+        "(?m)\u2713 .*refuses\\ a\\ humerus\\ whose\\ hinge\\ does\\ not\\ point\\ toward\\ the\\ tail"
+      ],
+      "success": "(?m)Tests\\s+\\d+ passed",
+      "count": "(?m)Tests\\s+(\\d+) passed"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "node_modules/.bin/vitest",
+        "run",
+        "--reporter=verbose",
+        "tests/dragonMotion.test.ts"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "flight-test",
+    "fix": "1b0fce294cddcedbf48c17c1ef29c20fb3c2c58a",
+    "subject": "Dragon rig pass 2 review fixes: assert and test the humerus flap hinge, clamp each wing bend to its bone before counting the line, reject one-frame heading jumps by angle, clamp the turn rate on reset, drop humerus twist and sweep limits, cap the recorder",
+    "kind": "behavior"
+  },
+  "env": [
+    {
+      "from": "flight-test-node_modules",
+      "to": "node_modules",
+      "writable": [
+        ".vite-temp",
+        ".vite"
+      ],
+      "digest": "29fa3e927a27c075dc43fd8497e524282e6c2196dfab2515883ac9e0edf768f1"
+    }
+  ]
+}

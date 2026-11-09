@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "backend": "fake",
+  "production": {
+    "unit": "llama-router.service",
+    "restore_model": "fake-production"
+  },
+  "models": [
+    {
+      "id": "fake-muse",
+      "anchor": 98304,
+      "contexts": [
+        65536,
+        86016,
+        98304,
+        102400,
+        114688,
+        131072
+      ],
+      "settings": {
+        "seed": 7,
+        "temperature": 0,
+        "flash_attention": true,
+        "slots": 1
+      },
+      "memory": {
+        "fixed_mib": 12000,
+        "kv_anchor_mib": 3000
+      },
+      "fixtures": [
+        "../fixtures/recall-1.json",
+        "../fixtures/recall-2.json",
+        "../fixtures/recall-3.json",
+        "../fixtures/tool-1.json",
+        "../fixtures/tool-2.json",
+        "../fixtures/tool-3.json",
+        "../fixtures/tool-4.json",
+        "../fixtures/tool-5.json",
+        "../fixtures/tool-6.json",
+        "../fixtures/tool-7.json",
+        "../fixtures/tool-8.json",
+        "../fixtures/tool-9.json",
+        "../fixtures/tool-10.json"
+      ]
+    }
+  ]
+}

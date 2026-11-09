@@ -1,0 +1,47 @@
+{
+  "id": "review-workload-sandbox-isolation",
+  "kind": "workload",
+  "category": "review",
+  "prompt": "Review llm-eval's workload sandbox (llm_eval/workload/sandbox.py and driver.py) for isolation defects: anything an agent inside the box can see or reach that it should not. Findings only, with the line or function.",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "b2705310ba0ee4a10fe88d4a5029199c8592a052",
+    "workdir": ".",
+    "deny": [
+      "STATE.md",
+      "plans/**"
+    ]
+  },
+  "checks": [
+    {
+      "type": "findings",
+      "defects": [
+        {
+          "id": "project-bound",
+          "match": [
+            "PACKAGE_ROOT|whole project|entire project|project (dir|root|folder)|/opt/llm-eval",
+            "task|fixture|answer|test|grader|expected"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "diff_scope",
+      "deny": [
+        "**"
+      ],
+      "allow": [],
+      "frozen": []
+    }
+  ],
+  "limits": {
+    "turns": 2,
+    "wall_seconds": 1800
+  },
+  "solution": {
+    "answer": "sandbox.py binds PACKAGE_ROOT (the whole project) read-only at /opt/llm-eval, so the agent can read task fixtures, tests and graders with their expected answers."
+  },
+  "followups": {
+    "default": "I won't be answering questions on this one; finish with your answer and change nothing."
+  }
+}

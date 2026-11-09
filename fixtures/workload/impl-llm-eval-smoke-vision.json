@@ -1,0 +1,84 @@
+{
+  "id": "impl-llm-eval-smoke-vision",
+  "kind": "workload",
+  "category": "implementation",
+  "prompt": "Task packet (llm-eval, ~/Workspace/llm-eval). Replace the skipped placeholders for smoke and vision with real trials.\n- Add `fixtures/smoke-1.json`: kind `smoke`, prompt exactly \"Reply with the single word OK.\", run for every profile at the selected context; it passes when the reply contains OK. Record it in a `<model>__smoke` section.\n- Add `fixtures/vision-1.json`: kind `vision`, an image spec `{\"quadrants\": [\"red\", \"green\", \"blue\", \"yellow\"]}`, a prompt asking for the four colours one per line in reading order, and `expected` lines; grade it like recall (exact lines in order). Run it only when the profile has a multimodal projector (an artifact with role `mmproj`, or `mmproj` in its settings); otherwise the `<model>__vision` section is `skipped`.\n- New module `llm_eval/images.py`: `COLORS` (colour name -> RGB tuple), `quadrants_png(names, size)` returning PNG bytes of a `size` x `size` image whose four quadrants take `names` left to right, top to bottom (8-bit RGB, a single IDAT, filter byte 0 on every row), and `data_uri(png)`. The runner builds the image at run time, not in the fixture.\n- The live adapter sends a vision request as one user message whose content is `[{\"type\": \"image_url\", \"image_url\": {\"url\": <data URI>}}, {\"type\": \"text\", \"text\": <prompt>}]`.\nDone when `python3 -m unittest discover -s tests` passes from the project folder. Keep existing tests' assertions as they are.",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "88aa974d7ef2d4c2d71c2da6a0fd2783958a18f4",
+    "workdir": ".",
+    "answer": "d1abe91828a2e9f89577a4be622f27942d455899",
+    "withhold": [
+      "tests/test_live.py"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "timeout": 900,
+      "expect": [
+        "^test_allocation_failure_is_a_capacity_error_and_other_exits_are_not \\(.*\\) \\.\\.\\. ok$",
+        "^test_failed_probe_leaves_the_restore_marker_set \\(.*\\) \\.\\.\\. ok$",
+        "^test_full_live_campaign_against_a_scripted_machine \\(.*\\) \\.\\.\\. ok$",
+        "^test_kv_parsing_never_guesses \\(.*\\) \\.\\.\\. ok$",
+        "^test_load_measures_memory_from_the_server_log \\(.*\\) \\.\\.\\. ok$",
+        "^test_oom_at_the_top_rung_falls_back_and_still_restores \\(.*\\) \\.\\.\\. ok$",
+        "^test_quadrant_png_is_a_valid_image_with_the_right_colors \\(.*\\) \\.\\.\\. ok$",
+        "^test_restore_leaves_an_inactive_unit_inactive \\(.*\\) \\.\\.\\. ok$",
+        "^test_restore_verifies_unit_health_and_probe \\(.*\\) \\.\\.\\. ok$",
+        "^test_server_args_translate_the_preset \\(.*\\) \\.\\.\\. ok$",
+        "^test_server_errors_are_infrastructure_and_only_own_group_is_signalled \\(.*\\) \\.\\.\\. ok$",
+        "^test_smoke_runs_and_text_only_profiles_skip_vision \\(.*\\) \\.\\.\\. ok$",
+        "^test_snapshot_blocks_only_unknown_gpu_clients \\(.*\\) \\.\\.\\. ok$",
+        "^test_stop_requires_memory_to_return_to_baseline \\(.*\\) \\.\\.\\. ok$",
+        "^test_unknown_gpu_workload_blocks_before_production_is_touched \\(.*\\) \\.\\.\\. ok$",
+        "^test_vision_profile_sends_a_png_and_is_graded \\(.*\\) \\.\\.\\. ok$"
+      ],
+      "min_tests": 62
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the suite passes."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  }
+}

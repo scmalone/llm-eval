@@ -1,0 +1,84 @@
+{
+  "id": "impl-llm-eval-eval-manifest",
+  "kind": "workload",
+  "category": "implementation",
+  "prompt": "Task packet (llm-eval, ~/Workspace/llm-eval). The retained manifest covers only 4 profiles. Add a manifest generator for every distinct preset profile.\n- `preflight.eval_manifest(preset=DEFAULT_PRESET, unit=\"llama-router.service\", restore_model=..., profiles=None)` returns a live manifest (same shape as `retained_manifest`) with one model per distinct launch configuration. Profiles that differ only in `ctx-size`, `alias` or `sleep-idle-seconds` collapse into one; the highest-context profile represents the group, and the model records `covers` (every profile name in the group, sorted).\n- Each model's `anchor` field (beside `id`): the owner start rungs (muse-glimmer-30b-dflash, muse-glimmer-30b-q4 and qwen3.6-35b-a3b-q4 start at 98304; qwen3.8-27b-unsloth-q4-mtp at 86016), otherwise `min(preset ctx-size, 98304)`.\n- `profiles` selects a subset by name; when a requested name is a covered alias, that alias becomes the model id. Unknown names raise ValueError containing \"absent from presets\"; an unknown restore model raises ValueError containing \"restore model absent\".\n- Building the manifest and compiling it must not start any process.\n- CLI: `python3 -m llm_eval eval-manifest --restore-model NAME --out PATH [--profiles a,b]`.\nDone when `python3 -m unittest discover -s tests` passes. Keep existing tests' assertions as they are.",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "6e4e961eb2eb5cddf847895e70c40521bceaea10",
+    "workdir": ".",
+    "answer": "0b9297cb07bafb2d3696026a4170f75e5000b2cc",
+    "withhold": [
+      "tests/test_preflight.py"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "timeout": 900,
+      "expect": [
+        "^test_anchor_follows_owner_policy_then_caps_at_98k \\(.*\\) \\.\\.\\. ok$",
+        "^test_cli_preparation_writes_only_requested_files \\(.*\\) \\.\\.\\. ok$",
+        "^test_context_only_variants_collapse_to_the_highest_context_profile \\(.*\\) \\.\\.\\. ok$",
+        "^test_failed_probes_are_recorded_and_never_enable_execution \\(.*\\) \\.\\.\\. ok$",
+        "^test_generator_and_plan_only_read_files_and_pin_artifacts \\(.*\\) \\.\\.\\. ok$",
+        "^test_generator_hashes_shared_artifacts_once \\(.*\\) \\.\\.\\. ok$",
+        "^test_health_only_gets_health_and_does_not_follow_redirects \\(.*\\) \\.\\.\\. ok$",
+        "^test_health_rejects_remote_generation_and_auth_urls_before_network \\(.*\\) \\.\\.\\. ok$",
+        "^test_manifest_compiles_to_a_plan_without_processes \\(.*\\) \\.\\.\\. ok$",
+        "^test_missing_artifact_or_profile_fails_generation \\(.*\\) \\.\\.\\. ok$",
+        "^test_plan_rejects_artifact_changed_after_planning \\(.*\\) \\.\\.\\. ok$",
+        "^test_plan_rejects_preset_changed_after_manifest_generation \\(.*\\) \\.\\.\\. ok$",
+        "^test_preflight_uses_only_read_commands \\(.*\\) \\.\\.\\. ok$",
+        "^test_profile_subset_and_unknown_names \\(.*\\) \\.\\.\\. ok$",
+        "^test_unexpected_speculation_fails_generation \\(.*\\) \\.\\.\\. ok$",
+        "^test_unit_options_and_wildcards_rejected_before_process \\(.*\\) \\.\\.\\. ok$"
+      ],
+      "min_tests": 46
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the suite passes."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  }
+}

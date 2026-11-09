@@ -1,0 +1,297 @@
+{
+ "source": "the owner's pi models.json and settings.json (agent directory, dotfiles pi-linux), providers local-llama and strata, as of 2026-10-31: the -agent presets removed, the qwen3.6 and swift pairs merged, prime contexts, maxTokens 32768, and per-model thinking control (chat-template kwargs and a thinking budget). baseUrl, apiKey and display names left out.",
+ "agents_md": "~/Workspace/dotfiles/agents/AGENTS.md",
+ "compaction": {
+  "enabled": true,
+  "reserveTokens": 36864,
+  "keepRecentTokens": 20000
+ },
+ "default_thinking_level": "max",
+ "aliases": {
+  "strata-iq3s": "strata"
+ },
+ "models": {
+  "muse-glimmer-30b": {
+   "contextWindow": 131072,
+   "maxTokens": 32768,
+   "input": [
+    "text",
+    "image"
+   ],
+   "reasoning": true,
+   "thinkingLevelMap": {
+    "off": null,
+    "minimal": "low",
+    "low": "low",
+    "medium": "medium",
+    "high": "high",
+    "xhigh": null,
+    "max": null
+   },
+   "compat": {
+    "thinkingFormat": "chat-template",
+    "chatTemplateKwargs": {
+     "reasoning_strength": {
+      "$var": "thinking.effort"
+     }
+    },
+    "thinkingTokenBudgetField": "thinking_budget_tokens"
+   }
+  },
+  "muse-glimmer-30b-dflash": {
+   "contextWindow": 131072,
+   "maxTokens": 32768,
+   "reasoning": true,
+   "thinkingLevelMap": {
+    "off": null,
+    "minimal": "low",
+    "low": "low",
+    "medium": "medium",
+    "high": "high",
+    "xhigh": null,
+    "max": null
+   },
+   "compat": {
+    "thinkingFormat": "chat-template",
+    "chatTemplateKwargs": {
+     "reasoning_strength": {
+      "$var": "thinking.effort"
+     }
+    },
+    "thinkingTokenBudgetField": "thinking_budget_tokens"
+   }
+  },
+  "muse-glimmer-30b-q4": {
+   "contextWindow": 131072,
+   "maxTokens": 32768,
+   "reasoning": true,
+   "thinkingLevelMap": {
+    "off": null,
+    "minimal": "low",
+    "low": "low",
+    "medium": "medium",
+    "high": "high",
+    "xhigh": null,
+    "max": null
+   },
+   "compat": {
+    "thinkingFormat": "chat-template",
+    "chatTemplateKwargs": {
+     "reasoning_strength": {
+      "$var": "thinking.effort"
+     }
+    },
+    "thinkingTokenBudgetField": "thinking_budget_tokens"
+   }
+  },
+  "gemma-4-31b-it": {
+   "contextWindow": 65536,
+   "maxTokens": 32768,
+   "input": [
+    "text",
+    "image"
+   ],
+   "reasoning": true,
+   "compat": {
+    "thinkingFormat": "chat-template",
+    "chatTemplateKwargs": {
+     "enable_thinking": {
+      "$var": "thinking.enabled"
+     }
+    },
+    "thinkingTokenBudgetField": "thinking_budget_tokens"
+   }
+  },
+  "gemma-4-26b-a4b-it": {
+   "contextWindow": 196608,
+   "maxTokens": 32768,
+   "input": [
+    "text",
+    "image"
+   ],
+   "reasoning": true,
+   "compat": {
+    "thinkingFormat": "chat-template",
+    "chatTemplateKwargs": {
+     "enable_thinking": {
+      "$var": "thinking.enabled"
+     }
+    },
+    "thinkingTokenBudgetField": "thinking_budget_tokens"
+   }
+  },
+  "north-mini-code-1.0": {
+   "contextWindow": 196608,
+   "maxTokens": 32768,
+   "reasoning": true,
+   "compat": {
+    "thinkingFormat": "chat-template",
+    "chatTemplateKwargs": {
+     "reasoning": {
+      "$var": "thinking.enabled"
+     }
+    },
+    "thinkingTokenBudgetField": "thinking_budget_tokens"
+   }
+  },
+  "qwen3.8-27b-q4": {
+   "contextWindow": 131072,
+   "maxTokens": 32768,
+   "reasoning": true,
+   "thinkingLevelMap": {
+    "minimal": "low",
+    "low": "low",
+    "medium": "medium",
+    "high": "xhigh",
+    "xhigh": "xhigh",
+    "max": null
+   },
+   "compat": {
+    "thinkingFormat": "chat-template",
+    "chatTemplateKwargs": {
+     "enable_thinking": {
+      "$var": "thinking.enabled"
+     },
+     "reasoning_effort": {
+      "$var": "thinking.effort",
+      "omitWhenOff": true
+     }
+    },
+    "thinkingTokenBudgetField": "thinking_budget_tokens"
+   }
+  },
+  "qwen3.8-27b-unsloth-q4-mtp": {
+   "contextWindow": 163840,
+   "maxTokens": 32768,
+   "reasoning": true,
+   "thinkingLevelMap": {
+    "minimal": "low",
+    "low": "low",
+    "medium": "medium",
+    "high": "xhigh",
+    "xhigh": "xhigh",
+    "max": null
+   },
+   "compat": {
+    "thinkingFormat": "chat-template",
+    "chatTemplateKwargs": {
+     "enable_thinking": {
+      "$var": "thinking.enabled"
+     },
+     "reasoning_effort": {
+      "$var": "thinking.effort",
+      "omitWhenOff": true
+     }
+    },
+    "thinkingTokenBudgetField": "thinking_budget_tokens"
+   }
+  },
+  "qwen3.8-27b-unsloth-iq4xs": {
+   "contextWindow": 131072,
+   "maxTokens": 32768,
+   "reasoning": true,
+   "thinkingLevelMap": {
+    "minimal": "low",
+    "low": "low",
+    "medium": "medium",
+    "high": "xhigh",
+    "xhigh": "xhigh",
+    "max": null
+   },
+   "compat": {
+    "thinkingFormat": "chat-template",
+    "chatTemplateKwargs": {
+     "enable_thinking": {
+      "$var": "thinking.enabled"
+     },
+     "reasoning_effort": {
+      "$var": "thinking.effort",
+      "omitWhenOff": true
+     }
+    },
+    "thinkingTokenBudgetField": "thinking_budget_tokens"
+   }
+  },
+  "qwen3.6-35b-a3b": {
+   "contextWindow": 262144,
+   "maxTokens": 32768,
+   "input": [
+    "text",
+    "image"
+   ],
+   "reasoning": true,
+   "compat": {
+    "thinkingFormat": "chat-template",
+    "chatTemplateKwargs": {
+     "enable_thinking": {
+      "$var": "thinking.enabled"
+     }
+    },
+    "thinkingTokenBudgetField": "thinking_budget_tokens"
+   }
+  },
+  "occamy-1.0": {
+   "contextWindow": 196608,
+   "maxTokens": 32768,
+   "reasoning": true,
+   "compat": {
+    "thinkingFormat": "chat-template",
+    "chatTemplateKwargs": {
+     "enable_thinking": {
+      "$var": "thinking.enabled"
+     },
+     "preserve_thinking": true
+    },
+    "thinkingTokenBudgetField": "thinking_budget_tokens"
+   }
+  },
+  "ornith-1.5-35b-bartowski": {
+   "contextWindow": 196608,
+   "maxTokens": 32768,
+   "reasoning": true,
+   "compat": {
+    "thinkingFormat": "chat-template",
+    "chatTemplateKwargs": {
+     "enable_thinking": {
+      "$var": "thinking.enabled"
+     }
+    },
+    "thinkingTokenBudgetField": "thinking_budget_tokens"
+   }
+  },
+  "swift-qwen3.8-27b-vision": {
+   "contextWindow": 131072,
+   "maxTokens": 32768,
+   "input": [
+    "text",
+    "image"
+   ],
+   "reasoning": true,
+   "thinkingLevelMap": {
+    "minimal": "low",
+    "low": "low",
+    "medium": "medium",
+    "high": "xhigh",
+    "xhigh": "xhigh",
+    "max": null
+   },
+   "compat": {
+    "thinkingFormat": "chat-template",
+    "chatTemplateKwargs": {
+     "enable_thinking": {
+      "$var": "thinking.enabled"
+     },
+     "reasoning_effort": {
+      "$var": "thinking.effort",
+      "omitWhenOff": true
+     }
+    },
+    "thinkingTokenBudgetField": "thinking_budget_tokens"
+   }
+  },
+  "strata": {
+   "contextWindow": 262144,
+   "maxTokens": 32768
+  }
+ }
+}

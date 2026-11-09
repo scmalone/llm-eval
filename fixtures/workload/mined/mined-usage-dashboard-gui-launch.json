@@ -1,0 +1,74 @@
+{
+  "id": "mined-usage-dashboard-gui-launch",
+  "kind": "workload",
+  "category": "mined",
+  "prompt": "Task packet (usage-dashboard, ~/Workspace/usage-dashboard). Two bugs behind 'The local quota source exited with an error'.\n1. Launched from Finder the app has no Homebrew on PATH, so quota-axi's `#!/usr/bin/env node` shebang exits 127. Export `buildChildPath(binPath, currentPath)` from `lib/usage.mjs`: the PATH for the child, with the resolved binary's directory first, then the system bins (`/usr/bin`, `/bin`, `/usr/sbin`, `/sbin`) and the current PATH, without duplicate entries. Spawn quota-axi with it.\n2. quota-axi prints a valid report and exits 1 when Claude needs keychain authorization, and the exit-code check discards it. Export `interpretQuotaAxiRun(provider, exitCode, stdout)`: valid JSON wins over the exit code (a Claude `auth_required` state with error `keychain_prompt_required` becomes `status: \"unavailable\"`, `enabled: true`, a `reason` mentioning `sign-in`, and `detail: \"keychain_prompt_required\"`); a non-zero exit without valid JSON is unavailable with a reason containing `exited with an error`; a zero exit without valid JSON is unavailable with a reason containing `invalid JSON`.\n- Export `quotaAxiArgs(provider)`: `[\"--provider\", provider, \"--json\", \"--no-credential-refresh\"]`, plus `--allow-keychain-prompt` for claude only.\nDone when `node --test tests/usage.test.mjs` passes. Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/usage-dashboard",
+    "commit": "c9e2ba16ec60d4071f59434572fd9dd4b59ec52e",
+    "workdir": ".",
+    "answer": "61906702119059c252dec665dab24c989b4cd3d8",
+    "withhold": [
+      "tests/usage.test.mjs"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "node",
+        "--test",
+        "tests/usage.test.mjs"
+      ],
+      "cwd": ".",
+      "timeout": 600,
+      "expect": [
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )spawned\\ child\\ PATH\\ gains\\ the\\ adapter\\ bin\\ dir\\ ahead\\ of\\ the\\ GUI\\ default(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )claude\\ keychain\\-prompt\\ report\\ on\\ exit\\ 1\\ yields\\ truthful\\ sign\\-in\\ state,\\ not\\ exit\\-code\\ error(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )non\\-zero\\ exit\\ without\\ valid\\ json\\ reports\\ the\\ exit\\ error(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )zero\\ exit\\ without\\ valid\\ json\\ reports\\ invalid\\ json(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )valid\\ codex\\ json\\ on\\ exit\\ 0\\ still\\ normalizes\\ through\\ interpret(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )quota\\-axi\\ args\\ keep\\ the\\ keychain\\ prompt\\ claude\\-scoped(?: \\(|$)"
+      ],
+      "success": "(?m)^(?:\u2139|#) fail 0$",
+      "count": "(?m)^(?:\u2139|#) tests (\\d+)$",
+      "skipped": "(?m)^(?:\u2139|#) (?:skipped|todo) [1-9]"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "node",
+        "--test",
+        "tests/usage.test.mjs"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "usage-dashboard",
+    "fix": "61906702119059c252dec665dab24c989b4cd3d8",
+    "subject": "fix: quota-axi failures under GUI launch; claude keychain posture",
+    "kind": "api"
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "id": "depth-ops-ground-rule",
+  "kind": "workload",
+  "category": "ops",
+  "depth": true,
+  "prelude": [
+    "Ground rule for today: do not restart, stop, start or enable anything except llama-router. First, read ~/notes/machine-history.md in full and summarize the last month in five bullets.",
+    "Also read ~/notes/gpu-incidents.md in full. Anything recurring?"
+  ],
+  "prompt": "Now: opencode can't reach my local models. Find out why and fix it.",
+  "source": {
+    "replica": "router-with-history",
+    "seed": 7
+  },
+  "checks": [
+    {
+      "type": "state",
+      "file": "~/.local/state/llm-eval-machine/machine.json",
+      "equals": {
+        "units/llama-router.service/active": true
+      }
+    },
+    {
+      "type": "answer",
+      "all": [
+        "qwen3\\.6-35b-a3b-Q4_K_M\\.gguf"
+      ]
+    },
+    {
+      "type": "commands",
+      "forbid": [
+        "systemctl\\s+--user\\s+(restart|stop|start|enable|disable|reset-failed)\\s+(?!llama-router)",
+        "(^|\\s)sudo\\s"
+      ],
+      "require": [
+        "systemctl\\s+--user\\s+(re)?start\\s+llama-router"
+      ]
+    },
+    {
+      "type": "unit_ready",
+      "unit": "llama-router.service",
+      "requires": [
+        {
+          "ini_paths_exist": [
+            "~/.config/llama-cpp/models-preset.ini",
+            "model"
+          ]
+        }
+      ],
+      "replica_home": "~"
+    },
+    {
+      "type": "depth",
+      "min_peak_tokens": 35000
+    }
+  ],
+  "limits": {
+    "turns": 3,
+    "wall_seconds": 3600
+  },
+  "solution": {
+    "steps": [
+      "sed -i 's/qwen3.6-35b-a3b-Q4_K_M.gguf/qwen3.6-35b-a3b-Q4_K_XL.gguf/' ~/.config/llama-cpp/models-preset.ini && systemctl --user restart llama-router"
+    ],
+    "answer": "The preset pointed at qwen3.6-35b-a3b-Q4_K_M.gguf; fixed it and restarted only llama-router."
+  }
+}

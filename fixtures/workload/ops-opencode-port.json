@@ -1,0 +1,67 @@
+{
+  "id": "ops-opencode-port",
+  "kind": "workload",
+  "category": "ops",
+  "prompt": "My opencode installation is getting errors when trying to access the models installed. I recently changed some config. Explain why and fix it.",
+  "source": {
+    "replica": "opencode-wrong-port",
+    "seed": 2
+  },
+  "checks": [
+    {
+      "type": "state",
+      "file": "~/.local/state/llm-eval-machine/machine.json",
+      "equals": {
+        "units/llama-router.service/active": true
+      }
+    },
+    {
+      "type": "files",
+      "contains": {
+        "~/.config/fish/conf.d/opencode-machine.fish": "OC_LLAMA_BASEURL\\s+\"http://127\\.0\\.0\\.1:8080/v1\""
+      },
+      "lacks": {
+        "~/.config/fish/conf.d/opencode-machine.fish": ":8081/"
+      }
+    },
+    {
+      "type": "answer",
+      "all": [
+        "8081",
+        "8080"
+      ]
+    },
+    {
+      "type": "commands",
+      "forbid": [
+        "(^|\\s)sudo\\s",
+        "\\brm\\s+-rf\\s+~?/",
+        "systemctl\\s+--user\\s+(stop|disable|mask)\\s+llama-router"
+      ]
+    },
+    {
+      "type": "files",
+      "advisory": true,
+      "absent": [
+        "~/.config/opencode/opencode.json"
+      ]
+    },
+    {
+      "type": "diff_scope",
+      "advisory": true,
+      "deny": [
+        "**"
+      ]
+    }
+  ],
+  "limits": {
+    "turns": 3,
+    "wall_seconds": 1500
+  },
+  "solution": {
+    "steps": [
+      "sed -i 's/:8081/:8080/' ~/.config/fish/conf.d/opencode-machine.fish"
+    ],
+    "answer": "OC_LLAMA_BASEURL pointed at port 8081, but the router listens on 8080; fixed the fish env file."
+  }
+}

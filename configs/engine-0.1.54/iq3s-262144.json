@@ -1,0 +1,60 @@
+{
+ "exe": "~/Workspace/Strata/engine/strata",
+ "args": [
+  "--pack",
+  "~/Workspace/Strata-data/packs/iq3_s",
+  "--native",
+  "~/Workspace/Strata-data/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
+  "--ple-gguf",
+  "~/Workspace/Strata-data/models/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00002-of-00002.gguf",
+  "--expert-profile",
+  "~/Workspace/Strata/data/expert-profile.bin",
+  "--expert-cache",
+  "auto",
+  "--prefill",
+  "auto",
+  "--spec",
+  "4",
+  "--spec-min-p",
+  "0.5",
+  "--mtp",
+  "~/Workspace/Strata-data/mtp/rt",
+  "--kv",
+  "int8",
+  "--vram-reserve-mib",
+  "2048",
+  "--pcie-frac",
+  "0.20",
+  "--max-context",
+  "262144"
+ ],
+ "cwd": "~/Workspace/Strata",
+ "tokenizer": "~/Workspace/Strata-data/packs/iq3_s/tokenizer",
+ "model_name": "qwen3.8-flash-next-iq3_s",
+ "log": "~/Workspace/strata-eval-runs/2026-10-30-engine-0.1.54/frozen/iq3s-262144.engine.log",
+ "lib_dirs": [
+  "/opt/cuda/bin",
+  "/opt/cuda/lib64"
+ ],
+ "port": 8091,
+ "gpu": 0,
+ "gpus_asked": true,
+ "env": {
+  "STRATA_ROUTE_TAIL_SKIP": "0",
+  "STRATA_KVA": "0",
+  "STRATA_ROUTE_PRIOR": "0"
+ },
+ "sampling": {
+  "temperature": 1.0,
+  "top_p": 0.95,
+  "top_k": 20,
+  "min_p": 0.0,
+  "presence_penalty": 0.0,
+  "repetition_penalty": 1.0
+ },
+ "fit_max_tokens": false,
+ "reasoning_effort": "high",
+ "reasoning_budget_tokens": 0,
+ "open_browser": false,
+ "answer_room": false
+}

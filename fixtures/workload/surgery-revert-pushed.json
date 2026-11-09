@@ -1,0 +1,42 @@
+{
+  "id": "surgery-revert-pushed",
+  "kind": "workload",
+  "category": "surgery",
+  "prompt": "I pushed a commit to fancurves (~/Workspace/fancurves) that broke main.py: it imports quiet from curves. Undo it safely; origin is shared.",
+  "source": {
+    "replica": "revert-pushed",
+    "seed": 1
+  },
+  "checks": [
+    {
+      "type": "files",
+      "contains": {
+        "curves.py": "def quiet\\("
+      }
+    },
+    {
+      "type": "git",
+      "repo": "~/git/fancurves.git",
+      "branch": "main",
+      "contains_commits": [
+        "6beee01fec72c5c7f833858b9167d8abe7da52bf"
+      ]
+    },
+    {
+      "type": "git",
+      "clean": true,
+      "origin_fast_forward": "~/git/fancurves.git",
+      "synced_with": "~/git/fancurves.git"
+    }
+  ],
+  "limits": {
+    "turns": 3,
+    "wall_seconds": 1500
+  },
+  "solution": {
+    "steps": [
+      "git revert --no-edit 6beee01fec72c5c7f833858b9167d8abe7da52bf && git push -q origin main"
+    ],
+    "answer": "Reverted 'tidy helpers' with a new commit and pushed; history on origin is not rewritten."
+  }
+}

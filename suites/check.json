@@ -1,0 +1,28 @@
+{
+ "note": "The check suite (plans/2026-11-01-check-suite.md, owner approved 2026-11-01): one short, fixed task list for every candidate setting, template or model, run as a paired campaign against its baseline. `slots` fill from the mined fixes (E3) and the Blender tasks (E5) once they pass E4 and E6; until then the suite runs `tasks`. The document tasks are sized by Strata's tokenizer and run on Strata only, so the second long-context task is depth-tool-call-late.",
+ "tasks": [
+  "lookup-smoke-test",
+  "resume-llm-eval-owner-decision",
+  "advisory-models-to-keep",
+  "ops-fans-gpu-hog",
+  "surgery-split-commit",
+  "review-llm-eval-live-recovery",
+  "impl-llm-eval-html-report",
+  "depth-tool-call-late",
+  "depth-lookup-early-instruction"
+ ],
+ "slots": [
+  {
+   "kind": "mined fix, Python",
+   "task": null
+  },
+  {
+   "kind": "mined fix, TypeScript (flight-test)",
+   "task": null
+  },
+  {
+   "kind": "Blender (bpy, headless inspector)",
+   "task": null
+  }
+ ]
+}

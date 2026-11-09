@@ -1,0 +1,113 @@
+{
+  "id": "depth-impl-reasoning-fields",
+  "kind": "workload",
+  "category": "implementation",
+  "depth": true,
+  "prelude": [
+    "Before we start, read llm_eval/runner.py and llm_eval/live.py in full and tell me in two lines what each one does.",
+    "Now read tests/test_live.py and tests/test_runner.py in full and list their test classes.",
+    "Also read llm_eval/preflight.py, llm_eval/acceptance.py and tests/test_preflight.py in full; one line each.",
+    "Last bit of context: read STATE.md, RUNBOOK.md, llm_eval/adapters.py and llm_eval/plan.py in full. Where does the project stand?"
+  ],
+  "prompt": "Now the task, in this same llm-eval project. The first live run's answers came back empty, and we can't tell an empty answer from a budget spent on reasoning. Make live responses keep the reasoning and finish reason:\n- `LiveAdapter.request` returns a dict with `content` (\"\" when absent), `reasoning` (from the message's `reasoning_content`, \"\" when absent) and `finish_reason` (from the first choice); tool trials also carry `tool_calls`.\n- Graders keep reading only `content`; the runner already saves each response as JSON under `responses/`, and those files must now include `reasoning` and `finish_reason`.\nDone when `python3 -m unittest discover -s tests` passes. Keep existing tests' assertions as they are.",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "0f5faf6379e7bfab25ce3841eb278d069d68154e",
+    "workdir": ".",
+    "answer": "b22dfdac6a290cd1a32b7142c51d52d0cf910476",
+    "withhold": [
+      "tests/test_live.py"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "timeout": 900,
+      "expect": [
+        "^test_a_dead_server_still_owes_its_memory \\(.*\\) \\.\\.\\. ok$",
+        "^test_a_fresh_adapter_stops_a_crashed_runs_scratch_server \\(.*\\) \\.\\.\\. ok$",
+        "^test_a_restore_that_raises_unexpectedly_is_retried_and_recorded \\(.*\\) \\.\\.\\. ok$",
+        "^test_a_resumed_adapter_adopts_the_memory_obligation \\(.*\\) \\.\\.\\. ok$",
+        "^test_adopt_skips_the_gate_once_production_is_back \\(.*\\) \\.\\.\\. ok$",
+        "^test_allocation_failure_is_a_capacity_error_and_other_exits_are_not \\(.*\\) \\.\\.\\. ok$",
+        "^test_campaign_steps_down_after_a_request_time_oom \\(.*\\) \\.\\.\\. ok$",
+        "^test_command_timeout_is_infrastructure_not_an_escape \\(.*\\) \\.\\.\\. ok$",
+        "^test_exec_identity_ignores_runtime_fields \\(.*\\) \\.\\.\\. ok$",
+        "^test_failed_load_must_still_return_memory \\(.*\\) \\.\\.\\. ok$",
+        "^test_failed_probe_leaves_the_restore_marker_set \\(.*\\) \\.\\.\\. ok$",
+        "^test_full_live_campaign_against_a_scripted_machine \\(.*\\) \\.\\.\\. ok$",
+        "^test_kv_parsing_never_guesses \\(.*\\) \\.\\.\\. ok$",
+        "^test_load_measures_memory_from_the_server_log \\(.*\\) \\.\\.\\. ok$",
+        "^test_mixed_case_allocation_marker_is_recognised \\(.*\\) \\.\\.\\. ok$",
+        "^test_oom_at_the_top_rung_falls_back_and_still_restores \\(.*\\) \\.\\.\\. ok$",
+        "^test_oom_then_timeout_is_capacity_and_a_plain_timeout_is_not \\(.*\\) \\.\\.\\. ok$",
+        "^test_quadrant_png_is_a_valid_image_with_the_right_colors \\(.*\\) \\.\\.\\. ok$",
+        "^test_request_time_oom_is_capacity_not_a_retry \\(.*\\) \\.\\.\\. ok$",
+        "^test_restore_does_not_pass_while_memory_is_held \\(.*\\) \\.\\.\\. ok$",
+        "^test_restore_leaves_an_inactive_unit_inactive \\(.*\\) \\.\\.\\. ok$",
+        "^test_restore_verifies_unit_health_and_probe \\(.*\\) \\.\\.\\. ok$",
+        "^test_resume_before_smoke_loads_the_scratch_server \\(.*\\) \\.\\.\\. ok$",
+        "^test_resume_rejects_a_different_plan \\(.*\\) \\.\\.\\. ok$",
+        "^test_run_id_binds_adapter_and_snapshot \\(.*\\) \\.\\.\\. ok$",
+        "^test_server_args_translate_the_preset \\(.*\\) \\.\\.\\. ok$",
+        "^test_server_errors_are_infrastructure_and_only_the_scratch_unit_is_stopped \\(.*\\) \\.\\.\\. ok$",
+        "^test_smoke_runs_and_text_only_profiles_skip_vision \\(.*\\) \\.\\.\\. ok$",
+        "^test_smoke_wants_the_word_ok_not_a_substring \\(.*\\) \\.\\.\\. ok$",
+        "^test_snapshot_blocks_only_unknown_gpu_clients \\(.*\\) \\.\\.\\. ok$",
+        "^test_stop_requires_memory_to_return_to_baseline \\(.*\\) \\.\\.\\. ok$",
+        "^test_unit_names_follow_the_run_id \\(.*\\) \\.\\.\\. ok$",
+        "^test_unknown_gpu_workload_blocks_before_production_is_touched \\(.*\\) \\.\\.\\. ok$",
+        "^test_vision_profile_sends_a_png_and_is_graded \\(.*\\) \\.\\.\\. ok$"
+      ],
+      "min_tests": 87
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    },
+    {
+      "type": "depth",
+      "min_peak_tokens": 40000
+    }
+  ],
+  "followups": {
+    "tests": {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  },
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 3600
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Done; suite passes."
+  }
+}

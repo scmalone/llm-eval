@@ -1,0 +1,74 @@
+{
+  "id": "mined-dotfiles-triage-cycle1",
+  "kind": "workload",
+  "category": "mined",
+  "prompt": "Task packet (dotfiles, ~/Workspace/dotfiles). First review cycle on `bin/review-triage`, `bin/consult` and the waiver check in `bin/validate-spec.py`.\n- `bin/consult --provider pi` usage errors exit 2 with output that starts with `INCOMPLETE`: an invalid timeout (`--timeout 0`) and an option missing its value (`--model` given last with nothing after it).\n- `bin/review-triage --dir REPO --base SHA --json` must preserve file names containing a tab or a newline exactly in its `files[].path` values (for example `tab<TAB>name.env` and `line<NEWLINE>break.env`).\n- A dangling untracked symlink is a read error, not a silent success: `bin/review-triage` exits 2.\n- Waiver dates must stand alone: `waived (2026-10-08.)` (trailing punctuation) and `waived (owner accepted, 12026-10-080)` (a date embedded in longer digits) are rejected by `python3 bin/validate-spec.py --accepted DIR`.\nDone when `bash tests/review-triage/run.sh` prints `review-triage: OK`, `bash tests/review-triage/consult-pi-stub.sh` passes, and `bash tests/review-triage/waiver-test.sh` prints `waiver-test: OK`. Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/dotfiles",
+    "commit": "402dca7eb51303ad1a52b56c5032b0fa7edd8532",
+    "workdir": ".",
+    "answer": "041219ba6f77a24a9d1e0960dd0004a074eed79e",
+    "withhold": [
+      "tests/review-triage/consult-pi-stub.sh",
+      "tests/review-triage/run.sh",
+      "tests/review-triage/waiver-test.sh"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "bash",
+        "-c",
+        "bash tests/review-triage/run.sh && bash tests/review-triage/consult-pi-stub.sh && bash tests/review-triage/waiver-test.sh"
+      ],
+      "cwd": ".",
+      "timeout": 600,
+      "expect": [
+        "(?m)^  ok    invalid\\ timeout\\ starts\\ with\\ INCOMPLETE$",
+        "(?m)^  ok    missing\\ value\\ starts\\ with\\ INCOMPLETE$",
+        "(?m)^  ok    json\\ preserves\\ tab\\ and\\ newline\\ filenames$",
+        "(?m)^  ok    dangling\\ untracked\\ symlink\\ exits\\ 2$",
+        "(?m)^  ok    trailing\\ punctuation\\ fails$",
+        "(?m)^  ok    embedded\\ date\\ fails$"
+      ],
+      "success": "(?m)^waiver-test: OK$"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "bash",
+        "-c",
+        "bash tests/review-triage/run.sh && bash tests/review-triage/consult-pi-stub.sh && bash tests/review-triage/waiver-test.sh"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "dotfiles",
+    "fix": "041219ba6f77a24a9d1e0960dd0004a074eed79e",
+    "subject": "fix(review-triage): close cycle 1 blocking items and T3 offer format",
+    "kind": "behavior"
+  }
+}

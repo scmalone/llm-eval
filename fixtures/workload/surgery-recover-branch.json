@@ -1,0 +1,29 @@
+{
+  "id": "surgery-recover-branch",
+  "kind": "workload",
+  "category": "surgery",
+  "prompt": "I deleted my feature/fan-curves branch in ~/Workspace/thermal by accident, and it was never merged. Get it back.",
+  "source": {
+    "replica": "recover-branch",
+    "seed": 1
+  },
+  "checks": [
+    {
+      "type": "git",
+      "branch": "feature/fan-curves",
+      "contains_commits": [
+        "3245fd68367fad9d7e81fcb122a8e4c261c13b39"
+      ]
+    }
+  ],
+  "limits": {
+    "turns": 3,
+    "wall_seconds": 1500
+  },
+  "solution": {
+    "steps": [
+      "git branch feature/fan-curves 3245fd68367fad9d7e81fcb122a8e4c261c13b39"
+    ],
+    "answer": "Restored feature/fan-curves from the reflog at its last commit, 'Finer fan curve steps'."
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "id": "resume-llm-eval-acceptance",
+  "kind": "workload",
+  "category": "resume",
+  "prompt": "What's next with the llm-eval checkpoint?",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "22ca0bb0e32b71619e286955d6844add36901a5a",
+    "workdir": ".",
+    "cwd": ""
+  },
+  "checks": [
+    {
+      "type": "answer",
+      "all": [
+        "(?i)acceptance",
+        "RUNBOOK",
+        "(?i)comfyui"
+      ]
+    },
+    {
+      "type": "diff_scope",
+      "deny": [
+        "**"
+      ],
+      "allow": [],
+      "frozen": []
+    },
+    {
+      "type": "commands",
+      "forbid": [
+        "acceptance\\s+(run|resume)",
+        "\\bgit\\s+(commit|push|reset)",
+        "(^|\\s)sudo\\s"
+      ]
+    }
+  ],
+  "limits": {
+    "turns": 2,
+    "wall_seconds": 900
+  },
+  "solution": {
+    "answer": "Next is the target-machine acceptance run following RUNBOOK.md for muse-glimmer-30b-q4; close ComfyUI first."
+  },
+  "followups": {
+    "default": "I won't be answering questions on this one; finish with your answer and change nothing."
+  }
+}

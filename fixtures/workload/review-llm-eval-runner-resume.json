@@ -1,0 +1,62 @@
+{
+  "id": "review-llm-eval-runner-resume",
+  "kind": "workload",
+  "category": "review",
+  "prompt": "Review llm_eval/runner.py in llm-eval, blind, for resume and grading defects. For each finding give the function and the failure it causes. Report only; no edits.",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "40885d9b2dfb813fa1480d1e4db4457105ce161f",
+    "workdir": ".",
+    "deny": [
+      "STATE.md"
+    ]
+  },
+  "checks": [
+    {
+      "type": "findings",
+      "defects": [
+        {
+          "id": "lle-004",
+          "match": [
+            "resume",
+            "plan",
+            "hash|differ|mismatch|bind|original"
+          ]
+        },
+        {
+          "id": "lle-006",
+          "match": [
+            "resum|committed qualification|interrupt|restart",
+            "smoke",
+            "load|server|ensure"
+          ]
+        },
+        {
+          "id": "lle-007",
+          "match": [
+            "smoke",
+            "\\bok\\b|substring|contains|\\bin\\b"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "diff_scope",
+      "deny": [
+        "**"
+      ],
+      "allow": [],
+      "frozen": []
+    }
+  ],
+  "limits": {
+    "turns": 2,
+    "wall_seconds": 1800
+  },
+  "solution": {
+    "answer": "Resume does not bind to the original plan hash, so a different plan can be resumed.\nResuming before smoke never loads the scratch server, so smoke runs with no server.\nSmoke grades 'ok' in reply as a substring, so 'book a table' passes."
+  },
+  "followups": {
+    "default": "I won't be answering questions on this one; finish with your answer and change nothing."
+  }
+}

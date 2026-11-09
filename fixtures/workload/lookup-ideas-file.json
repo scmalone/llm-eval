@@ -1,0 +1,41 @@
+{
+  "id": "lookup-ideas-file",
+  "kind": "workload",
+  "category": "lookup",
+  "prompt": "Do I have an ideas.md or something similar in my sandbox repo that lists ideas to work on?",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "150c8318d51ffa022837f40d4038d6b2fba92850",
+    "workdir": ".",
+    "cwd": ""
+  },
+  "checks": [
+    {
+      "type": "answer",
+      "all": [
+        "docs/someday\\.md"
+      ]
+    },
+    {
+      "type": "diff_scope",
+      "deny": [
+        "**"
+      ],
+      "allow": [],
+      "frozen": []
+    }
+  ],
+  "limits": {
+    "turns": 2,
+    "wall_seconds": 900
+  },
+  "solution": {
+    "answer": "Yes: docs/someday.md in the sandbox repo lists ideas."
+  },
+  "plant": {
+    "docs/someday.md": "# Someday\n\nIdeas to pick up when there is time:\n\n- Fan curve profiles per workload\n- A voice-notes inbox for /intake\n- Compare local embeddings for the vault search\n"
+  },
+  "followups": {
+    "default": "I won't be answering questions on this one; finish with your answer and change nothing."
+  }
+}

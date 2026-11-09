@@ -1,0 +1,10 @@
+{
+  "id": "recall-1",
+  "kind": "recall",
+  "haystack": {
+    "records": 12,
+    "seed": 1
+  },
+  "max_output_tokens": 16384,
+  "seed": 1
+}

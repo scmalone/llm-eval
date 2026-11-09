@@ -1,0 +1,72 @@
+{
+  "id": "mined-usage-dashboard-claude-windows",
+  "kind": "workload",
+  "category": "mined",
+  "prompt": "Task packet (usage-dashboard, ~/Workspace/usage-dashboard). Bug: the Claude pane is stuck on 'did not expose both subscription windows' even with a fresh report. quota-axi now prefers the vendor's authoritative limits list for Claude, which can omit the weekly window or its reset time.\n- `normalizeClaudeReport(report)` in `lib/usage.mjs` renders per window: the five-hour window (`five_hour`) is required and must carry a verified percentage between 0 and 100; the weekly window (`seven_day`) is optional and is `null` when absent.\n- A five-hour-only report is `status: \"ready\"` with `windows.fiveHour.remainingPercent` set (82 in the fixture) and `windows.weekly` null.\n- A window without a reset time stays live with `resetsAt: null` instead of being discarded.\n- A report with no usable five-hour window (missing, or a percentage like 140) is `unavailable`, and its `reason` mentions `five-hour`.\n- Codex keeps its strict both-windows contract.\nDone when `node --test tests/usage.test.mjs` passes. Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/usage-dashboard",
+    "commit": "ee7c53206c8d01bf6a1dddc10809f3af418106bb",
+    "workdir": ".",
+    "answer": "24b9bd85550844fb60f5d535f461b00826a6447e",
+    "withhold": [
+      "tests/usage.test.mjs"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "node",
+        "--test",
+        "tests/usage.test.mjs"
+      ],
+      "cwd": ".",
+      "timeout": 600,
+      "expect": [
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )claude\\ five\\-hour\\-only\\ report\\ is\\ ready\\ with\\ the\\ weekly\\ card\\ unavailable(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )claude\\ windows\\ without\\ a\\ reset\\ time\\ stay\\ live(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )claude\\ report\\ without\\ a\\ usable\\ five\\-hour\\ window\\ is\\ unavailable(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )claude\\ report\\ with\\ an\\ out\\-of\\-range\\ five\\-hour\\ percentage\\ is\\ unavailable(?: \\(|$)"
+      ],
+      "success": "(?m)^(?:\u2139|#) fail 0$",
+      "count": "(?m)^(?:\u2139|#) tests (\\d+)$",
+      "skipped": "(?m)^(?:\u2139|#) (?:skipped|todo) [1-9]"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "node",
+        "--test",
+        "tests/usage.test.mjs"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "usage-dashboard",
+    "fix": "24b9bd85550844fb60f5d535f461b00826a6447e",
+    "subject": "fix: claude windows render per window, not all-or-nothing",
+    "kind": "behavior"
+  }
+}

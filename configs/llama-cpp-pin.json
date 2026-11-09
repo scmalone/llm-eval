@@ -1,0 +1,6 @@
+{
+ "why": "Owner, 2026-11-01: pin llama.cpp at the build every preset loaded on in the 2026-10-31 speed sweep; results from other builds do not compare. Move the pin only with a DECISIONS entry and a fresh speed sweep.",
+ "build": 12017,
+ "commit": "5047748f1",
+ "binary": "~/Dev/llama.cpp/build/bin/llama-server"
+}

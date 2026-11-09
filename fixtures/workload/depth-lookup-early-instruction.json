@@ -1,0 +1,47 @@
+{
+  "id": "depth-lookup-early-instruction",
+  "kind": "workload",
+  "category": "lookup",
+  "depth": true,
+  "prelude": [
+    "For this session: campaign runs go to ~/bench-runs/<profile>, and the restore model is occamy-1.0-agent. Just say OK.",
+    "Before we start, read llm_eval/runner.py and llm_eval/live.py in full and tell me in two lines what each one does.",
+    "Now read tests/test_live.py and tests/test_runner.py in full and list their test classes.",
+    "Also read llm_eval/preflight.py, llm_eval/acceptance.py and tests/test_preflight.py in full; one line each.",
+    "Last bit of context: read STATE.md, RUNBOOK.md, llm_eval/adapters.py and llm_eval/plan.py in full. Where does the project stand?"
+  ],
+  "prompt": "Which restore model and which run folder did I tell you to use at the start of this session?",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "150c8318d51ffa022837f40d4038d6b2fba92850",
+    "workdir": "."
+  },
+  "checks": [
+    {
+      "type": "answer",
+      "all": [
+        "occamy-1\\.0-agent",
+        "bench-runs"
+      ]
+    },
+    {
+      "type": "diff_scope",
+      "deny": [
+        "**"
+      ],
+      "allow": [],
+      "frozen": []
+    },
+    {
+      "type": "depth",
+      "min_peak_tokens": 30000
+    }
+  ],
+  "limits": {
+    "turns": 2,
+    "wall_seconds": 3600
+  },
+  "solution": {
+    "answer": "Restore model occamy-1.0-agent; runs go to ~/bench-runs/<profile>."
+  }
+}

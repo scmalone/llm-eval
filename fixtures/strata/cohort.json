@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "id": "strata-correctness-v1",
+  "output_tokens": 16384,
+  "retries": 0,
+  "coding": [
+    "impl-llm-eval-eval-manifest", "impl-llm-eval-haystack", "impl-llm-eval-html-report",
+    "impl-llm-eval-output-budget", "impl-llm-eval-smoke-vision", "review-runner-interrupt-resume"
+  ],
+  "tool": [
+    "ops-broken-symlink", "ops-fans-gpu-hog", "ops-opencode-port", "ops-renamed-flag",
+    "ops-router-model-path", "surgery-recover-branch"
+  ],
+  "document": [
+    {"id": "doc-retrieve-32k", "case": "retrieve", "seed": 101, "tokens": 32768},
+    {"id": "doc-reason-32k", "case": "reason", "seed": 102, "tokens": 32768},
+    {"id": "doc-unanswerable-32k", "case": "unanswerable", "seed": 103, "tokens": 32768},
+    {"id": "doc-retrieve-100k", "case": "retrieve", "seed": 104, "tokens": 100000},
+    {"id": "doc-reason-100k", "case": "reason", "seed": 105, "tokens": 100000},
+    {"id": "doc-unanswerable-100k", "case": "unanswerable", "seed": 106, "tokens": 100000}
+  ]
+}

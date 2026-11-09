@@ -1,0 +1,71 @@
+{
+  "id": "mined-the-ones-who-see-dials",
+  "kind": "workload",
+  "category": "mined",
+  "prompt": "Task packet (the-ones-who-see, ~/Workspace/the-ones-who-see). The live-tuning panel's dials need one declaration that a guard test can check. Rename the engine config's `TUNABLES` export to `DIALS` in `src/engine/config.js` (the single list the tuning panel maps, one entry per dial with its config path), and update every user, including `src/ui/Panels.jsx`. `DEFAULT_CONFIG`, `DIALS` and `getPath` must be exported from `src/engine/config.js`; every dial path must resolve to a number in `DEFAULT_CONFIG`. Document on `DIALS` that adding a numeric feel-number to the config now means adding a dial or an explicit exclusion in the guard test.\nDone when `node --test src/engine/__tests__/tunables.test.js` passes. Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/the-ones-who-see",
+    "commit": "8c038bd7c9d76621d1c17a9ee696843ff68c78a9",
+    "workdir": ".",
+    "answer": "8fd0f7bfc77a89e981ed16e9a5f2d727d7a398d0",
+    "withhold": [
+      "src/engine/__tests__/tunables.test.js"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "node",
+        "--test",
+        "src/engine/__tests__/tunables.test.js"
+      ],
+      "cwd": ".",
+      "timeout": 600,
+      "expect": [
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )every\\ dial\\ path\\ resolves\\ to\\ a\\ number\\ in\\ DEFAULT_CONFIG(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )every\\ numeric\\ config\\ leaf\\ is\\ either\\ dialed\\ or\\ on\\ the\\ explicit\\ exclusion\\ list(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )every\\ exclusion\\-list\\ path\\ resolves\\ to\\ a\\ real\\ numeric\\ leaf\\ \\(no\\ dead\\ entries\\)(?: \\(|$)"
+      ],
+      "success": "(?m)^(?:\u2139|#) fail 0$",
+      "count": "(?m)^(?:\u2139|#) tests (\\d+)$",
+      "skipped": "(?m)^(?:\u2139|#) (?:skipped|todo) [1-9]"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "src/engine/__tests__/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "node",
+        "--test",
+        "src/engine/__tests__/tunables.test.js"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "the-ones-who-see",
+    "fix": "8fd0f7bfc77a89e981ed16e9a5f2d727d7a398d0",
+    "subject": "the-ones-who-see: single tunable source plus a drift guard test",
+    "kind": "api"
+  }
+}

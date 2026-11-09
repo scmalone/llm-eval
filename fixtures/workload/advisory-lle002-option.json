@@ -1,0 +1,51 @@
+{
+  "id": "advisory-lle002-option",
+  "kind": "workload",
+  "category": "advisory",
+  "prompt": "Which option should I take for LLE-002 in llm-eval?",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "40885d9b2dfb813fa1480d1e4db4457105ce161f",
+    "workdir": "."
+  },
+  "checks": [
+    {
+      "type": "style",
+      "options": true,
+      "no_em_dash": true
+    },
+    {
+      "type": "answer",
+      "all": [
+        "(?i)transient|systemd",
+        "\\bA\\b"
+      ]
+    },
+    {
+      "type": "diff_scope",
+      "deny": [
+        "**"
+      ],
+      "allow": [],
+      "frozen": []
+    },
+    {
+      "type": "commands",
+      "forbid": [
+        "acceptance\\s+(run|resume)",
+        "\\bgit\\s+(commit|push|reset)",
+        "(^|\\s)sudo\\s"
+      ]
+    }
+  ],
+  "limits": {
+    "turns": 2,
+    "wall_seconds": 900
+  },
+  "solution": {
+    "answer": "LLE-002 options:\nA. **(Recommended)** Run the scratch server as a transient user unit named from the run ID.\nB. Persist the pid in the journal.\nC. Leave it as is."
+  },
+  "followups": {
+    "default": "I won't be answering questions on this one; finish with your answer and change nothing."
+  }
+}

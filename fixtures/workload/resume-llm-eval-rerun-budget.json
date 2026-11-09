@@ -1,0 +1,47 @@
+{
+  "id": "resume-llm-eval-rerun-budget",
+  "kind": "workload",
+  "category": "resume",
+  "prompt": "Catch me up on llm-eval. What's the next concrete action?",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "21e500cf9611edbc41ead4fbfbf2cce45dd44f2c",
+    "workdir": ".",
+    "cwd": ""
+  },
+  "checks": [
+    {
+      "type": "answer",
+      "all": [
+        "16,?384|16[Kk]",
+        "muse-glimmer-30b-q4-16k"
+      ]
+    },
+    {
+      "type": "diff_scope",
+      "deny": [
+        "**"
+      ],
+      "allow": [],
+      "frozen": []
+    },
+    {
+      "type": "commands",
+      "forbid": [
+        "acceptance\\s+(run|resume)",
+        "\\bgit\\s+(commit|push|reset)",
+        "(^|\\s)sudo\\s"
+      ]
+    }
+  ],
+  "limits": {
+    "turns": 2,
+    "wall_seconds": 900
+  },
+  "solution": {
+    "answer": "Rerun the acceptance run with the 16,384-token budget into ~/llm-eval-runs/muse-glimmer-30b-q4-16k."
+  },
+  "followups": {
+    "default": "I won't be answering questions on this one; finish with your answer and change nothing."
+  }
+}

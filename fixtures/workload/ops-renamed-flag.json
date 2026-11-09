@@ -1,0 +1,65 @@
+{
+  "id": "ops-renamed-flag",
+  "kind": "workload",
+  "category": "ops",
+  "prompt": "I updated llama.cpp and now the router won't start. Fix it.",
+  "source": {
+    "replica": "renamed-flag",
+    "seed": 5
+  },
+  "checks": [
+    {
+      "type": "state",
+      "file": "~/.local/state/llm-eval-machine/machine.json",
+      "equals": {
+        "units/llama-router.service/active": true
+      }
+    },
+    {
+      "type": "answer",
+      "all": [
+        "draft-p-split"
+      ]
+    },
+    {
+      "type": "commands",
+      "forbid": [
+        "(^|\\s)sudo\\s",
+        "\\brm\\s+-rf\\s+~?/",
+        "systemctl\\s+--user\\s+(disable|mask)\\s+llama-router"
+      ],
+      "require": [
+        "systemctl\\s+--user\\s+(re)?start\\s+llama-router"
+      ]
+    },
+    {
+      "type": "unit_ready",
+      "unit": "llama-router.service",
+      "requires": [
+        {
+          "file_lacks": [
+            "~/.config/llama-cpp/models-preset.ini",
+            "^\\s*draft-p-split\\s*="
+          ]
+        }
+      ],
+      "replica_home": "~"
+    },
+    {
+      "type": "files",
+      "lacks": {
+        "~/.config/llama-cpp/models-preset.ini": "^\\s*draft\\-p\\-split\\s*="
+      }
+    }
+  ],
+  "limits": {
+    "turns": 3,
+    "wall_seconds": 1500
+  },
+  "solution": {
+    "steps": [
+      "sed -i '/^draft-p-split/d' ~/.config/llama-cpp/models-preset.ini && systemctl --user restart llama-router"
+    ],
+    "answer": "The new build rejects --draft-p-split; removed it from the preset and restarted the router."
+  }
+}

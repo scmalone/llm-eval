@@ -1,0 +1,49 @@
+{
+  "id": "surgery-promote-experiment",
+  "kind": "workload",
+  "category": "surgery",
+  "prompt": "Promote experiments/fanctl in my sandbox repo to its own repo at ~/Workspace/fanctl, keeping its history. It should not be in sandbox any longer.",
+  "source": {
+    "replica": "promote-experiment",
+    "seed": 1
+  },
+  "checks": [
+    {
+      "type": "git",
+      "repo": "~/Workspace/fanctl",
+      "contains_subjects": [
+        "fanctl: first curve",
+        "fanctl: configurable floor",
+        "fanctl: add test"
+      ],
+      "min_commits": 3
+    },
+    {
+      "type": "files",
+      "exists": [
+        "~/Workspace/fanctl/fanctl.py",
+        "~/Workspace/fanctl/test_fanctl.py"
+      ],
+      "absent": [
+        "experiments/fanctl/fanctl.py"
+      ]
+    },
+    {
+      "type": "git",
+      "clean": true,
+      "keeps_history": true
+    }
+  ],
+  "limits": {
+    "turns": 3,
+    "wall_seconds": 1500
+  },
+  "solution": {
+    "steps": [
+      "git subtree split -q -P experiments/fanctl -b fanctl-split",
+      "mkdir -p ~/Workspace/fanctl && cd ~/Workspace/fanctl && git init -q -b main && git pull -q ~/Workspace/sandbox fanctl-split",
+      "git rm -rq experiments/fanctl && git commit -qm 'Move fanctl to its own repo' && git branch -q -D fanctl-split"
+    ],
+    "answer": "fanctl now lives in ~/Workspace/fanctl with its three commits; removed from sandbox."
+  }
+}

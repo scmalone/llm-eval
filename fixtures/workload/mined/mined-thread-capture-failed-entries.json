@@ -1,0 +1,87 @@
+{
+  "id": "mined-thread-capture-failed-entries",
+  "kind": "workload",
+  "category": "mined",
+  "prompt": "Task packet (thread-capture, ~/Workspace/thread-capture). Failed captures (`status: failed`, for example '[ Removed by moderator ]' or a raw URL as the title) render with the same bold title as real content, so they are hard to tell apart.\n- In `thread_capture/html.py`, a failed entry's element carries `class=\"entry entry-failed\"`; ok entries keep the plain `entry` class.\n- Style `.entry-failed` in the page: dimmed opacity, an italic title and an accent-coloured error line.\nDone when `.venv/bin/python -m pytest tests/test_html.py` passes (the environment is already installed at `.venv`). Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/thread-capture",
+    "commit": "a131fa51bfb0bf05cf7fe9e129e824fa7c722b74",
+    "workdir": ".",
+    "answer": "73849780f2c46f7e40e01aa15307a6870f78cd2e",
+    "withhold": [
+      "tests/test_html.py"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-v",
+        "-p",
+        "no:cacheprovider",
+        "tests/test_html.py"
+      ],
+      "cwd": ".",
+      "timeout": 600,
+      "expect": [
+        "(?m)::test_a_failed_stub_carries_a_distinct_css_class_from_ok_entries PASSED"
+      ],
+      "success": "(?m)\\b\\d+ passed\\b",
+      "count": "(?m)\\b(\\d+) passed\\b"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-v",
+        "-p",
+        "no:cacheprovider",
+        "tests/test_html.py"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "thread-capture",
+    "fix": "73849780f2c46f7e40e01aa15307a6870f78cd2e",
+    "subject": "html: give failed captures a distinct, dimmed visual treatment",
+    "kind": "behavior"
+  },
+  "env": [
+    {
+      "from": "thread-capture-venv",
+      "to": ".venv",
+      "digest": "f4c50469bb654e58b98492125ab20c425e4fb6af18c8616beab5ad97ea8f7f1d"
+    }
+  ]
+}

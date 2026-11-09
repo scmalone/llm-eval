@@ -1,0 +1,81 @@
+{
+  "id": "game-blender-rock-cluster",
+  "kind": "workload",
+  "category": "game",
+  "prompt": "Task packet (blender-kit, ~/Workspace/blender-kit). Write `tools/blender/rock_cluster.py`, a headless Blender script for the canyon's rock clusters. It runs as `tools/blender-bin/blender -b --factory-startup -P tools/blender/<script>.py -- <args>` (Blender 5.2.2 is installed at `tools/blender-bin`; no display or GPU) with `--out build/rocks.blend --count 5 --seed 3`, and saves the scene to `--out`.\n- It builds exactly `--count` mesh objects named `Rock.000`, `Rock.001`, ... and nothing else in the scene.\n- Every rock is a closed 2-manifold mesh (each edge shared by exactly two faces, no loose vertices) with 200 to 1200 faces, and the cluster has 4000 faces or fewer in all.\n- Every rock rests on the ground: its lowest world-space vertex is between z = 0 and z = 0.05.\n- The whole cluster fits a 5 x 5 x 3 m footprint: every world-space vertex has |x| <= 2.5, |y| <= 2.5 and z <= 3.\n- It is deterministic: the same `--seed` builds exactly the same vertex positions, and a different seed builds a different cluster.\n- Reuse `tools/blender/meshkit.py` (scene clearing, closed rock meshes, linking, argument parsing).\nDone when `bash tests/check_rocks.sh` passes; a headless inspector checks the saved scene. Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/llm-eval-data/sources/blender-kit",
+    "commit": "ac9bde42dadc3be1621d9d29fa431f9f83163ab9",
+    "workdir": ".",
+    "answer": "678f473255e8b1d24ff287170661f9b608903eaf",
+    "withhold": [
+      "tests/inspect_blend.py",
+      "tests/check_rocks.sh"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "bash",
+        "tests/check_rocks.sh"
+      ],
+      "cwd": ".",
+      "timeout": 900,
+      "expect": [
+        "(?m)^PASS the\\ script\\ builds\\ a\\ cluster$",
+        "(?m)^PASS 5\\ rocks\\ named\\ Rock\\.000\\ to\\ Rock\\.004$",
+        "(?m)^PASS every\\ rock\\ is\\ a\\ closed\\ manifold$",
+        "(?m)^PASS every\\ rock\\ rests\\ on\\ the\\ ground$",
+        "(?m)^PASS the\\ cluster\\ fits\\ its\\ 5\\ x\\ 5\\ x\\ 3\\ m\\ footprint$",
+        "(?m)^PASS each\\ rock\\ has\\ 200\\ to\\ 1200\\ faces$",
+        "(?m)^PASS the\\ cluster\\ stays\\ under\\ 4000\\ faces$",
+        "(?m)^PASS the\\ same\\ seed\\ rebuilds\\ the\\ same\\ cluster$",
+        "(?m)^PASS another\\ seed\\ builds\\ another\\ cluster$"
+      ],
+      "success": "(?m)^0/\\d+ \\w+ checks failed$"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "bash",
+        "tests/check_rocks.sh"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "blender-kit",
+    "fix": "678f473255e8b1d24ff287170661f9b608903eaf",
+    "subject": "blender-kit: rock cluster, wing rig, facade ported to Blender 5, and the headless inspector",
+    "kind": "authored"
+  },
+  "env": [
+    {
+      "from": "blender-5.2.2",
+      "to": "tools/blender-bin",
+      "digest": "f71cca76ce2cabfb97865d82fbabeeb7c5464127043e3172b61bc1bb7901de91"
+    }
+  ]
+}

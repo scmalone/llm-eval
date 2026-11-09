@@ -1,0 +1,81 @@
+{
+  "id": "game-blender-facade-api-drift",
+  "kind": "workload",
+  "category": "game",
+  "prompt": "Task packet (blender-kit, ~/Workspace/blender-kit). `tools/blender/facade.py` was written for Blender 2.79 and fails on Blender 5.2. Port it so it runs as `tools/blender-bin/blender -b --factory-startup -P tools/blender/<script>.py -- <args>` (Blender 5.2.2 is installed at `tools/blender-bin`; no display or GPU) with `--out build/facade.blend` and builds the same scene it was written to build:\n- A mesh `Facade`: a cube scaled to 12 x 1 x 6 m centred at (0, 0, 3), using material `Stone` (RGBA 0.42, 0.36, 0.30, 1), with a UV map named `UVMap`.\n- Twelve 1.2 m square window planes `Window.000` to `Window.011` (index = column x 3 + row, 4 columns and 3 rows), each using material `Glass` (RGBA 0.05, 0.07, 0.09, 1), turned to face the front (-Y), and parented to `Facade` while staying where the grid puts them in world space: x = -4.5 + 3 x column, y = -0.51, z = 1.5 + 1.8 x row.\n- `Facade` is the active object when the file is saved.\nDone when `bash tests/check_facade.sh` passes; a headless inspector checks the saved scene. Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/llm-eval-data/sources/blender-kit",
+    "commit": "ac9bde42dadc3be1621d9d29fa431f9f83163ab9",
+    "workdir": ".",
+    "answer": "678f473255e8b1d24ff287170661f9b608903eaf",
+    "withhold": [
+      "tests/inspect_blend.py",
+      "tests/check_facade.sh"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "bash",
+        "tests/check_facade.sh"
+      ],
+      "cwd": ".",
+      "timeout": 900,
+      "expect": [
+        "(?m)^PASS the\\ script\\ runs\\ on\\ Blender\\ 5\\.2$",
+        "(?m)^PASS the\\ facade\\ wall\\ exists$",
+        "(?m)^PASS the\\ wall\\ is\\ 12\\ x\\ 1\\ x\\ 6\\ m$",
+        "(?m)^PASS twelve\\ windows\\ Window\\.000\\ to\\ Window\\.011$",
+        "(?m)^PASS each\\ window\\ is\\ parented\\ to\\ the\\ wall$",
+        "(?m)^PASS each\\ window\\ sits\\ on\\ the\\ front\\ face\\ at\\ its\\ grid\\ place,\\ 1\\.2\\ m\\ square$",
+        "(?m)^PASS Stone\\ and\\ Glass\\ keep\\ their\\ colours$",
+        "(?m)^PASS the\\ wall\\ is\\ Stone\\ and\\ every\\ window\\ is\\ Glass$",
+        "(?m)^PASS the\\ wall\\ has\\ a\\ UV\\ map\\ named\\ UVMap$"
+      ],
+      "success": "(?m)^0/\\d+ \\w+ checks failed$"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "bash",
+        "tests/check_facade.sh"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "blender-kit",
+    "fix": "678f473255e8b1d24ff287170661f9b608903eaf",
+    "subject": "blender-kit: rock cluster, wing rig, facade ported to Blender 5, and the headless inspector",
+    "kind": "authored"
+  },
+  "env": [
+    {
+      "from": "blender-5.2.2",
+      "to": "tools/blender-bin",
+      "digest": "f71cca76ce2cabfb97865d82fbabeeb7c5464127043e3172b61bc1bb7901de91"
+    }
+  ]
+}

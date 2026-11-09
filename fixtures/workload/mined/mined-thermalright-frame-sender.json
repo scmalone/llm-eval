@@ -1,0 +1,90 @@
+{
+  "id": "mined-thermalright-frame-sender",
+  "kind": "workload",
+  "category": "mined",
+  "prompt": "Task packet (thermalright-display, ~/Workspace/thermalright-display). Two `FrameSender` defects in `studio/frame_sender.py` (the helper protocol: a freshly started helper first prints a `RESOLUTION` line, then answers each frame with `OK`).\n1. A helper that is respawned internally (by `_replace_process`, or by the reopen path in `_current_process` after a close) is read as if its first stdout line were the frame acknowledgment, so the startup `RESOLUTION` line is misread. Drain that line from every respawned helper before `send()` treats stdout as an acknowledgment; each new helper receives the frame exactly once.\n2. A discarded helper is only signalled or dropped, so an abandoned one can sit forever holding the device lock. Every discarded process (on replacement and on `close()`) must be terminated with its death confirmed by waiting, escalating to `kill()` within a short bound when it does not exit.\nDone when `.venv/bin/python -m pytest tests/test_frame_sender.py` passes from `studio/` (the environment is already installed there). Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/thermalright-display",
+    "commit": "c43c9ef7635d44ac2efb601d0a7925c1b10d5ff8",
+    "workdir": ".",
+    "answer": "d9059b6ab3c6a234e20d2019c7f538a710b3a2eb",
+    "withhold": [
+      "studio/tests/test_frame_sender.py"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-v",
+        "-p",
+        "no:cacheprovider",
+        "tests/test_frame_sender.py"
+      ],
+      "cwd": "studio",
+      "timeout": 600,
+      "expect": [
+        "(?m)::test_send_skips_replacement_resolution_line_before_reading_ack PASSED",
+        "(?m)::test_send_skips_resolution_line_on_reopen_after_close PASSED",
+        "(?m)::test_replace_process_terminates_and_confirms_death_of_old_process PASSED",
+        "(?m)::test_close_terminates_and_confirms_death_escalating_to_kill PASSED"
+      ],
+      "success": "(?m)\\b\\d+ passed\\b",
+      "count": "(?m)\\b(\\d+) passed\\b"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "studio/tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-v",
+        "-p",
+        "no:cacheprovider",
+        "tests/test_frame_sender.py"
+      ],
+      "cwd": "studio",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "thermalright-display",
+    "fix": "d9059b6ab3c6a234e20d2019c7f538a710b3a2eb",
+    "subject": "Repair FrameSender RESOLUTION misread and unreaped helpers",
+    "kind": "behavior"
+  },
+  "env": [
+    {
+      "from": "thermalright-display-venv",
+      "to": "studio/.venv",
+      "digest": "d2aa1236394b9aaaf87b9d6f2ab63dd5e7cf164af0406b02a38d3525c7e36576"
+    }
+  ]
+}

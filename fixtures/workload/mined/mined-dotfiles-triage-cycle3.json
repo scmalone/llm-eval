@@ -1,0 +1,71 @@
+{
+  "id": "mined-dotfiles-triage-cycle3",
+  "kind": "workload",
+  "category": "mined",
+  "prompt": "Task packet (dotfiles, ~/Workspace/dotfiles). Third review cycle on `bin/review-triage` and the waiver check in `bin/validate-spec.py`.\n- The fingerprint `bin/review-triage --dir DIR --base SHA` prints (the third field of its `fingerprint:` line) must cover file metadata, not only bytes: changing an uncommitted file's mode from 644 to 755 changes it, and a symlink and a regular file with identical bytes get different fingerprints.\n- Waiver dates must sit on an ASCII boundary: `waived (2026-10-08\u5e74\u5ea6)` (a Unicode annotation glued to the date) and `waived (owner agreed, \u06612026-10-08)` (a non-ASCII digit before it) are both rejected by `python3 bin/validate-spec.py --accepted DIR`, while `waived (owner accepted, 2026-10-08)` still passes.\nDone when `bash tests/review-triage/run.sh` prints `review-triage: OK` and `bash tests/review-triage/waiver-test.sh` prints `waiver-test: OK`. Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/dotfiles",
+    "commit": "a2295eb294e7f88313d1b19bdf6721035a3f3dc0",
+    "workdir": ".",
+    "answer": "7ac589a2abed584d39b31af34ebda2b0d2bf598b",
+    "withhold": [
+      "tests/review-triage/run.sh",
+      "tests/review-triage/waiver-test.sh"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "bash",
+        "-c",
+        "bash tests/review-triage/run.sh && bash tests/review-triage/waiver-test.sh"
+      ],
+      "cwd": ".",
+      "timeout": 600,
+      "expect": [
+        "(?m)^  ok    mode\\ change\\ alters\\ the\\ fingerprint$",
+        "(?m)^  ok    symlink\\ and\\ file\\ differ\\ in\\ the\\ fingerprint$",
+        "(?m)^  ok    unicode\\ annotation\\ fails$",
+        "(?m)^  ok    unicode\\ digit\\ prefix\\ fails$"
+      ],
+      "success": "(?m)^waiver-test: OK$"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "bash",
+        "-c",
+        "bash tests/review-triage/run.sh && bash tests/review-triage/waiver-test.sh"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "dotfiles",
+    "fix": "7ac589a2abed584d39b31af34ebda2b0d2bf598b",
+    "subject": "fix(review-triage): close cycle 3 fingerprint metadata and Unicode date boundaries",
+    "kind": "behavior"
+  }
+}

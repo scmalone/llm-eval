@@ -1,0 +1,48 @@
+{
+  "id": "review-runner-interrupt-resume",
+  "kind": "workload",
+  "category": "review",
+  "prompt": "Review the resume path in llm-eval's llm_eval/runner.py: if the owner presses Ctrl-C in the middle of a model, what does a later resume do? Report defects with function names; no edits.",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "a5ee2e00e4bb86c6aea4e92656337e860c907873",
+    "workdir": ".",
+    "deny": [
+      "STATE.md",
+      "plans/**"
+    ]
+  },
+  "checks": [
+    {
+      "type": "findings",
+      "defects": [
+        {
+          "id": "teardown-on-interrupt",
+          "match": [
+            "teardown",
+            "finally|interrupt|KeyboardInterrupt|Ctrl-C",
+            "resume|skip"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "diff_scope",
+      "deny": [
+        "**"
+      ],
+      "allow": [],
+      "frozen": []
+    }
+  ],
+  "limits": {
+    "turns": 2,
+    "wall_seconds": 1800
+  },
+  "solution": {
+    "answer": "model_run's finally commits the teardown section even on KeyboardInterrupt, so resume sees teardown and skips the model's unfinished sections."
+  },
+  "followups": {
+    "default": "I won't be answering questions on this one; finish with your answer and change nothing."
+  }
+}

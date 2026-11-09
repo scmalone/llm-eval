@@ -1,0 +1,18 @@
+{
+ "version": 1,
+ "id": "strata-depth",
+ "output_tokens": 16384,
+ "retries": 1,
+ "depth": [
+  {
+   "id": "depth-early-instruction",
+   "seed": 111,
+   "fraction": 0.9,
+   "min_fraction": 0.8,
+   "max_turns": 14,
+   "files": 4,
+   "blocks": 6,
+   "wall_seconds": 3600
+  }
+ ]
+}

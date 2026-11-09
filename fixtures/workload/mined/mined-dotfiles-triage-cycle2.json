@@ -1,0 +1,74 @@
+{
+  "id": "mined-dotfiles-triage-cycle2",
+  "kind": "workload",
+  "category": "mined",
+  "prompt": "Task packet (dotfiles, ~/Workspace/dotfiles). Second review cycle on `bin/review-triage`, `bin/consult` and the waiver check in `bin/validate-spec.py`.\n- `bin/consult --provider pi`: when its scratch directory cannot be created (for example `TMPDIR` points somewhere unwritable), its output must start with `INCOMPLETE` and it must exit non-zero.\n- `bin/review-triage --dir REPO --base HEAD` with a dirty tracked file must not crash (it runs under bash 3.2 with `set -u`; guard the empty array).\n- Both ends of a rename are classified: after `git mv config.env app.txt` the output still contains `flags: credentials config.env`.\n- A file name cannot impersonate a count record: a committed file whose name contains a newline and tabs (`count`, newline, `100<TAB>0<TAB>fake`) still totals `totals: +1 -0`.\n- Waiver dates must stand alone: `waived (2026-10-08UTC)` and `waived (ab2026-10-08cd)` are rejected by `python3 bin/validate-spec.py --accepted DIR`.\nDone when `bash tests/review-triage/run.sh` prints `review-triage: OK`, `bash tests/review-triage/consult-pi-stub.sh` passes, and `bash tests/review-triage/waiver-test.sh` prints `waiver-test: OK`. Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/dotfiles",
+    "commit": "041219ba6f77a24a9d1e0960dd0004a074eed79e",
+    "workdir": ".",
+    "answer": "e769380d59b2688471c72734c4f24df3d54b2510",
+    "withhold": [
+      "tests/review-triage/consult-pi-stub.sh",
+      "tests/review-triage/run.sh",
+      "tests/review-triage/waiver-test.sh"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "bash",
+        "-c",
+        "bash tests/review-triage/run.sh && bash tests/review-triage/consult-pi-stub.sh && bash tests/review-triage/waiver-test.sh"
+      ],
+      "cwd": ".",
+      "timeout": 600,
+      "expect": [
+        "(?m)^  ok    scratch\\ failure\\ starts\\ with\\ INCOMPLETE$",
+        "(?m)^  ok    dirty\\ work\\ at\\ base\\ HEAD\\ does\\ not\\ crash$",
+        "(?m)^  ok    rename\\ endpoint\\ flagged$",
+        "(?m)^  ok    filename\\ cannot\\ impersonate\\ a\\ count$",
+        "(?m)^  ok    date\\ annotation\\ fails$",
+        "(?m)^  ok    date\\ word\\ suffix\\ fails$"
+      ],
+      "success": "(?m)^waiver-test: OK$"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "bash",
+        "-c",
+        "bash tests/review-triage/run.sh && bash tests/review-triage/consult-pi-stub.sh && bash tests/review-triage/waiver-test.sh"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "dotfiles",
+    "fix": "e769380d59b2688471c72734c4f24df3d54b2510",
+    "subject": "fix(review-triage): close cycle 2 gaps and record ignored/pending state",
+    "kind": "behavior"
+  }
+}

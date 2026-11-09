@@ -1,0 +1,77 @@
+{
+  "id": "mined-job-tracker-private-evidence",
+  "kind": "workload",
+  "category": "mined",
+  "prompt": "Task packet (job-tracker, ~/Workspace/job-tracker). Privacy bug: role assessments can send private career evidence (configured candidate evidence, the corpus-directory fallback, or a role's free-text notes) to a remote model provider. Block it before any remote fetch.\n- Export `classifyAssessmentInput(input)` from `src/assessment-llm.mjs`: it returns `\"public-posting-only\"` only when both `candidateEvidence` and `notes` are absent, empty or whitespace; anything else returns `\"contains-private-candidate-evidence\"`.\n- Export `assertAssessmentDataBoundary(input, provider)`: an unknown provider throws an error whose message contains `provider is not valid`; private evidence with a remote provider (claude, codex, openai and deepinfra are all remote; there is no local provider yet) throws an error whose message contains `Real career and personal evidence needs local inference`. It returns the classification otherwise.\n- `generateAssessmentDraft(record, { provider, apiKey, candidateEvidence, fetchImpl })` applies the guard (with the record's `notes`) before calling `fetchImpl`, so a blocked call never fetches; a posting-only call still fetches once and returns the draft.\n- The server's config reader keeps an omitted provider defaulting to deepinfra, but a saved provider it does not know stays unknown, so generation fails closed; the server guards the resolved config (explicit evidence or corpus fallback) before the provider call.\nDone when `node --test test/assessment-data-boundary.test.mjs test/assessment-store.test.mjs` passes. Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/job-tracker",
+    "commit": "70a70f1bf379713918c732b84e0a3a67aeddf604",
+    "workdir": ".",
+    "answer": "b623d279bd1fadc72e8c4c8dd4059243521ea78b",
+    "withhold": [
+      "test/assessment-data-boundary.test.mjs",
+      "test/assessment-store.test.mjs"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "node",
+        "--test",
+        "test/assessment-data-boundary.test.mjs",
+        "test/assessment-store.test.mjs"
+      ],
+      "cwd": ".",
+      "timeout": 600,
+      "expect": [
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )classifies\\ only\\ empty\\ resolved\\ evidence\\ as\\ public\\-posting\\-only(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )configured\\ private\\ evidence\\ is\\ rejected\\ before\\ every\\ remote\\ fetch(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )free\\-text\\ record\\ notes\\ are\\ rejected\\ before\\ every\\ remote\\ fetch(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )corpus\\-directory\\ fallback\\ evidence\\ is\\ rejected\\ before\\ every\\ remote\\ fetch(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )public\\-posting\\-only\\ requests\\ reach\\ each\\ mocked\\ remote\\ provider(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )unknown\\ providers\\ fail\\ closed\\ and\\ never\\ reach\\ fetch(?: \\(|$)"
+      ],
+      "success": "(?m)^(?:\u2139|#) fail 0$",
+      "count": "(?m)^(?:\u2139|#) tests (\\d+)$",
+      "skipped": "(?m)^(?:\u2139|#) (?:skipped|todo) [1-9]"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "test/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "node",
+        "--test",
+        "test/assessment-data-boundary.test.mjs",
+        "test/assessment-store.test.mjs"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "job-tracker",
+    "fix": "b623d279bd1fadc72e8c4c8dd4059243521ea78b",
+    "subject": "fix: block private evidence from remote assessments",
+    "kind": "behavior"
+  }
+}

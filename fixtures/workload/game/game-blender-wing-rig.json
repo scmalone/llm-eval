@@ -1,0 +1,80 @@
+{
+  "id": "game-blender-wing-rig",
+  "kind": "workload",
+  "category": "game",
+  "prompt": "Task packet (blender-kit, ~/Workspace/blender-kit). Write `tools/blender/wing_rig.py`, a headless Blender script for the dragon's wing rig. It runs as `tools/blender-bin/blender -b --factory-startup -P tools/blender/<script>.py -- <args>` (Blender 5.2.2 is installed at `tools/blender-bin`; no display or GPU) with `--out build/rig.blend --glb build/rig.glb`, saves the scene to `--out` and exports it as GLB to `--glb`.\n- One armature object named `DragonRig` with these bones and parents: `spine` (the root), `neck` (child of spine), `wing-left-humerus` and `wing-right-humerus` (children of spine), `wing-left-forearm` and `wing-right-forearm` (children of their humerus).\n- The dragon faces -Y, so its tail is +Y. Each humerus's own Y axis (head to tail) is its flap hinge and must point back toward the tail: its normalized direction has y > 0.5. Left and right wing bones mirror each other exactly across x (heads and tails).\n- Each humerus has a Limit Rotation constraint limiting its Z rotation to -60 to +60 degrees.\n- The GLB must re-import with the same bone names.\n- Reuse `tools/blender/meshkit.py` (scene clearing, linking, argument parsing).\nDone when `bash tests/check_rig.sh` passes; a headless inspector checks the saved scene and re-imports the GLB. Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/llm-eval-data/sources/blender-kit",
+    "commit": "ac9bde42dadc3be1621d9d29fa431f9f83163ab9",
+    "workdir": ".",
+    "answer": "678f473255e8b1d24ff287170661f9b608903eaf",
+    "withhold": [
+      "tests/inspect_blend.py",
+      "tests/check_rig.sh"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "bash",
+        "tests/check_rig.sh"
+      ],
+      "cwd": ".",
+      "timeout": 900,
+      "expect": [
+        "(?m)^PASS the\\ script\\ builds\\ the\\ rig\\ and\\ its\\ GLB$",
+        "(?m)^PASS the\\ armature\\ object\\ is\\ DragonRig$",
+        "(?m)^PASS the\\ rig\\ has\\ its\\ six\\ bones$",
+        "(?m)^PASS each\\ bone\\ has\\ its\\ parent$",
+        "(?m)^PASS the\\ wings\\ mirror\\ across\\ x$",
+        "(?m)^PASS each\\ humerus\\ hinge\\ points\\ back\\ toward\\ the\\ tail$",
+        "(?m)^PASS each\\ humerus\\ limits\\ its\\ Z\\ rotation\\ to\\ plus\\ or\\ minus\\ 60\\ degrees$",
+        "(?m)^PASS the\\ GLB\\ re\\-imports\\ with\\ the\\ same\\ bone\\ names$"
+      ],
+      "success": "(?m)^0/\\d+ \\w+ checks failed$"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "bash",
+        "tests/check_rig.sh"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "blender-kit",
+    "fix": "678f473255e8b1d24ff287170661f9b608903eaf",
+    "subject": "blender-kit: rock cluster, wing rig, facade ported to Blender 5, and the headless inspector",
+    "kind": "authored"
+  },
+  "env": [
+    {
+      "from": "blender-5.2.2",
+      "to": "tools/blender-bin",
+      "digest": "f71cca76ce2cabfb97865d82fbabeeb7c5464127043e3172b61bc1bb7901de91"
+    }
+  ]
+}

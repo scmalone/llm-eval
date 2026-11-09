@@ -1,0 +1,39 @@
+{
+  "id": "lookup-opinions",
+  "kind": "workload",
+  "category": "lookup",
+  "prompt": "What's in my opinions.md file and when does it get called?",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "150c8318d51ffa022837f40d4038d6b2fba92850",
+    "workdir": ".",
+    "cwd": ""
+  },
+  "checks": [
+    {
+      "type": "answer",
+      "all": [
+        "(?i)discretionary|judg(e)?ment",
+        "(?i)evidence|engineering|review"
+      ]
+    },
+    {
+      "type": "diff_scope",
+      "deny": [
+        "**"
+      ],
+      "allow": [],
+      "frozen": []
+    }
+  ],
+  "limits": {
+    "turns": 2,
+    "wall_seconds": 900
+  },
+  "solution": {
+    "answer": "~/OPINIONS.md holds your positions on evidence, engineering, autonomy, AI and privacy, research and review; AGENTS.md says to read it when a task turns on discretionary judgment (architecture, tradeoffs, recommendations)."
+  },
+  "followups": {
+    "default": "I won't be answering questions on this one; finish with your answer and change nothing."
+  }
+}

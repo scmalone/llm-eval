@@ -1,0 +1,73 @@
+{
+  "id": "review-llm-eval-live-recovery",
+  "kind": "workload",
+  "category": "review",
+  "prompt": "Do a blind review of llm_eval/live.py in llm-eval for recovery and safety defects: anything that could leave production stopped, leak a server, or misclassify a failure. List each finding with the function and why it matters. Don't change code.",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "40885d9b2dfb813fa1480d1e4db4457105ce161f",
+    "workdir": ".",
+    "deny": [
+      "STATE.md"
+    ]
+  },
+  "checks": [
+    {
+      "type": "findings",
+      "defects": [
+        {
+          "id": "lle-001",
+          "match": [
+            "restore",
+            "TimeoutExpired|time\\s*out",
+            "stop|down|leav|strand|never restart"
+          ]
+        },
+        {
+          "id": "lle-002",
+          "match": [
+            "scratch|server|process",
+            "resume|crash|restart|leftover|orphan",
+            "memory|pid|ownership|track|own",
+            "cannot|can't|not |only|lost|never|leak|leftover|without"
+          ]
+        },
+        {
+          "id": "lle-003",
+          "match": [
+            "cudaMalloc|marker|OOM|out of memory",
+            "lower|case|retr|substring|match",
+            "mismatch|miss|not |never|fail|bug|wrong|retr|in place"
+          ]
+        },
+        {
+          "id": "lle-005",
+          "match": [
+            "load",
+            "memory|baseline",
+            "fail",
+            "skip|bypass|never|without|gate|check"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "diff_scope",
+      "deny": [
+        "**"
+      ],
+      "allow": [],
+      "frozen": []
+    }
+  ],
+  "limits": {
+    "turns": 2,
+    "wall_seconds": 1800
+  },
+  "solution": {
+    "answer": "restore(): subprocess TimeoutExpired escapes and leaves production stopped.\nScratch server ownership is kept in memory only, so a resumed run after a crash cannot find or stop the leftover server.\nThe cudaMalloc failed marker is mixed-case but matched against lowercased text, and a request-time OOM is retried in place.\nA failed load skips the memory-return-to-baseline gate."
+  },
+  "followups": {
+    "default": "I won't be answering questions on this one; finish with your answer and change nothing."
+  }
+}

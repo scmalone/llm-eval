@@ -1,0 +1,7 @@
+{
+  "id": "smoke-1",
+  "kind": "smoke",
+  "prompt": "Reply with the single word OK.",
+  "max_output_tokens": 1024,
+  "seed": 1
+}

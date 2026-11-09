@@ -1,0 +1,72 @@
+{
+  "id": "mined-strata-live-rate",
+  "kind": "workload",
+  "category": "mined",
+  "prompt": "Task packet (Strata, ~/Workspace/Strata). Two Monitor metrics bugs in `serve/server.py`.\n1. `live.tok_s` is `generated / (now - first_token)`, a cumulative mean whose first sample is 1/elapsed: against an engine paced at 25 tokens/s the Speed card read 27,235.7 tok/s at the first sample, then undershot for a second, and the sparkline (scaled to its 60-sample maximum) went flat for a minute. Make `tok_s` the rate over the last `RATE_WINDOW_S` (2 s); while a request is younger than `RATE_MIN_SPAN_S` (0.25 s) report the mean so far with its span floored there, so no sample can diverge (live readings stay under four times the true rate). Keep the old formula as `_tok_s_mean()`, still reported as `live.tok_s_mean` and `status.tokens_per_s_mean`. When idle, `live.state` is `idle` and `live.tok_s` is null.\n2. A request that ends without the engine's DONE line (engine death, error, client disconnect) records the previous request's generated count and decode time as its own `decode_tok_s`. Trust the engine's counters only when its DONE replaced the object captured at request start; such a request's row has `finish: \"error\"`, its own `output_tokens`, `decode_tok_s: null` and `engine_generated: null` (the row carries the engine's own token count as `engine_generated` when there is one).\nDone when `python3 -m unittest -v test_server` passes from `serve/`. Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/Strata",
+    "commit": "6e1a7be2575edfb8698839e4404942b62fd89d86",
+    "workdir": ".",
+    "answer": "ef14b6ca69397d209ce61442a165459a71e1c482",
+    "withhold": [
+      "serve/test_server.py"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "-v",
+        "test_server"
+      ],
+      "cwd": "serve",
+      "timeout": 900,
+      "expect": [
+        "(?m)^test_the_live_number_is_a_rate \\(",
+        "(?m)^test_a_request_without_a_done_keeps_no_engine_counters \\("
+      ],
+      "skipped": "(?m)^(?:OK|FAILED) \\(.*\\b(?:skipped|expected failures)="
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "serve/test_server.py"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "-v",
+        "test_server"
+      ],
+      "cwd": "serve",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "Strata",
+    "fix": "ef14b6ca69397d209ce61442a165459a71e1c482",
+    "subject": "The Monitor's live tok/s is a rate over the last seconds, not the mean since the first token",
+    "kind": "behavior"
+  }
+}

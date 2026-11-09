@@ -1,0 +1,37 @@
+{
+  "id": "vision-ground-dialog-save",
+  "kind": "workload",
+  "category": "vision",
+  "requires": [
+    "image"
+  ],
+  "source": {
+    "repo": "~/Workspace/llm-eval-data/sources/vision-set",
+    "commit": "ab5bea83dec10616ee90a59846c7e877837ad0d7",
+    "workdir": "."
+  },
+  "limits": {
+    "turns": 1,
+    "wall_seconds": 600
+  },
+  "prompt": "Task packet (vision-set, ~/Workspace/vision-set). Look at `screens/dialog.png`. Open it with your read tool (it is an image, 1024 x 768 pixels). Where is the Save button? Give its bounding box in the image's pixel coordinates (origin top left), and end with a line `BOX: x1, y1, x2, y2`.",
+  "checks": [
+    {
+      "type": "box",
+      "target": [
+        688,
+        548,
+        798,
+        590
+      ],
+      "size": [
+        1024,
+        768
+      ],
+      "min_iou": 0.5
+    }
+  ],
+  "solution": {
+    "answer": "BOX: 688, 548, 798, 590"
+  }
+}

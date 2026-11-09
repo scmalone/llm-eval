@@ -1,0 +1,78 @@
+{
+  "id": "depth-tool-call-late",
+  "kind": "workload",
+  "category": "ops",
+  "depth": true,
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "9efef37ddb280d1b39e9aecf4177d9e9dd9a6bcf",
+    "workdir": "."
+  },
+  "fill": {
+    "fraction": 0.87,
+    "max_turns": 24,
+    "prompts": [
+      "Read plans/2026-10-03-workload-benchmark.md and STATE.md in full, then give me one line on what each one does.",
+      "Read llm_eval/runner.py and llm_eval/live.py in full, then give me one line on what each one does.",
+      "Read tests/test_live.py and llm_eval/acceptance.py in full, then give me one line on what each one does.",
+      "Read llm_eval/workload/replicas.py and tests/test_ladder.py in full, then give me one line on what each one does.",
+      "Read llm_eval/metrics/ingest.py, llm_eval/workload/graders.py and tests/test_workload_acceptance.py in full, then give me one line on what each one does.",
+      "Read tests/test_metrics.py, tests/test_workload.py, tests/test_workload_session.py and tests/test_runner.py in full, then give me one line on what each one does.",
+      "Read tests/test_workload_runner.py, RUNBOOK-harnesses.md, plans/2026-10-03-atomic-pilot-and-metrics-corpus.md and llm_eval/judge.py in full, then give me one line on what each one does.",
+      "Read llm_eval/workload/driver.py, llm_eval/ladder.py, llm_eval/htmlreport.py and tests/test_capture.py in full, then give me one line on what each one does.",
+      "Read tests/test_efficiency_fixes.py, tests/test_preflight.py, llm_eval/workload/prepare.py, plans/2026-10-03-portable-orchestrator.md and llm_eval/workload/session.py in full, then give me one line on what each one does.",
+      "Read llm_eval/workload/snapshot.py, llm_eval/workload/machine.py, llm_eval/preflight.py, llm_eval/adapters.py and llm_eval/metrics/schema.py in full, then give me one line on what each one does.",
+      "Read tests/test_redteam_fixes.py, llm_eval/screen.py, README.md, llm_eval/plan.py, tests/test_screen.py and llm_eval/workload/tasks.py in full, then give me one line on what each one does.",
+      "Read tests/test_acceptance.py, RUNBOOK.md, llm_eval/workload/capture.py, tests_integration/test_opencode_sandbox.py, tests/test_review_fixes.py, llm_eval/workload/webfix.py and tests_integration/test_authored_tasks.py in full, then give me one line on what each one does.",
+      "Read tests/test_workload_ops.py, tests/test_judge.py, llm_eval/workload/opencode_config.py, llm_eval/workload/sandbox.py, plans/2026-10-04-screen-then-top3.md, llm_eval/workload/fakellm.py, llm_eval/state.py, llm_eval/metrics/logparse.py and llm_eval/telemetry.py in full, then give me one line on what each one does.",
+      "Read llm_eval/cli.py, tests/data/llama-server-sample.log, llm_eval/haystack.py, llm_eval/workload/relay.py, llm_eval/workload/chatsweep.py, tests/test_telemetry.py, llm_eval/workload/metrics.py, tests/test_watchdog.py, tests_integration/test_ops_replica.py, RUNS.md, llm_eval/metrics/__main__.py, llm_eval/integration.py and tests_integration/test_webfetch.py in full, then give me one line on what each one does."
+    ]
+  },
+  "prompt": "Two things, then stop. First run `git hash-object llm_eval/ladder.py` and tell me exactly what it prints. Second, in llm_eval/policy.py add a line `RECALL_RESERVE_TOKENS = 2048` directly below `RESERVE = 2048`. Change nothing else.",
+  "checks": [
+    {
+      "type": "answer",
+      "all": [
+        "b6734b36e269ad9075190242c9c13683e08a5064"
+      ]
+    },
+    {
+      "type": "commands",
+      "require": [
+        "git hash-object"
+      ],
+      "forbid": []
+    },
+    {
+      "type": "files",
+      "contains": {
+        "llm_eval/policy.py": "^RESERVE = 2048\\nRECALL_RESERVE_TOKENS = 2048$"
+      }
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "llm_eval/policy.py"
+      ],
+      "deny": [],
+      "frozen": [],
+      "min_changed": 1
+    },
+    {
+      "type": "depth",
+      "min_peak_tokens": 40000,
+      "min_fraction": 0.83
+    }
+  ],
+  "limits": {
+    "turns": 2,
+    "wall_seconds": 7200
+  },
+  "solution": {
+    "steps": [
+      "git hash-object llm_eval/ladder.py",
+      "sed -i 's/^RESERVE = 2048$/RESERVE = 2048\\nRECALL_RESERVE_TOKENS = 2048/' llm_eval/policy.py"
+    ],
+    "answer": "b6734b36e269ad9075190242c9c13683e08a5064; added RECALL_RESERVE_TOKENS = 2048 below RESERVE in llm_eval/policy.py."
+  }
+}

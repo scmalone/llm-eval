@@ -1,0 +1,60 @@
+{
+  "id": "review-llm-eval-memory-obligation",
+  "kind": "workload",
+  "category": "review",
+  "prompt": "Second-pass review of llm-eval's live adapter and runner (llm_eval/live.py, llm_eval/runner.py). Look for state that is lost across a failed check or a resume, adapters that can be paired with the wrong run, and timeouts that hide an out-of-memory. Findings only, with function names.",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "4dbf19ff2fb881572ec8bc1ee9d9b844587673da",
+    "workdir": ".",
+    "deny": [
+      "STATE.md"
+    ]
+  },
+  "checks": [
+    {
+      "type": "findings",
+      "defects": [
+        {
+          "id": "rt-001",
+          "match": [
+            "memory|baseline|owe|obligation",
+            "resume|fail|check"
+          ]
+        },
+        {
+          "id": "rt-003",
+          "match": [
+            "run[_ ]?id|run ID",
+            "adapter|scratch|snapshot"
+          ]
+        },
+        {
+          "id": "rt-004",
+          "match": [
+            "OOM|out of memory|allocation|cudaMalloc",
+            "time\\s*out|TimeoutError"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "diff_scope",
+      "deny": [
+        "**"
+      ],
+      "allow": [],
+      "frozen": []
+    }
+  ],
+  "limits": {
+    "turns": 2,
+    "wall_seconds": 1800
+  },
+  "solution": {
+    "answer": "The memory-return obligation is dropped after a failed check and is not adopted on resume, so the next load can run on held memory.\nLiveAdapter does not require a run_id and execute does not reject an adapter for another run; the snapshot lacks the scratch unit name.\nAn OOM in the log followed by a request timeout is treated as a timeout and retried instead of a capacity error."
+  },
+  "followups": {
+    "default": "I won't be answering questions on this one; finish with your answer and change nothing."
+  }
+}

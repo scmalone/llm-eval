@@ -1,0 +1,81 @@
+{
+  "id": "game-flight-test-wall-bands",
+  "kind": "workload",
+  "category": "game",
+  "prompt": "Task packet (flight-test, ~/Workspace/flight-test). Add fixed-height wall bands as a lift reference (milestone A, D16) in `src/scene/journeyTerrain.ts`.\n- For every wall mesh `createJourneyTerrain(journey)` makes (`userData.kind` `wall`, named `journey-wall-<suffix>`), add one band mesh named `journey-height-band-<suffix>` with `userData.kind` `height-band` and `userData.heightsM` listing its band heights: every 5 m from 5 m (`[5, 10, 15, ...]`), all below that wall's top (`journey.obstaclesAt(...)` gives the wall's `topHeightM`).\n- Bands sit 0.03 m off the wall face on the corridor side (seen from the safe volume, a band is hit no more than 0.05 m before its wall) and outside the wall cushion (no nearer than `effectiveSweptHalfEnvelopeM + wallCushionM`).\n- Bands are visual only: they are not solid. All bands share one material, and `terrain.dispose()` frees them too (the test scene then disposes 13 geometries and 5 materials, up from 7 and 4).\nDone when `node_modules/.bin/vitest run tests/journeyScene.test.ts` passes (dependencies are installed). Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/flight-test",
+    "commit": "a29e468ccbb2377793c30a16fb0012b089b07f62",
+    "workdir": ".",
+    "answer": "61d60a16ad3b3594a031e7164c00f924e7e8efbb",
+    "withhold": [
+      "tests/journeyScene.test.ts"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "node_modules/.bin/vitest",
+        "run",
+        "--reporter=verbose",
+        "tests/journeyScene.test.ts"
+      ],
+      "cwd": ".",
+      "timeout": 600,
+      "expect": [
+        "(?m)\u2713 .*adds\\ fixed\\-height\\ reference\\ bands\\ to\\ every\\ wall\\ range,\\ below\\ the\\ rim"
+      ],
+      "success": "(?m)Tests\\s+\\d+ passed",
+      "count": "(?m)Tests\\s+(\\d+) passed"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "node_modules/.bin/vitest",
+        "run",
+        "--reporter=verbose",
+        "tests/journeyScene.test.ts"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "flight-test",
+    "fix": "61d60a16ad3b3594a031e7164c00f924e7e8efbb",
+    "subject": "Add fixed-height wall bands as a lift reference",
+    "kind": "behavior"
+  },
+  "env": [
+    {
+      "from": "flight-test-node_modules",
+      "to": "node_modules",
+      "writable": [
+        ".vite-temp",
+        ".vite"
+      ],
+      "digest": "29fa3e927a27c075dc43fd8497e524282e6c2196dfab2515883ac9e0edf768f1"
+    }
+  ]
+}

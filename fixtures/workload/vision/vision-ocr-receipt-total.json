@@ -1,0 +1,32 @@
+{
+  "id": "vision-ocr-receipt-total",
+  "kind": "workload",
+  "category": "vision",
+  "requires": [
+    "image"
+  ],
+  "source": {
+    "repo": "~/Workspace/llm-eval-data/sources/vision-set",
+    "commit": "ab5bea83dec10616ee90a59846c7e877837ad0d7",
+    "workdir": "."
+  },
+  "limits": {
+    "turns": 1,
+    "wall_seconds": 600
+  },
+  "prompt": "Task packet (vision-set, ~/Workspace/vision-set). Look at `receipts/grocery.png`. Open it with your read tool (it is an image, 1024 x 768 pixels). What is the receipt's TOTAL? End your answer with a line `TOTAL: <amount>`.",
+  "checks": [
+    {
+      "type": "answer",
+      "all": [
+        "(?m)^TOTAL:\\s*\\$?47\\.83\\s*$"
+      ],
+      "one_value": [
+        "(?m)^[\\s*_>#-]*TOTAL\\s*:[*_\\s]*(.*?)[*_\\s]*$"
+      ]
+    }
+  ],
+  "solution": {
+    "answer": "TOTAL: 47.83"
+  }
+}

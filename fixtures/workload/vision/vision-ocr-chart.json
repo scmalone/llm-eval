@@ -1,0 +1,32 @@
+{
+  "id": "vision-ocr-chart",
+  "kind": "workload",
+  "category": "vision",
+  "requires": [
+    "image"
+  ],
+  "source": {
+    "repo": "~/Workspace/llm-eval-data/sources/vision-set",
+    "commit": "ab5bea83dec10616ee90a59846c7e877837ad0d7",
+    "workdir": "."
+  },
+  "limits": {
+    "turns": 1,
+    "wall_seconds": 600
+  },
+  "prompt": "Task packet (vision-set, ~/Workspace/vision-set). Look at `charts/throughput.png`. Open it with your read tool (it is an image, 1024 x 768 pixels). Which month has the highest bar, and what value is printed on it? End with a line `PEAK: <month> <value>`.",
+  "checks": [
+    {
+      "type": "answer",
+      "all": [
+        "(?m)^PEAK:\\s*May\\s+563\\s*$"
+      ],
+      "one_value": [
+        "(?m)^[\\s*_>#-]*PEAK\\s*:[*_\\s]*(.*?)[*_\\s]*$"
+      ]
+    }
+  ],
+  "solution": {
+    "answer": "PEAK: May 563"
+  }
+}

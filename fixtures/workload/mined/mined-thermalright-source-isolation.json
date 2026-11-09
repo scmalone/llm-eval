@@ -1,0 +1,90 @@
+{
+  "id": "mined-thermalright-source-isolation",
+  "kind": "workload",
+  "category": "mined",
+  "prompt": "Task packet (thermalright-display, ~/Workspace/thermalright-display). Two confirmed defects from a blind review of the sources and events work.\n1. `run_sources(registry, sources, sleep=...)` in `studio/sources/runner.py`: a failure outside `poll` (a source whose `interval_seconds` is `None` or otherwise invalid, or a `RecursionError` from a deeply nested payload) ends that source's task, and the gather then cancels every other source. One bad source must never stop the others: a `RecursionError` counts as an invalid payload, and a bad interval becomes an error event plus a 60 s fallback interval; the failing sources' snapshots read `error` while the healthy ones stay `active` and the runner keeps running.\n2. `studio/events.py` accepts NaN or Infinity in a payload and stores it as null. Reject payloads containing NaN, Infinity or nesting deep enough to fail encoding, as invalid (a 400 at the HTTP route).\nDone when `.venv/bin/python -m pytest tests/test_events.py tests/test_source_runner.py` passes from `studio/` (the environment is already installed there). Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/thermalright-display",
+    "commit": "714c34ac45be665200e88ce3f983973d738db653",
+    "workdir": ".",
+    "answer": "2624ccaaa6dc4e519893e898632835c12e617b7f",
+    "withhold": [
+      "studio/tests/test_events.py",
+      "studio/tests/test_source_runner.py"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-v",
+        "-p",
+        "no:cacheprovider",
+        "tests/test_events.py",
+        "tests/test_source_runner.py"
+      ],
+      "cwd": "studio",
+      "timeout": 600,
+      "expect": [
+        "(?m)::test_failure_outside_poll_does_not_stop_other_sources PASSED"
+      ],
+      "success": "(?m)\\b\\d+ passed\\b",
+      "count": "(?m)\\b(\\d+) passed\\b"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "studio/tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-v",
+        "-p",
+        "no:cacheprovider",
+        "tests/test_events.py",
+        "tests/test_source_runner.py"
+      ],
+      "cwd": "studio",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "thermalright-display",
+    "fix": "2624ccaaa6dc4e519893e898632835c12e617b7f",
+    "subject": "thermalright-display: U1 review fixes, isolate source task failures and reject NaN payloads",
+    "kind": "behavior"
+  },
+  "env": [
+    {
+      "from": "thermalright-display-venv",
+      "to": "studio/.venv",
+      "digest": "d2aa1236394b9aaaf87b9d6f2ab63dd5e7cf164af0406b02a38d3525c7e36576"
+    }
+  ]
+}

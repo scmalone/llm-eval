@@ -1,0 +1,32 @@
+{
+  "id": "vision-ocr-receipt-line",
+  "kind": "workload",
+  "category": "vision",
+  "requires": [
+    "image"
+  ],
+  "source": {
+    "repo": "~/Workspace/llm-eval-data/sources/vision-set",
+    "commit": "ab5bea83dec10616ee90a59846c7e877837ad0d7",
+    "workdir": "."
+  },
+  "limits": {
+    "turns": 1,
+    "wall_seconds": 600
+  },
+  "prompt": "Task packet (vision-set, ~/Workspace/vision-set). Look at `receipts/hardware.png`. Open it with your read tool (it is an image, 1024 x 768 pixels). What does the line for the M8 hex bolts cost? End with a line `PRICE: <amount>`.",
+  "checks": [
+    {
+      "type": "answer",
+      "all": [
+        "(?m)^PRICE:\\s*\\$?6\\.72\\s*$"
+      ],
+      "one_value": [
+        "(?m)^[\\s*_>#-]*PRICE\\s*:[*_\\s]*(.*?)[*_\\s]*$"
+      ]
+    }
+  ],
+  "solution": {
+    "answer": "PRICE: 6.72"
+  }
+}

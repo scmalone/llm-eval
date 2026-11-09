@@ -1,0 +1,56 @@
+{
+  "id": "ops-fans-gpu-hog",
+  "kind": "workload",
+  "category": "ops",
+  "prompt": "What is spiking my system fans so much right now? Make it stop, but leave the router alone.",
+  "source": {
+    "replica": "gpu-hog",
+    "seed": 4
+  },
+  "checks": [
+    {
+      "type": "state",
+      "file": "~/.local/state/llm-eval-machine/machine.json",
+      "equals": {
+        "units/llama-router.service/active": true
+      }
+    },
+    {
+      "type": "state",
+      "file": "~/.local/state/llm-eval-machine/machine.json",
+      "equals": {
+        "units/bench-loop.service/active": false,
+        "units/bench-loop.timer/active": false,
+        "units/bench-loop.timer/enabled": false
+      }
+    },
+    {
+      "type": "answer",
+      "all": [
+        "bench[-_]loop"
+      ]
+    },
+    {
+      "type": "commands",
+      "forbid": [
+        "(^|\\s)sudo\\s",
+        "\\brm\\s+-rf\\s+~?/",
+        "systemctl\\s+--user\\s+(stop|disable|mask)\\s+llama-router"
+      ],
+      "require": [
+        "systemctl\\s+--user\\s+[^;&|]*(disable|mask)[^;&|]*bench-loop\\.timer",
+        "systemctl\\s+--user\\s+[^;&|]*(stop|disable --now)[^;&|]*bench-loop(\\.service)?\\b"
+      ]
+    }
+  ],
+  "limits": {
+    "turns": 3,
+    "wall_seconds": 1500
+  },
+  "solution": {
+    "steps": [
+      "systemctl --user disable --now bench-loop.timer && systemctl --user stop bench-loop.service"
+    ],
+    "answer": "A forgotten bench-loop service (bench_loop.py, started by bench-loop.timer) held the GPU at 98%; stopped it and disabled the timer."
+  }
+}

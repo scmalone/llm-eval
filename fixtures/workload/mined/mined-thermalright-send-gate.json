@@ -1,0 +1,87 @@
+{
+  "id": "mined-thermalright-send-gate",
+  "kind": "workload",
+  "category": "mined",
+  "prompt": "Task packet (thermalright-display, ~/Workspace/thermalright-display). Bug from a physical re-sit: the studio server's `sending` gate releases after only `panel_send_timeout_seconds + panel_send_abort_grace_seconds` (2.5 s), far shorter than a real cold connect (about 8.6 s) that `close()` can no longer abort. Every tick after that window starts another concurrent `send()`, each racing for the same device lock ('panel already owned by another sender'), and the panel never recovers.\n- In `studio/server.py`, the gate must stay held until the underlying send task itself completes, however long an unabortable connect takes: one `send()` call at a time, never two in flight.\nDone when `.venv/bin/python -m pytest tests/test_scene_tick.py` passes from `studio/` (the environment is already installed there). Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/thermalright-display",
+    "commit": "b53b5fffaed0f7cb4948e0be4677983084d2bb88",
+    "workdir": ".",
+    "answer": "0ae2cbc5827ae345b976b4ffb191908a58f8e727",
+    "withhold": [
+      "studio/tests/test_scene_tick.py"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-v",
+        "-p",
+        "no:cacheprovider",
+        "tests/test_scene_tick.py"
+      ],
+      "cwd": "studio",
+      "timeout": 600,
+      "expect": [
+        "(?m)::test_send_gate_stays_held_for_the_full_duration_of_an_unabortable_connect PASSED"
+      ],
+      "success": "(?m)\\b\\d+ passed\\b",
+      "count": "(?m)\\b(\\d+) passed\\b"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "studio/tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "-o",
+        "addopts=",
+        "-v",
+        "-p",
+        "no:cacheprovider",
+        "tests/test_scene_tick.py"
+      ],
+      "cwd": "studio",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "thermalright-display",
+    "fix": "0ae2cbc5827ae345b976b4ffb191908a58f8e727",
+    "subject": "thermalright-display: hold the send gate for the full duration of a send, not just the abort-grace window",
+    "kind": "behavior"
+  },
+  "env": [
+    {
+      "from": "thermalright-display-venv",
+      "to": "studio/.venv",
+      "digest": "d2aa1236394b9aaaf87b9d6f2ab63dd5e7cf164af0406b02a38d3525c7e36576"
+    }
+  ]
+}

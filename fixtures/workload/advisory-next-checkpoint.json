@@ -1,0 +1,50 @@
+{
+  "id": "advisory-next-checkpoint",
+  "kind": "workload",
+  "category": "advisory",
+  "prompt": "Of my open llm-eval next steps, which should I do first and why?",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "a849a399b55d31945b2aec0265f6b95f31f59880",
+    "workdir": "."
+  },
+  "checks": [
+    {
+      "type": "style",
+      "options": true,
+      "no_em_dash": true
+    },
+    {
+      "type": "answer",
+      "all": [
+        "(?i)workflow_task|preflight|approval|profile|acceptance"
+      ]
+    },
+    {
+      "type": "diff_scope",
+      "deny": [
+        "**"
+      ],
+      "allow": [],
+      "frozen": []
+    },
+    {
+      "type": "commands",
+      "forbid": [
+        "acceptance\\s+(run|resume)",
+        "\\bgit\\s+(commit|push|reset)",
+        "(^|\\s)sudo\\s"
+      ]
+    }
+  ],
+  "limits": {
+    "turns": 2,
+    "wall_seconds": 900
+  },
+  "solution": {
+    "answer": "A. **(Recommended)** Run the next untested profile through the acceptance runbook.\nB. Scope the workflow_task section.\nC. Run preflight and plan only."
+  },
+  "followups": {
+    "default": "I won't be answering questions on this one; finish with your answer and change nothing."
+  }
+}

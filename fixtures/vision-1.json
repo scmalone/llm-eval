@@ -1,0 +1,21 @@
+{
+  "id": "vision-1",
+  "kind": "vision",
+  "image": {
+    "quadrants": [
+      "red",
+      "green",
+      "blue",
+      "yellow"
+    ]
+  },
+  "prompt": "The image has four solid-color quadrants. Name the color of each in reading order (top-left, top-right, bottom-left, bottom-right), one lowercase word per line, nothing else.",
+  "expected": [
+    "red",
+    "green",
+    "blue",
+    "yellow"
+  ],
+  "max_output_tokens": 4096,
+  "seed": 1
+}

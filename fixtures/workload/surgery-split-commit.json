@@ -1,0 +1,49 @@
+{
+  "id": "surgery-split-commit",
+  "kind": "workload",
+  "category": "surgery",
+  "prompt": "In ~/Workspace/fanctl, split my last commit into two: the code change first, then the docs. It hasn't been pushed.",
+  "source": {
+    "replica": "split-commit",
+    "seed": 1
+  },
+  "checks": [
+    {
+      "type": "git",
+      "recent_commits": [
+        {
+          "files": [
+            "src/**"
+          ]
+        },
+        {
+          "files": [
+            "docs/**"
+          ]
+        }
+      ],
+      "contains_commits": [
+        "61317ba79d33cc1e55bb0c56cec44fc3877eb2ea"
+      ],
+      "clean": true,
+      "origin_fast_forward": "~/git/fanctl.git"
+    },
+    {
+      "type": "files",
+      "contains": {
+        "src/fan.py": "max\\(30",
+        "docs/usage.md": "30-100"
+      }
+    }
+  ],
+  "limits": {
+    "turns": 3,
+    "wall_seconds": 1500
+  },
+  "solution": {
+    "steps": [
+      "git reset -q HEAD~1 && git add src/fan.py && git commit -qm 'Clamp speed' && git add docs/usage.md && git commit -qm 'Document clamping'"
+    ],
+    "answer": "Split into 'Clamp speed' (src/fan.py) then 'Document clamping' (docs/usage.md); nothing pushed."
+  }
+}

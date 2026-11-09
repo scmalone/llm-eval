@@ -1,0 +1,90 @@
+{
+  "id": "game-flight-test-ground-field",
+  "kind": "workload",
+  "category": "game",
+  "prompt": "Task packet (flight-test, ~/Workspace/flight-test). The baked ground field (`src/flight/groundField.ts`) is not conservative enough: the lowest allowed flight height can sit under a rock top.\n- Stored heights are rounded to decimetres; add the possible 5 cm rounding back when decoding, so the bound never sits below the real top.\n- A cell holds the highest vertex anywhere inside it, but lookups treat it as sitting at the cell centre and interpolate between centres; widen the reach by one more cell to cover both offsets. The ramp still falls at `rampSlope` metres per metre in every horizontal direction.\n- Edge lookups clamp to the outer cells instead of returning no ground: a point up to half a cell outside the outer cell centres still interpolates; only beyond that is it no ground.\n- With the test's field, `heightAt(0.5, 0.5)` is 8.05, `heightAt(4.5, 0.5)` is 8.05, `heightAt(6.5, 0.5)` is 7.05 and `heightAt(40.5, 0.5)` is 0.05.\n- The simulation caps the ground floor at the ceiling so the safe volume never inverts (`src/flight/simulation.ts`); document that the baked route must never need that cap, which the test checks along the whole journey over the real heightfield (`public/assets/journey/journey-canyon-heights.bin`, installed read-only).\nDone when `node_modules/.bin/vitest run tests/gameLook.test.ts` passes (dependencies are installed). Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/flight-test",
+    "commit": "50f378ff418f2fbe795b8cd7ee7cbe0923333083",
+    "workdir": ".",
+    "answer": "faef9433f795288a61226466ed5b61a60aa058a0",
+    "withhold": [
+      "tests/gameLook.test.ts"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "node_modules/.bin/vitest",
+        "run",
+        "--reporter=verbose",
+        "tests/gameLook.test.ts"
+      ],
+      "cwd": ".",
+      "timeout": 600,
+      "expect": [
+        "(?m)\u2713 .*holds\\ every\\ point\\ within\\ reach\\ at\\ the\\ rock\\ top\\ and\\ ramps\\ down\\ beyond\\ it",
+        "(?m)\u2713 .*keeps\\ the\\ dragon\\ envelope\\ above\\ every\\ floor\\ point\\ and\\ rock\\ on\\ a\\ held\\ dive"
+      ],
+      "success": "(?m)Tests\\s+\\d+ passed",
+      "count": "(?m)Tests\\s+(\\d+) passed"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "node_modules/.bin/vitest",
+        "run",
+        "--reporter=verbose",
+        "tests/gameLook.test.ts"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "flight-test",
+    "fix": "faef9433f795288a61226466ed5b61a60aa058a0",
+    "subject": "Ground field: conservative reach and rounding, clamped edge lookups; test the ceiling never caps the baked route",
+    "kind": "behavior"
+  },
+  "env": [
+    {
+      "from": "flight-test-node_modules",
+      "to": "node_modules",
+      "writable": [
+        ".vite-temp",
+        ".vite"
+      ],
+      "digest": "29fa3e927a27c075dc43fd8497e524282e6c2196dfab2515883ac9e0edf768f1"
+    },
+    {
+      "from": "flight-test-heightfield",
+      "to": "public/assets/journey",
+      "files": [
+        "journey-canyon-heights.bin"
+      ],
+      "digest": "27e19f9698489f46fa2a9066099c45be858693e371c1c788dccc43759065439f"
+    }
+  ]
+}

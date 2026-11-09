@@ -1,0 +1,71 @@
+{
+  "id": "mined-usage-dashboard-child-env",
+  "kind": "workload",
+  "category": "mined",
+  "prompt": "Task packet (usage-dashboard, ~/Workspace/usage-dashboard). Security: `runQuotaAxi(provider)` spawns quota-axi with the app's whole environment, which can carry provider tokens, proxy credentials, `NODE_OPTIONS` and other secrets.\n- Export `buildQuotaAxiEnv(binPath, sourceEnv = process.env)` from `lib/usage.mjs`: it returns only `PATH` (built with the existing `buildChildPath`, so the binary's own directory comes first) and `HOME` when the source has one. Nothing else reaches the child (on macOS the OS itself may add `__CF_USER_TEXT_ENCODING`).\n- `runQuotaAxi` spawns with that environment and `shell: false`, still passing `quotaAxiArgs(provider)` as its arguments, and honours `QUOTA_AXI_BIN` for the binary path as before.\n- Ready and unavailable states from the child's report stay truthful, and a disabled provider never spawns the command.\nDone when `node --test tests/usage.test.mjs` passes. Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/usage-dashboard",
+    "commit": "9930517ffcf1a731ecd3fb2c299a85f8f924a330",
+    "workdir": ".",
+    "answer": "71527646df2ad0234bdc25a0d8c7a0dded1ead7a",
+    "withhold": [
+      "tests/usage.test.mjs"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "node",
+        "--test",
+        "tests/usage.test.mjs"
+      ],
+      "cwd": ".",
+      "timeout": 600,
+      "expect": [
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )quota\\-axi\\ children\\ receive\\ only\\ the\\ minimal\\ local\\ environment(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )synthetic\\ quota\\-axi\\ reports\\ preserve\\ truthful\\ ready\\ and\\ unavailable\\ states(?: \\(|$)",
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )disabled\\ quota\\-axi\\ providers\\ do\\ not\\ spawn\\ a\\ synthetic\\ command(?: \\(|$)"
+      ],
+      "success": "(?m)^(?:\u2139|#) fail 0$",
+      "count": "(?m)^(?:\u2139|#) tests (\\d+)$",
+      "skipped": "(?m)^(?:\u2139|#) (?:skipped|todo) [1-9]"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "tests/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "node",
+        "--test",
+        "tests/usage.test.mjs"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "usage-dashboard",
+    "fix": "71527646df2ad0234bdc25a0d8c7a0dded1ead7a",
+    "subject": "fix: isolate quota-axi child environment",
+    "kind": "behavior"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "id": "mined-job-tracker-empty-draft",
+  "kind": "workload",
+  "category": "mined",
+  "prompt": "Task packet (job-tracker, ~/Workspace/job-tracker). Bug: a generated assessment draft whose content fields are all empty gets saved as a blank revision, which renders an empty Assessment box under a 'Draft assessment' pill.\n- `generateAssessmentDraft(record, { provider, apiKey, fetchImpl })` in `src/assessment-llm.mjs` must refuse such a draft on every provider path (deepinfra, codex, claude) before anything reaches the store.\n- When every one of the 15 assessment fields of the parsed draft is empty or whitespace, it rejects with an error whose message contains `no content, so nothing was saved` (tell the user to add candidate evidence context and generate again).\n- When the parsed draft is not a plain object (for example the model returns `[null]`), it rejects with an error whose message contains `unreadable draft`.\nDone when `node --test test/assessment-store.test.mjs` passes. Keep existing tests' assertions as they are.",
+  "source": {
+    "repo": "~/Workspace/job-tracker",
+    "commit": "b33590aed864e94d3d6a5fcba7d4f243e9d808e1",
+    "workdir": ".",
+    "answer": "f327b1e8287abd9651911eb57c6137c25192dceb",
+    "withhold": [
+      "test/assessment-store.test.mjs"
+    ]
+  },
+  "checks": [
+    {
+      "type": "tests",
+      "command": [
+        "node",
+        "--test",
+        "test/assessment-store.test.mjs"
+      ],
+      "cwd": ".",
+      "timeout": 600,
+      "expect": [
+        "(?m)^\\s*(?:ok \\d+ - |\u2714 )a\\ model\\ draft\\ with\\ every\\ field\\ empty\\ is\\ refused,\\ not\\ saved\\ as\\ a\\ blank\\ revision(?: \\(|$)"
+      ],
+      "success": "(?m)^(?:\u2139|#) fail 0$",
+      "count": "(?m)^(?:\u2139|#) tests (\\d+)$",
+      "skipped": "(?m)^(?:\u2139|#) (?:skipped|todo) [1-9]"
+    },
+    {
+      "type": "diff_scope",
+      "allow": [
+        "**"
+      ],
+      "frozen": [
+        "test/**"
+      ],
+      "min_changed": 1,
+      "deny": []
+    }
+  ],
+  "limits": {
+    "turns": 4,
+    "wall_seconds": 2700
+  },
+  "solution": {
+    "apply_reference": true,
+    "answer": "Implemented; the tests pass."
+  },
+  "followups": {
+    "tests": {
+      "command": [
+        "node",
+        "--test",
+        "test/assessment-store.test.mjs"
+      ],
+      "cwd": ".",
+      "max": 2
+    }
+  },
+  "mined": {
+    "repo": "job-tracker",
+    "fix": "f327b1e8287abd9651911eb57c6137c25192dceb",
+    "subject": "fix: refuse to save content-free generated assessment drafts",
+    "kind": "behavior"
+  }
+}

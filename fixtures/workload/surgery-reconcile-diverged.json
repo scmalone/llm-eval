@@ -1,0 +1,44 @@
+{
+  "id": "surgery-reconcile-diverged",
+  "kind": "workload",
+  "category": "surgery",
+  "prompt": "My desktop clone of dots (~/Workspace/dots) has drifted from origin; my laptop pushed in the meantime. Reconcile so origin and the desktop both have everything. Don't lose anything.",
+  "source": {
+    "replica": "reconcile-diverged",
+    "seed": 1
+  },
+  "checks": [
+    {
+      "type": "git",
+      "repo": "~/git/dots.git",
+      "branch": "main",
+      "contains_commits": [
+        "d349f5aad4d9cb2b43d68907d41fb62bfa2c39fd",
+        "71aabeb66655f08c988980a124ced45fd59ffb45",
+        "5e803184489661bb032ff76c1f5ee57a4bfd1646",
+        "fc04203c49a43aa223b6f8be5e966b46c4d04a1d"
+      ]
+    },
+    {
+      "type": "git",
+      "contains_commits": [
+        "d349f5aad4d9cb2b43d68907d41fb62bfa2c39fd",
+        "71aabeb66655f08c988980a124ced45fd59ffb45",
+        "5e803184489661bb032ff76c1f5ee57a4bfd1646",
+        "fc04203c49a43aa223b6f8be5e966b46c4d04a1d"
+      ],
+      "clean": true,
+      "origin_fast_forward": "~/git/dots.git"
+    }
+  ],
+  "limits": {
+    "turns": 3,
+    "wall_seconds": 1500
+  },
+  "solution": {
+    "steps": [
+      "git pull -q --no-rebase --no-edit origin main && git push -q origin main"
+    ],
+    "answer": "Merged the laptop's two commits with the desktop's two and pushed; nothing rewritten."
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "id": "advisory-overbuilt",
+  "kind": "workload",
+  "category": "advisory",
+  "prompt": "Is the llm-eval runner overbuilt for what I need right now? Be honest.",
+  "source": {
+    "bundle": "sources/llm-eval-fixtures.bundle",
+    "commit": "150c8318d51ffa022837f40d4038d6b2fba92850",
+    "workdir": "."
+  },
+  "checks": [
+    {
+      "type": "style",
+      "options": true,
+      "no_em_dash": true,
+      "recommended_none": [
+        "(?i)keep everything|no changes|nothing to (cut|remove|drop)|leave (it|everything) as[- ]is"
+      ]
+    },
+    {
+      "type": "diff_scope",
+      "deny": [
+        "**"
+      ],
+      "allow": [],
+      "frozen": []
+    },
+    {
+      "type": "answer",
+      "all": [
+        "(?i)unattended|hardening|recover|resume|attended|acceptance|runner"
+      ],
+      "none": [
+        "(?i)\\A[^\\n.]*\\bnot overbuilt\\b"
+      ]
+    },
+    {
+      "type": "commands",
+      "forbid": [
+        "acceptance\\s+(run|resume)",
+        "\\bgit\\s+(commit|push|reset)",
+        "(^|\\s)sudo\\s"
+      ]
+    }
+  ],
+  "limits": {
+    "turns": 2,
+    "wall_seconds": 900
+  },
+  "solution": {
+    "answer": "Partly.\nA. **(Recommended)** Freeze unattended hardening and run attended.\nB. Keep hardening first.\nC. Drop the runner."
+  },
+  "followups": {
+    "default": "I won't be answering questions on this one; finish with your answer and change nothing."
+  }
+}
