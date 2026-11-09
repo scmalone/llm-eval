@@ -1,0 +1,277 @@
+{
+  "schema_version": 1,
+  "description": "Manually transcribed aggregate results from private operator logs; raw trials are not included. These are descriptive counts, not an independent reproduction.",
+  "core_task_set": "bench-v2",
+  "grader_sha_prefix": "04468edc",
+  "categories": [
+    "advisory",
+    "implementation",
+    "lookup",
+    "operations",
+    "resume",
+    "review",
+    "surgery"
+  ],
+  "models": [
+    {
+      "profile": "qwen3.8-27b-unsloth-q4-mtp",
+      "model": "Qwen3.8 27B",
+      "engine": "llama.cpp build 12017",
+      "context_tokens": 163840,
+      "core_run_dates": [
+        "2026-11-07",
+        "2026-11-08"
+      ],
+      "raw_core_passes": 91,
+      "core_trials": 105,
+      "incomplete_trials": 0,
+      "core_category_passes": {
+        "advisory": 8,
+        "implementation": 11,
+        "lookup": 15,
+        "operations": 15,
+        "resume": 15,
+        "review": 12,
+        "surgery": 15
+      },
+      "category_trials": 15,
+      "adjusted_core_passes": 98,
+      "adjusted_upper_bound": 101,
+      "wall_hours": 9.72,
+      "recall_passes": 3,
+      "recall_trials": 3,
+      "recall_records": 36,
+      "recall_records_total": 36,
+      "tool_passes": 10,
+      "tool_trials": 10,
+      "chat_passes": 15,
+      "chat_trials": 15,
+      "publisher_url": "https://huggingface.co/unsloth/Qwen3.8-27B-GGUF",
+      "measured_settings": {
+        "kv_cache": "q8_0",
+        "mtp": false
+      },
+      "accuracy": {
+        "depth": [
+          3,
+          5
+        ],
+        "documents": [
+          3,
+          6
+        ],
+        "mined": [
+          18,
+          20
+        ],
+        "game": [
+          6,
+          6
+        ],
+        "vision": null
+      },
+      "depth_unmeasured": 1
+    },
+    {
+      "profile": "strata-iq3s",
+      "model": "Qwen3.8 Flash Next (Strata)",
+      "engine": "Strata 0.1.54",
+      "context_tokens": 262144,
+      "core_run_dates": [
+        "2026-11-09"
+      ],
+      "raw_core_passes": 91,
+      "core_trials": 105,
+      "incomplete_trials": 1,
+      "core_category_passes": {
+        "advisory": 11,
+        "implementation": 12,
+        "lookup": 15,
+        "operations": 14,
+        "resume": 14,
+        "review": 12,
+        "surgery": 13
+      },
+      "category_trials": 15,
+      "adjusted_core_passes": null,
+      "adjusted_upper_bound": null,
+      "wall_hours": 5.02,
+      "recall_passes": 3,
+      "recall_trials": 3,
+      "recall_records": 36,
+      "recall_records_total": 36,
+      "tool_passes": 10,
+      "tool_trials": 10,
+      "chat_passes": 12,
+      "chat_trials": 15,
+      "publisher_url": "https://huggingface.co/unsloth/Qwen3.8-27B-GGUF",
+      "measured_settings": {},
+      "accuracy": {
+        "depth": [
+          4,
+          5
+        ],
+        "documents": [
+          6,
+          6
+        ],
+        "mined": [
+          18,
+          20
+        ],
+        "game": [
+          6,
+          6
+        ],
+        "vision": null
+      },
+      "depth_unmeasured": 0
+    },
+    {
+      "profile": "swift-qwen3.8-27b-vision",
+      "model": "Swift 1.5",
+      "engine": "llama.cpp build 12017",
+      "context_tokens": 131072,
+      "core_run_dates": [
+        "2026-11-08",
+        "2026-11-09"
+      ],
+      "raw_core_passes": 84,
+      "core_trials": 105,
+      "incomplete_trials": 0,
+      "core_category_passes": {
+        "advisory": 7,
+        "implementation": 10,
+        "lookup": 14,
+        "operations": 11,
+        "resume": 15,
+        "review": 12,
+        "surgery": 15
+      },
+      "category_trials": 15,
+      "adjusted_core_passes": null,
+      "adjusted_upper_bound": null,
+      "wall_hours": 7.12,
+      "recall_passes": 3,
+      "recall_trials": 3,
+      "recall_records": 36,
+      "recall_records_total": 36,
+      "tool_passes": 10,
+      "tool_trials": 10,
+      "chat_passes": 15,
+      "chat_trials": 15,
+      "publisher_url": "https://huggingface.co/ukisai/Swift-1.5-Qwen3.8-27B-GGUF",
+      "measured_settings": {
+        "kv_cache": "q8_0",
+        "mtp": false,
+        "vision_projector": "host RAM"
+      },
+      "accuracy": {
+        "depth": [
+          3,
+          5
+        ],
+        "documents": [
+          3,
+          6
+        ],
+        "mined": [
+          16,
+          20
+        ],
+        "game": [
+          4,
+          6
+        ],
+        "vision": [
+          10,
+          10
+        ]
+      },
+      "depth_unmeasured": 1
+    },
+    {
+      "profile": "muse-glimmer-30b",
+      "model": "Muse Glimmer 30B",
+      "engine": "llama.cpp build 12017",
+      "context_tokens": 131072,
+      "core_run_dates": [
+        "2026-11-07"
+      ],
+      "raw_core_passes": 81,
+      "core_trials": 105,
+      "incomplete_trials": 0,
+      "core_category_passes": {
+        "advisory": 11,
+        "implementation": 11,
+        "lookup": 15,
+        "operations": 8,
+        "resume": 15,
+        "review": 8,
+        "surgery": 13
+      },
+      "category_trials": 15,
+      "adjusted_core_passes": null,
+      "adjusted_upper_bound": null,
+      "wall_hours": 3.32,
+      "recall_passes": 0,
+      "recall_trials": 3,
+      "recall_records": 17,
+      "recall_records_total": 36,
+      "tool_passes": 10,
+      "tool_trials": 10,
+      "chat_passes": 15,
+      "chat_trials": 15,
+      "publisher_url": "https://huggingface.co/meta-models/Muse-Glimmer-30B",
+      "measured_settings": {},
+      "accuracy": {
+        "depth": [
+          3,
+          5
+        ],
+        "documents": [
+          4,
+          6
+        ],
+        "mined": [
+          16,
+          20
+        ],
+        "game": [
+          5,
+          6
+        ],
+        "vision": [
+          9,
+          10
+        ]
+      },
+      "depth_unmeasured": 1
+    }
+  ],
+  "adjustment_policy": "Qwen adjusted 98 counts six style-only failures and one confirmed inverted-matcher failure as passes, preserving denominator 105. Upper bound 101 additionally counts three disputed haystack failures as passes; one includes a model error. Other adjusted scores are uncomputed.",
+  "accuracy_campaign_dates": {
+    "qwen3.8-27b-unsloth-q4-mtp": [
+      "2026-11-06",
+      "2026-11-07"
+    ],
+    "strata-iq3s": {
+      "depth_documents": "2026-11-07",
+      "mined_game": "2026-11-04"
+    },
+    "swift-qwen3.8-27b-vision": [
+      "2026-11-07"
+    ],
+    "muse-glimmer-30b": [
+      "2026-11-06"
+    ]
+  },
+  "limitations": [
+    "Contexts differ; totals are not a controlled ranking.",
+    "Accuracy suites are separate campaigns, not all on the core freeze.",
+    "Qwen and Swift documents each include three answers affected by the one-line decoy grader.",
+    "Depth includes a missing model-path environment fault; one task per llama.cpp candidate was unmeasured.",
+    "Historical profile names can mention MTP even when MTP was disabled.",
+    "Only settings confirmed in the operator logs are listed; omitted settings are unspecified here."
+  ]
+}

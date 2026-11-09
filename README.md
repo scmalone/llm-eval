@@ -6,6 +6,8 @@ AI agents wrote almost all of the code. The project owner set the goals, rules, 
 
 ## Results at a glance
 
+[Download the aggregate results](results/bench-v2.json), including campaign dates, category counts, adjustment rules and measurement limitations. Raw trial records remain private.
+
 The core comparison uses 35 tasks drawn from real agent work, five in each of seven categories, run three times each. Every row below uses the same frozen task set and grader (`bench-v2`, grader `04468edc`).
 
 | Model and profile | Engine, context | Core raw | Core adjusted | Wall time |
@@ -66,7 +68,7 @@ The harness was built with Claude, Codex and DeepSeek. pi is the agent framework
 | Independent review | Two reviews preceded live-adapter use. The unattended runner also passed signal drills. |
 | Live-run safety | Runs require an acceptance step and approval token. The runner restores the production model server on completion or failure. |
 | Recovery | Runs checkpoint state atomically, append events to an fsynced log, and can resume after interruption. |
-| Score integrity | Full answers are reviewed when a result is disputed. An audit found six core tasks that passed without useful model work; five involved a test or grader issue. A one-line grader bug rejected eight correct document answers. |
+| Score integrity | Full answers are reviewed when a result is disputed. An audit found six core tasks that failed on every model; five involved a test or grader issue. A one-line grader bug rejected eight correct document answers. |
 | Comparability | Fixes changed 22 of 35 core tasks, so `bench-v2` froze the task set and grader. Earlier scores remain historical records, not a baseline. |
 | Operator scope | An operator agent may restart the model server and commit operational fixes separately. It cannot change tasks, graders, verdicts or limits during a run queue. |
 | Sampling | Each model uses its publisher's defaults. Samplers without a published recommendation are disabled instead of inheriting llama.cpp defaults. |
