@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="864pt" height="417.6pt" viewBox="0 0 864 417.6" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-11-12T16:47:10.083578</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 417.6 
+L 864 417.6 
+L 864 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 328.32 325.728 
+L 786.24 325.728 
+L 786.24 91.872 
+L 328.32 91.872 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 328.32 102.501818 
+L 753.820885 102.501818 
+L 753.820885 132.872727 
+L 328.32 132.872727 
+z
+" clip-path="url(#p3a56853ee8)" style="fill: #edf2f4"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 328.32 163.243636 
+L 753.820885 163.243636 
+L 753.820885 193.614545 
+L 328.32 193.614545 
+z
+" clip-path="url(#p3a56853ee8)" style="fill: #edf2f4"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 328.32 223.985455 
+L 753.820885 223.985455 
+L 753.820885 254.356364 
+L 328.32 254.356364 
+z
+" clip-path="url(#p3a56853ee8)" style="fill: #edf2f4"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 328.32 284.727273 
+L 753.820885 284.727273 
+L 753.820885 315.098182 
+L 328.32 315.098182 
+z
+" clip-path="url(#p3a56853ee8)" style="fill: #edf2f4"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 328.32 102.501818 
+L 697.087434 102.501818 
+L 697.087434 132.872727 
+L 328.32 132.872727 
+z
+" clip-path="url(#p3a56853ee8)" style="fill: #176b87"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 328.32 163.243636 
+L 697.087434 163.243636 
+L 697.087434 193.614545 
+L 328.32 193.614545 
+z
+" clip-path="url(#p3a56853ee8)" style="fill: #338a9e"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 328.32 223.985455 
+L 668.720708 223.985455 
+L 668.720708 254.356364 
+L 328.32 254.356364 
+z
+" clip-path="url(#p3a56853ee8)" style="fill: #ad6d32"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 328.32 284.727273 
+L 656.56354 284.727273 
+L 656.56354 315.098182 
+L 328.32 315.098182 
+z
+" clip-path="url(#p3a56853ee8)" style="fill: #6b658c"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <defs>
+       <path id="m95c067dbd2" d="M 0 0 
+L 0 3.5 
+" style="stroke: #526773; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#m95c067dbd2" x="328.32" y="325.728" style="fill: #526773; stroke: #526773; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_1">
+      <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #526773" x="328.32" y="341.085422" transform="rotate(-0 328.32 341.085422)">0</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_2">
+      <g>
+       <use xlink:href="#m95c067dbd2" x="470.153628" y="325.728" style="fill: #526773; stroke: #526773; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #526773" x="470.153628" y="341.085422" transform="rotate(-0 470.153628 341.085422)">35</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_3">
+      <g>
+       <use xlink:href="#m95c067dbd2" x="611.987257" y="325.728" style="fill: #526773; stroke: #526773; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #526773" x="611.987257" y="341.085422" transform="rotate(-0 611.987257 341.085422)">70</text>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_4">
+      <g>
+       <use xlink:href="#m95c067dbd2" x="753.820885" y="325.728" style="fill: #526773; stroke: #526773; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_4">
+      <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #526773" x="753.820885" y="341.085422" transform="rotate(-0 753.820885 341.085422)">105</text>
+     </g>
+    </g>
+    <g id="text_5">
+     <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #192f3a" x="557.28" y="356.086281" transform="rotate(-0 557.28 356.086281)">Passed trials · 35 tasks, each repeated three times</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_5"/>
+     <g id="text_6">
+      <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #192f3a" x="324.82" y="121.890476" transform="rotate(-0 324.82 121.890476)">Qwen3.8 27B  |  163,840 tokens</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_6"/>
+     <g id="text_7">
+      <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #192f3a" x="324.82" y="182.632294" transform="rotate(-0 324.82 182.632294)">Qwen3.8 Flash Next / Strata  |  262,144 tokens</text>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_7"/>
+     <g id="text_8">
+      <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #192f3a" x="324.82" y="243.374112" transform="rotate(-0 324.82 243.374112)">Swift 1.5  |  131,072 tokens</text>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_8"/>
+     <g id="text_9">
+      <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #192f3a" x="324.82" y="304.11593" transform="rotate(-0 324.82 304.11593)">Muse Glimmer 30B  |  131,072 tokens</text>
+     </g>
+    </g>
+   </g>
+   <g id="patch_11">
+    <path d="M 328.32 325.728 
+L 786.24 325.728 
+" style="fill: none; stroke: #d8e1e5; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_10">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #192f3a" x="702.35554" y="120.544695" transform="rotate(-0 702.35554 120.544695)">91/105</text>
+   </g>
+   <g id="text_11">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #192f3a" x="702.35554" y="181.286513" transform="rotate(-0 702.35554 181.286513)">91/105</text>
+   </g>
+   <g id="text_12">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #192f3a" x="673.988814" y="242.028331" transform="rotate(-0 673.988814 242.028331)">84/105</text>
+   </g>
+   <g id="text_13">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #192f3a" x="661.831646" y="302.770149" transform="rotate(-0 661.831646 302.770149)">81/105</text>
+   </g>
+  </g>
+  <g id="text_14">
+   <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #192f3a" x="38.88" y="28.484719" transform="rotate(-0 38.88 28.484719)">Two configurations passed 91 of 105 trials</text>
+  </g>
+  <g id="text_15">
+   <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #526773" x="38.88" y="48.024" transform="rotate(-0 38.88 48.024)">Real agent tasks on one RTX 4090 · raw results from the frozen bench-v2 suite</text>
+  </g>
+  <g id="text_16">
+   <text style="font-size: 9px; font-family: 'DejaVu Sans'; fill: #526773" transform="translate(38.88 388.584)">Context sizes differ; these are configuration results, not a controlled model ranking.</text>
+   <text style="font-size: 9px; font-family: 'DejaVu Sans'; fill: #526773" transform="translate(38.88 402.984)">Raw scores include grader and instruction-check failures. Strata had one incomplete trial, counted as a failure.</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p3a56853ee8">
+   <rect x="328.32" y="91.872" width="457.92" height="233.856"/>
+  </clipPath>
+ </defs>
+</svg>
