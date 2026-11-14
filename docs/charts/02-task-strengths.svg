@@ -21,19 +21,19 @@
  </defs>
  <g id="figure_1">
   <g id="patch_1">
-   <path d="M 0 439.2 
-L 864 439.2 
-L 864 0 
-L 0 0 
+   <path d="M 0 439.2
+L 864 439.2
+L 864 0
+L 0 0
 z
 " style="fill: #ffffff"/>
   </g>
   <g id="axes_1">
    <g id="patch_2">
-    <path d="M 250.56 325.008 
-L 838.08 325.008 
-L 838.08 101.016 
-L 250.56 101.016 
+    <path d="M 250.56 325.008
+L 838.08 325.008
+L 838.08 101.016
+L 250.56 101.016
 z
 " style="fill: #ffffff"/>
    </g>

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="835.2pt" height="496.8pt" viewBox="0 0 835.2 496.8" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-11-13</dc:date>
+    <dc:description>Raw core counts for different runtime/context/compaction modes. Descriptive, not a controlled ranking. All core modes use pi and a 32768-token output limit.</dc:description>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 496.8
+L 835.2 496.8
+L 835.2 0
+L 0 0
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 375.84 357.696
+L 785.088 357.696
+L 785.088 79.488
+L 375.84 79.488
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <path d="M 375.84 357.696
+L 375.84 79.488
+" clip-path="url(#pb13bcd9766)" style="fill: none; stroke: #e0e7e8; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_2">
+      <defs>
+       <path id="mda2b3773f5" d="M 0 0
+L 0 3.5
+" style="stroke: #526575; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#mda2b3773f5" x="375.84" y="357.696" style="fill: #526575; stroke: #526575; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_1">
+      <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #526575" x="375.84" y="373.053422" transform="rotate(-0 375.84 373.053422)">0</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_3">
+      <path d="M 506.055273 357.696
+L 506.055273 79.488
+" clip-path="url(#pb13bcd9766)" style="fill: none; stroke: #e0e7e8; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_4">
+      <g>
+       <use xlink:href="#mda2b3773f5" x="506.055273" y="357.696" style="fill: #526575; stroke: #526575; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #526575" x="506.055273" y="373.053422" transform="rotate(-0 506.055273 373.053422)">35</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_5">
+      <path d="M 636.270545 357.696
+L 636.270545 79.488
+" clip-path="url(#pb13bcd9766)" style="fill: none; stroke: #e0e7e8; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_6">
+      <g>
+       <use xlink:href="#mda2b3773f5" x="636.270545" y="357.696" style="fill: #526575; stroke: #526575; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #526575" x="636.270545" y="373.053422" transform="rotate(-0 636.270545 373.053422)">70</text>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_7">
+      <path d="M 766.485818 357.696
+L 766.485818 79.488
+" clip-path="url(#pb13bcd9766)" style="fill: none; stroke: #e0e7e8; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_8">
+      <g>
+       <use xlink:href="#mda2b3773f5" x="766.485818" y="357.696" style="fill: #526575; stroke: #526575; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_4">
+      <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #526575" x="766.485818" y="373.053422" transform="rotate(-0 766.485818 373.053422)">105</text>
+     </g>
+    </g>
+    <g id="text_5">
+     <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #526575" x="580.464" y="397.054281" transform="rotate(-0 580.464 397.054281)">Passed attempts out of 105 per configuration</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_9"/>
+     <g id="text_6">
+      <text style="font-size: 9.5px; font-family: 'DejaVu Sans'; fill: #182f3e" transform="translate(233.660312 103.7818)">Qwen3.8-27B (UD-Q4_K_M)</text>
+      <text style="font-size: 9.5px; font-family: 'DejaVu Sans'; fill: #182f3e" transform="translate(191.624297 115.22596)">llama.cpp build 12017 | ctx 163,840</text>
+      <text style="font-size: 9.5px; font-family: 'DejaVu Sans'; fill: #182f3e" transform="translate(280.444844 126.627816)">compact 126,976</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_10"/>
+     <g id="text_7">
+      <text style="font-size: 9.5px; font-family: 'DejaVu Sans'; fill: #182f3e" transform="translate(181.621094 175.429866)">Qwen3.8-Flash-Next-GSQ-RCO (IQ3_S)</text>
+      <text style="font-size: 9.5px; font-family: 'DejaVu Sans'; fill: #182f3e" transform="translate(235.462344 186.874026)">Strata 0.1.54 | ctx 262,144</text>
+      <text style="font-size: 9.5px; font-family: 'DejaVu Sans'; fill: #182f3e" transform="translate(280.444844 198.275882)">compact 225,280</text>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_11"/>
+     <g id="text_8">
+      <text style="font-size: 9.5px; font-family: 'DejaVu Sans'; fill: #182f3e" transform="translate(206.050937 247.077561)">Swift-1.5-Qwen3.8-27B (Q4_K_M)</text>
+      <text style="font-size: 9.5px; font-family: 'DejaVu Sans'; fill: #182f3e" transform="translate(191.624297 258.521722)">llama.cpp build 12017 | ctx 131,072</text>
+      <text style="font-size: 9.5px; font-family: 'DejaVu Sans'; fill: #182f3e" transform="translate(286.489219 269.923577)">compact 94,208</text>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_12"/>
+     <g id="text_9">
+      <text style="font-size: 9.5px; font-family: 'DejaVu Sans'; fill: #182f3e" transform="translate(203.200937 318.725256)">Muse-Glimmer-30B (UD-Q4_K_XL)</text>
+      <text style="font-size: 9.5px; font-family: 'DejaVu Sans'; fill: #182f3e" transform="translate(191.624297 330.169417)">llama.cpp build 12017 | ctx 131,072</text>
+      <text style="font-size: 9.5px; font-family: 'DejaVu Sans'; fill: #182f3e" transform="translate(286.489219 341.571272)">compact 94,208</text>
+     </g>
+    </g>
+   </g>
+   <g id="patch_3">
+    <path d="M 375.84 92.133818
+L 714.399709 92.133818
+L 714.399709 130.107097
+L 375.84 130.107097
+z
+" clip-path="url(#pb13bcd9766)" style="fill: #176b68"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 375.84 163.781513
+L 714.399709 163.781513
+L 714.399709 201.754792
+L 375.84 201.754792
+z
+" clip-path="url(#pb13bcd9766)" style="fill: #176b68"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 375.84 235.429208
+L 688.356655 235.429208
+L 688.356655 273.402487
+L 375.84 273.402487
+z
+" clip-path="url(#pb13bcd9766)" style="fill: #176b68"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 375.84 307.076903
+L 677.195345 307.076903
+L 677.195345 345.050182
+L 375.84 345.050182
+z
+" clip-path="url(#pb13bcd9766)" style="fill: #176b68"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 375.84 357.696
+L 785.088 357.696
+" style="fill: none; stroke: #e0e7e8; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_10">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #182f3e" x="719.980364" y="114.237645" transform="rotate(-0 719.980364 114.237645)">91/105</text>
+   </g>
+   <g id="text_11">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #182f3e" x="719.980364" y="185.88534" transform="rotate(-0 719.980364 185.88534)">91/105</text>
+   </g>
+   <g id="text_12">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #182f3e" x="693.937309" y="257.533035" transform="rotate(-0 693.937309 257.533035)">84/105</text>
+   </g>
+   <g id="text_13">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #182f3e" x="682.776" y="329.18073" transform="rotate(-0 682.776 329.18073)">81/105</text>
+   </g>
+  </g>
+  <g id="text_14">
+   <text style="font-weight: 700; font-size: 19px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #182f3e" x="45.936" y="29.808" transform="rotate(-0 45.936 29.808)">Core evaluation: observed raw outcomes</text>
+  </g>
+  <g id="text_15">
+   <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #526575" x="45.936" y="54.648" transform="rotate(-0 45.936 54.648)">35 tasks × 3 attempts per task. Different modes; no controlled ranking.</text>
+  </g>
+  <g id="text_16">
+   <text style="font-size: 9px; font-family: 'DejaVu Sans'; fill: #526575" transform="translate(45.936 450.002531)">All core modes: pi | output limit 32,768 | grader 04468edc. The Strata-runtime row includes one incomplete.</text>
+   <text style="font-size: 9px; font-family: 'DejaVu Sans'; fill: #526575" transform="translate(45.936 464.508)">Source: bench-v2 aggregate and core manifests. Quantization is shown separately from each model name.</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="pb13bcd9766">
+   <rect x="375.84" y="79.488" width="409.248" height="278.208"/>
+  </clipPath>
+ </defs>
+</svg>

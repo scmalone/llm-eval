@@ -1,0 +1,726 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-13",
+  "source": {
+    "public_url": "https://github.com/scmalone/llm-eval/blob/main/results/bench-v2.json",
+    "sha256": "8421b4b9a72097a0f6b3d3fecfe61aff1c3b0ff49063e664e213c25edebfb7e9"
+  },
+  "core_modes": [
+    {
+      "profile": "qwen3.8-27b-unsloth-q4-mtp",
+      "exact_model_name": "Qwen3.8-27B",
+      "quantization": "UD-Q4_K_M",
+      "recorded_artifacts": [
+        {
+          "filename": "Qwen3.8-27B-UD-Q4_K_M.gguf",
+          "role": "model",
+          "sha256": "322e194ff79741c7baa497c240f677f54b201b0efab44ca8e50f122b39123482"
+        }
+      ],
+      "manifest": "2026-11-07-qwen3.8-27b-unsloth-q4-mtp-163840-core/manifest.json",
+      "manifest_sha256": "b768ed6fa6d2ab5c87809548176be12210c81c8d3573e8506cea67f7f879a68d",
+      "harness": "pi",
+      "mode": {
+        "compaction_point": 126976,
+        "context": 163840,
+        "context_overridden": true,
+        "entry": "qwen3.8-27b-unsloth-q4-mtp",
+        "entry_explicit": false,
+        "output_limit": 32768,
+        "output_overridden": false
+      }
+    },
+    {
+      "profile": "strata-iq3s",
+      "exact_model_name": "Qwen3.8-Flash-Next-GSQ-RCO",
+      "quantization": "IQ3_S",
+      "recorded_artifacts": [
+        {
+          "filename": "iq3s-262144.json",
+          "role": "launch_config",
+          "sha256": "fb0145874e4a0635669e23785830c5613fd13ff8d0f8cf616a47db3f94dae07d"
+        },
+        {
+          "filename": "Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
+          "role": "model-shard",
+          "naming_source": "recorded launch configuration"
+        },
+        {
+          "filename": "Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00002-of-00002.gguf",
+          "role": "model-shard",
+          "naming_source": "recorded launch configuration"
+        }
+      ],
+      "manifest": "2026-11-09-strata-iq3s-262144-core/manifest.json",
+      "manifest_sha256": "5b0ab651b7e13be56f183758b7ad0651c2b22282a163fe71bcf4beae01bb2033",
+      "harness": "pi",
+      "mode": {
+        "compaction_point": 225280,
+        "context": 262144,
+        "context_overridden": true,
+        "entry": "strata-iq3s",
+        "entry_explicit": false,
+        "output_limit": 32768,
+        "output_overridden": false
+      }
+    },
+    {
+      "profile": "swift-qwen3.8-27b-vision",
+      "exact_model_name": "Swift-1.5-Qwen3.8-27B",
+      "quantization": "Q4_K_M",
+      "recorded_artifacts": [
+        {
+          "filename": "Swift-1.5-Qwen3.8-27B-Q4_K_M.gguf",
+          "role": "model",
+          "sha256": "2ebba0ff1e63c1ac3fadd4e83efcea189f47f33ec72c91877af94de6ebe30590"
+        },
+        {
+          "filename": "mmproj-Swift-1.5-Qwen3.8-27B-F16.gguf",
+          "role": "mmproj",
+          "sha256": "10a24dc46eb801ad794886ef27ea1e43634d35388dfaf2e2374b7a8b67faf526"
+        }
+      ],
+      "manifest": "2026-11-08-swift-qwen3.8-27b-vision-131072-core/manifest.json",
+      "manifest_sha256": "f527692151d22251d022e0e86b58e2e42c9f33969aa6f61ddcedcbf876a534bc",
+      "harness": "pi",
+      "mode": {
+        "compaction_point": 94208,
+        "context": 131072,
+        "context_overridden": true,
+        "entry": "swift-qwen3.8-27b-vision",
+        "entry_explicit": false,
+        "output_limit": 32768,
+        "output_overridden": false
+      }
+    },
+    {
+      "profile": "muse-glimmer-30b",
+      "exact_model_name": "Muse-Glimmer-30B",
+      "quantization": "UD-Q4_K_XL",
+      "recorded_artifacts": [
+        {
+          "filename": "Muse-Glimmer-30B-UD-Q4_K_XL.gguf",
+          "role": "model",
+          "sha256": "82bece304887a313ece08400bc030f6066c7bff5b906b0cd40308ec8a409fd38"
+        },
+        {
+          "filename": "dflash-kquant.gguf",
+          "role": "model-draft",
+          "sha256": "27d9a805fa29b943cfb6ad4843367cd4eaaaf06bd452d8cc3e00a2cd18a677bc"
+        },
+        {
+          "filename": "mmproj-Muse-Glimmer-30B-Q8_0.gguf",
+          "role": "mmproj",
+          "sha256": "01ff73c95108e1754a4c145176c6d3ba44338942285cb87dcac7f4f193192ea2"
+        }
+      ],
+      "manifest": "2026-11-07-muse-glimmer-30b-131072-core/manifest.json",
+      "manifest_sha256": "40c73fb007dd7e39756030f2c6889732264cd58b35314832f50730645636a74a",
+      "harness": "pi",
+      "mode": {
+        "compaction_point": 94208,
+        "context": 131072,
+        "context_overridden": true,
+        "entry": "muse-glimmer-30b",
+        "entry_explicit": false,
+        "output_limit": 32768,
+        "output_overridden": false
+      }
+    }
+  ],
+  "model_order": [
+    "Qwen3.8-27B",
+    "Qwen3.8-Flash-Next-GSQ-RCO",
+    "Swift-1.5-Qwen3.8-27B",
+    "Muse-Glimmer-30B"
+  ],
+  "core": {
+    "raw_passes": [
+      91,
+      91,
+      84,
+      81
+    ],
+    "trials": [
+      105,
+      105,
+      105,
+      105
+    ],
+    "incomplete": [
+      0,
+      1,
+      0,
+      0
+    ],
+    "categories": [
+      "advisory",
+      "implementation",
+      "lookup",
+      "operations",
+      "resume",
+      "review",
+      "surgery"
+    ],
+    "category_passes": [
+      [
+        8,
+        11,
+        7,
+        11
+      ],
+      [
+        11,
+        12,
+        10,
+        11
+      ],
+      [
+        15,
+        15,
+        14,
+        15
+      ],
+      [
+        15,
+        14,
+        11,
+        8
+      ],
+      [
+        15,
+        14,
+        15,
+        15
+      ],
+      [
+        12,
+        12,
+        12,
+        8
+      ],
+      [
+        15,
+        13,
+        15,
+        13
+      ]
+    ],
+    "category_denominator": 15,
+    "grader": "04468edc"
+  },
+  "historical_documents": {
+    "original": [
+      3,
+      6,
+      3,
+      4
+    ],
+    "rescored": [
+      6,
+      6,
+      6,
+      4
+    ],
+    "denominator": 6,
+    "campaign_dates": {
+      "qwen3.8-27b-unsloth-q4-mtp": [
+        "2026-11-06",
+        "2026-11-07"
+      ],
+      "strata-iq3s": {
+        "depth_documents": "2026-11-07",
+        "mined_game": "2026-11-04"
+      },
+      "swift-qwen3.8-27b-vision": [
+        "2026-11-07"
+      ],
+      "muse-glimmer-30b": [
+        "2026-11-06"
+      ]
+    },
+    "full_mode_metadata": "Not audited here; separate historical campaigns, not frozen core."
+  },
+  "qwen_audit": {
+    "raw": 91,
+    "style_only": 6,
+    "confirmed_grader": 1,
+    "adjusted": 98,
+    "disputed": 3,
+    "upper_bound": 101,
+    "other_non_passes": 4,
+    "denominator": 105,
+    "policy": "Qwen adjusted 98 counts six style-only failures and one confirmed inverted-matcher failure as passes, preserving denominator 105. Upper bound 101 additionally counts three disputed haystack failures as passes; one includes a model error. Other adjusted scores are uncomputed."
+  },
+  "limitations": [
+    "Contexts differ; totals are not a controlled ranking.",
+    "Accuracy suites are separate campaigns, not all on the core freeze.",
+    "Historical profile names can mention MTP even when MTP was disabled.",
+    "Only settings confirmed in the run manifests and operator logs are listed; omitted settings are unspecified here.",
+    "Historical accuracy-suite scores were rescored after the grader and environment fixes; see the README for the original and rescored figures.",
+    "Strata mined/game ran 2026-11-04 on an older harness; task identity with other campaigns is not verified here."
+  ],
+  "chart_descriptions": {
+    "benchmark-coverage": "Coverage of nine exact model entries across earlier core, repeated frozen core, broader suites and vision. Complete means coverage, not all tasks passed. Modes and versions differ; no performance ranking is implied.",
+    "core-results": "Raw core counts for different runtime/context/compaction modes. Descriptive, not a controlled ranking. All core modes use pi and a 32768-token output limit.",
+    "category-results": "Seven categories across four different core configurations, passed attempts out of 15. Raw counts include style/grader issues; no controlled category ranking is implied.",
+    "document-rescoring": "Historical document scores before/after saved-answer rescoring. These separate accuracy campaigns are not the frozen core campaign. Full historical modes were not audited for this draft; no cross-mode comparison is claimed.",
+    "qwen-score-audit": "Qwen3.8-27B core: raw 91/105, reviewed adjusted 98/105 after six style-only and one grader-fault adjustments. An additional three disputed trials form upper bound 101/105, not the headline."
+  },
+  "note": "Descriptive counts only. No new inference, independent raw-trial rescore, intervals, or controlled cross-mode ranking.",
+  "model_identities": {
+    "qwen3.8-27b-unsloth-q4-mtp": {
+      "exact_model_name": "Qwen3.8-27B",
+      "quantization": "UD-Q4_K_M"
+    },
+    "strata-iq3s": {
+      "exact_model_name": "Qwen3.8-Flash-Next-GSQ-RCO",
+      "quantization": "IQ3_S"
+    },
+    "swift-qwen3.8-27b-vision": {
+      "exact_model_name": "Swift-1.5-Qwen3.8-27B",
+      "quantization": "Q4_K_M"
+    },
+    "muse-glimmer-30b": {
+      "exact_model_name": "Muse-Glimmer-30B",
+      "quantization": "UD-Q4_K_XL"
+    },
+    "gemma-4-26b-a4b-it": {
+      "exact_model_name": "gemma-4-26B-A4B-it",
+      "quantization": "Q4_K_L"
+    },
+    "qwen3.6-35b-a3b": {
+      "exact_model_name": "Qwen3.6-35B-A3B",
+      "quantization": "UD-Q4_K_XL"
+    },
+    "ornith-1.5-35b-bartowski": {
+      "exact_model_name": "Ornith-1.5-35B-A3B",
+      "quantization": "Q4_K_M"
+    },
+    "occamy-1.0": {
+      "exact_model_name": "Occamy-1.0",
+      "quantization": "Q4_K_M"
+    },
+    "north-mini-code-1.0": {
+      "exact_model_name": "North-Mini-Code-1.0",
+      "quantization": "UD-Q4_K_XL"
+    },
+    "gemma-4-31b-it": {
+      "exact_model_name": "gemma-4-31B-it",
+      "quantization": "Q4_0",
+      "scope": "Earlier configuration checks only; not a task-screen candidate.",
+      "naming_source": "models/notes.json model-card reference"
+    }
+  },
+  "benchmark_program": {
+    "sources": [
+      {
+        "record": "QUEUE.md",
+        "sha256": "108f897a8ed12f90adb2d11a749ca78b97ff54226c45632bebc23aac81b2472b",
+        "availability": "Selected devlog is public; queue, operator records and chain report remain private."
+      },
+      {
+        "record": "docs/devlog/2026-11-06-full-review-and-fixes.md",
+        "sha256": "1cadecef0d3db07b24bc143cd9ec831870140c837a7489635ca7e4c4649cf2dd",
+        "availability": "Selected devlog is public; queue, operator records and chain report remain private."
+      },
+      {
+        "record": "docs/devlog/2026-11-01-owner-runs-config-pass.md",
+        "sha256": "64cb0765bf07ff571c93419c23ee1b9f5328b62285244215a79f06612468d7c8",
+        "availability": "Selected devlog is public; queue, operator records and chain report remain private."
+      },
+      {
+        "record": "docs/devlog/2026-11-01-sizing-policy-and-harness-fixes.md",
+        "sha256": "071ed2205f7bac00f4fca5a2029278ad218c583bc5f4603b10de60737c5ca9c3",
+        "availability": "Selected devlog is public; queue, operator records and chain report remain private."
+      },
+      {
+        "record": "docs/reviews/2026-11-07-bench-v2-chain-report.md",
+        "sha256": "69a48cb3ad015fd75d90ca61bc9d4046d3affc80c23ef044ebb0da15a342b691",
+        "availability": "Selected devlog is public; queue, operator records and chain report remain private."
+      },
+      {
+        "record": "docs/operator-log/2026-11-03-noise-speed.md",
+        "sha256": "7dd0bd691fc83dcfc15e7b323acb7a9751f7ee0c3a1fa28752cf2084a2cbce0c",
+        "availability": "Selected devlog is public; queue, operator records and chain report remain private."
+      },
+      {
+        "record": "docs/operator-log/2026-11-05-moe-offload-probe.md",
+        "sha256": "1848823c8cee8d94044023afc96de9c8c72e0fc26175323ad0dfa2112a218fe6",
+        "availability": "Selected devlog is public; queue, operator records and chain report remain private."
+      },
+      {
+        "record": "docs/operator-log/2026-11-06-screen-north-mini.md",
+        "sha256": "cb52fce194c3aed3ede226aec33e5a4692dd822dd4962bb7360080bdcb585ee0",
+        "availability": "Selected devlog is public; queue, operator records and chain report remain private."
+      }
+    ],
+    "candidate_order": [
+      "Qwen3.8-27B",
+      "Qwen3.8-Flash-Next-GSQ-RCO",
+      "Swift-1.5-Qwen3.8-27B",
+      "Muse-Glimmer-30B",
+      "gemma-4-26B-A4B-it",
+      "Qwen3.6-35B-A3B",
+      "Ornith-1.5-35B-A3B",
+      "Occamy-1.0",
+      "North-Mini-Code-1.0"
+    ],
+    "stage_labels": [
+      "Earlier core\nscreen / reference",
+      "Repeated core\n3 \u00d7 35 tasks",
+      "Depth +\ndocuments",
+      "Mined fixes +\ngame tasks",
+      "Vision\n10 tasks"
+    ],
+    "coverage": [
+      [
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        2,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "legend": {
+      "0": "Not run",
+      "1": "Complete (includes failures)",
+      "2": "Partial"
+    },
+    "historical_screens": [
+      {
+        "candidate": "Qwen3.8-27B",
+        "source_label": "Qwen3.8",
+        "quantization": "UD-Q4_K_M",
+        "recorded_artifacts": [
+          {
+            "filename": "Qwen3.8-27B-UD-Q4_K_M.gguf",
+            "role": "model",
+            "sha256": "322e194ff79741c7baa497c240f677f54b201b0efab44ca8e50f122b39123482"
+          },
+          {
+            "filename": "mtp-Qwen3.8-27B-Q4_0.gguf",
+            "role": "model-draft",
+            "sha256": "50d9ce5a6da381bbcfb31061cf73df94a90e6faf8efeddee379a9cb8f1501c6e"
+          }
+        ],
+        "date": "2026-11-05",
+        "profile": "qwen3.8-27b-unsloth-q4-mtp",
+        "recorded_passes": 24,
+        "november_6_rescored_passes": 25,
+        "trials": 35,
+        "harness": "pi",
+        "mode": {
+          "compaction_point": 126976,
+          "context": 163840,
+          "context_overridden": true,
+          "entry": "qwen3.8-27b-unsloth-q4-mtp",
+          "entry_explicit": false,
+          "output_limit": 32768,
+          "output_overridden": false
+        },
+        "manifest": "2026-11-05-qwen3.8-27b-unsloth-q4-mtp-163840-core/manifest.json",
+        "manifest_sha256": "de80928e461673f4afae4db384198db82206e1a3271d11b156601d17ba44f112",
+        "note": "Historical screen; incompatible with later frozen core."
+      },
+      {
+        "candidate": "Swift-1.5-Qwen3.8-27B",
+        "source_label": "Swift",
+        "quantization": "Q4_K_M",
+        "recorded_artifacts": [
+          {
+            "filename": "Swift-1.5-Qwen3.8-27B-Q4_K_M.gguf",
+            "role": "model",
+            "sha256": "2ebba0ff1e63c1ac3fadd4e83efcea189f47f33ec72c91877af94de6ebe30590"
+          },
+          {
+            "filename": "mmproj-Swift-1.5-Qwen3.8-27B-F16.gguf",
+            "role": "mmproj",
+            "sha256": "10a24dc46eb801ad794886ef27ea1e43634d35388dfaf2e2374b7a8b67faf526"
+          }
+        ],
+        "date": "2026-11-06",
+        "profile": "swift-qwen3.8-27b-vision",
+        "recorded_passes": 23,
+        "november_6_rescored_passes": 26,
+        "trials": 35,
+        "harness": "pi",
+        "mode": {
+          "compaction_point": 94208,
+          "context": 131072,
+          "context_overridden": true,
+          "entry": "swift-qwen3.8-27b-vision",
+          "entry_explicit": false,
+          "output_limit": 32768,
+          "output_overridden": false
+        },
+        "manifest": "2026-11-06-swift-qwen3.8-27b-vision-131072-core/manifest.json",
+        "manifest_sha256": "13c6322e9a3f0d6cf5e00fe9202c52cc5df063daf6517039d361fcdad06ac4e1",
+        "note": "Historical screen; incompatible with later frozen core."
+      },
+      {
+        "candidate": "Muse-Glimmer-30B",
+        "source_label": "Muse",
+        "quantization": "UD-Q4_K_XL",
+        "recorded_artifacts": [
+          {
+            "filename": "Muse-Glimmer-30B-UD-Q4_K_XL.gguf",
+            "role": "model",
+            "sha256": "82bece304887a313ece08400bc030f6066c7bff5b906b0cd40308ec8a409fd38"
+          },
+          {
+            "filename": "dflash-kquant.gguf",
+            "role": "model-draft",
+            "sha256": "27d9a805fa29b943cfb6ad4843367cd4eaaaf06bd452d8cc3e00a2cd18a677bc"
+          },
+          {
+            "filename": "mmproj-Muse-Glimmer-30B-Q8_0.gguf",
+            "role": "mmproj",
+            "sha256": "01ff73c95108e1754a4c145176c6d3ba44338942285cb87dcac7f4f193192ea2"
+          }
+        ],
+        "date": "2026-11-05",
+        "profile": "muse-glimmer-30b",
+        "recorded_passes": 23,
+        "november_6_rescored_passes": 28,
+        "trials": 35,
+        "harness": "pi",
+        "mode": {
+          "compaction_point": 94208,
+          "context": 131072,
+          "context_overridden": true,
+          "entry": "muse-glimmer-30b",
+          "entry_explicit": false,
+          "output_limit": 32768,
+          "output_overridden": false
+        },
+        "manifest": "2026-11-05-muse-glimmer-30b-131072-core/manifest.json",
+        "manifest_sha256": "92eb636c4b2bcd08dca7865ba9ba7a1ea1df61644775a38f4d19e152d70dc06c",
+        "note": "Historical screen; incompatible with later frozen core."
+      },
+      {
+        "candidate": "gemma-4-26B-A4B-it",
+        "source_label": "Gemma",
+        "quantization": "Q4_K_L",
+        "recorded_artifacts": [
+          {
+            "filename": "google_gemma-4-26B-A4B-it-Q4_K_L.gguf",
+            "role": "model",
+            "sha256": "3020b31690b47dd8ff4902332fcf6d9ac02bd749ff45f971bca3bddd20b8c25e"
+          },
+          {
+            "filename": "mmproj-Gemma-4-26B-A4B-it-BF16.gguf",
+            "role": "mmproj",
+            "sha256": "41926ed5f1403cf5add23b0684992805ea6f97253096132e769e65646b8cef9d"
+          }
+        ],
+        "date": "2026-11-05",
+        "profile": "gemma-4-26b-a4b-it",
+        "recorded_passes": 17,
+        "november_6_rescored_passes": 20,
+        "trials": 35,
+        "harness": "pi",
+        "mode": {
+          "compaction_point": 159744,
+          "context": 196608,
+          "context_overridden": true,
+          "entry": "gemma-4-26b-a4b-it",
+          "entry_explicit": false,
+          "output_limit": 32768,
+          "output_overridden": false
+        },
+        "manifest": "2026-11-05-gemma-4-26b-a4b-it-196608-core/manifest.json",
+        "manifest_sha256": "70e8e20f53b0009cabb1a4e7b8ca362de762cb5ffe8bc0c80255a009b50b9546",
+        "note": "Historical screen; incompatible with later frozen core."
+      },
+      {
+        "candidate": "Qwen3.6-35B-A3B",
+        "source_label": "Qwen3.6",
+        "quantization": "UD-Q4_K_XL",
+        "recorded_artifacts": [
+          {
+            "filename": "Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf",
+            "role": "model",
+            "sha256": "707a55a8a4397ecde44de0c499d3e68c1ad1d240d1da65826b4949d1043f4450"
+          },
+          {
+            "filename": "mmproj-Qwen3.6-35B-A3B-BF16.gguf",
+            "role": "mmproj",
+            "sha256": "356dfaa3111376a4f7165e32e8749713378d1700b37cf52e0c50d9f23322334d"
+          }
+        ],
+        "date": "2026-11-06",
+        "profile": "qwen3.6-35b-a3b",
+        "recorded_passes": 14,
+        "november_6_rescored_passes": 14,
+        "trials": 35,
+        "harness": "pi",
+        "mode": {
+          "compaction_point": 225280,
+          "context": 262144,
+          "context_overridden": true,
+          "entry": "qwen3.6-35b-a3b",
+          "entry_explicit": false,
+          "output_limit": 32768,
+          "output_overridden": false
+        },
+        "manifest": "2026-11-06-qwen3.6-35b-a3b-262144-core/manifest.json",
+        "manifest_sha256": "f61153e19d2859f17913fdb620c1b408d9f523bd90871f8adefe5119c1fb9630",
+        "note": "Later path-grader fix moved Qwen3.6-35B-A3B to 15/35; not the November 6 review score."
+      },
+      {
+        "candidate": "Ornith-1.5-35B-A3B",
+        "source_label": "Ornith",
+        "quantization": "Q4_K_M",
+        "recorded_artifacts": [
+          {
+            "filename": "Ornith-1.5-35B-A3B-Q4_K_M.gguf",
+            "role": "model",
+            "sha256": "12d8d5c01bae7f23ea4822b2f96ba069d531f827d02a57c31002f2f95e72614a"
+          }
+        ],
+        "date": "2026-11-06",
+        "profile": "ornith-1.5-35b-bartowski",
+        "recorded_passes": 13,
+        "november_6_rescored_passes": 14,
+        "trials": 35,
+        "harness": "pi",
+        "mode": {
+          "compaction_point": 159744,
+          "context": 196608,
+          "context_overridden": true,
+          "entry": "ornith-1.5-35b-bartowski",
+          "entry_explicit": false,
+          "output_limit": 32768,
+          "output_overridden": false
+        },
+        "manifest": "2026-11-06-ornith-1.5-35b-bartowski-196608-core/manifest.json",
+        "manifest_sha256": "d6d3806921a7ed3cf05b4e04a9e78ba368e17fac58c5f7615ff022e6ac54731b",
+        "note": "Historical screen; incompatible with later frozen core."
+      },
+      {
+        "candidate": "Occamy-1.0",
+        "source_label": "Occamy",
+        "quantization": "Q4_K_M",
+        "recorded_artifacts": [
+          {
+            "filename": "occamy-ai_occamy-1.0-Q4_K_M.gguf",
+            "role": "model",
+            "sha256": "d030609f3e0a8f32e23a0346d07cddf8fb29a32a10ccdd98b058d5f620261fee"
+          }
+        ],
+        "date": "2026-11-06",
+        "profile": "occamy-1.0",
+        "recorded_passes": 12,
+        "november_6_rescored_passes": 12,
+        "trials": 35,
+        "harness": "pi",
+        "mode": {
+          "compaction_point": 159744,
+          "context": 196608,
+          "context_overridden": true,
+          "entry": "occamy-1.0",
+          "entry_explicit": false,
+          "output_limit": 32768,
+          "output_overridden": false
+        },
+        "manifest": "2026-11-06-occamy-1.0-196608-core/manifest.json",
+        "manifest_sha256": "2c7ff900df202b95c42fa0e2b20db9acf1705dd56b0935f6c68d5926f9970e76",
+        "note": "Historical screen; incompatible with later frozen core."
+      },
+      {
+        "candidate": "North-Mini-Code-1.0",
+        "source_label": "North Mini",
+        "quantization": "UD-Q4_K_XL",
+        "recorded_artifacts": [
+          {
+            "filename": "North-Mini-Code-1.0-UD-Q4_K_XL.gguf",
+            "role": "model",
+            "sha256": "86ba9cf324a1cf53687872abdda3861e3304bfd25d1f606f92a6641017ecbc6e"
+          },
+          {
+            "filename": "Cohere2MoE.jinja",
+            "role": "chat-template-file",
+            "sha256": "d8366efb9f07c571da620ce6a924594fc52c80273a0fbb46a38b643972df95fd"
+          }
+        ],
+        "date": "2026-11-06",
+        "profile": "north-mini-code-1.0",
+        "recorded_passes": null,
+        "november_6_rescored_passes": null,
+        "trials": null,
+        "harness": "pi",
+        "mode": {
+          "compaction_point": 159744,
+          "context": 196608,
+          "context_overridden": true,
+          "entry": "north-mini-code-1.0",
+          "entry_explicit": false,
+          "output_limit": 32768,
+          "output_overridden": false
+        },
+        "manifest": "2026-11-06-north-mini-code-1.0-196608-core/manifest.json",
+        "manifest_sha256": "34bfe7c43aab64a5789de4213544f5d9c207bbfa1b5a8d2703138b20277070fc",
+        "note": "No complete core score."
+      }
+    ],
+    "historical_score_date": "2026-11-06",
+    "scope_note": "Eight llama.cpp candidates plus Qwen3.8-Flash-Next-GSQ-RCO on Strata, not nine independent base-model families. Coverage combines different modes and versions."
+  }
+}
